@@ -1,6 +1,6 @@
 ---
-layout:post
-title:"Registered Reports"
+layout: post
+title: "Registered Reports"
 date: 2019-09-19
 ---
 
