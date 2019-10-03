@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Writing an Abstracz"
+title: "Writing an Abstract"
 date: 2019-10-01
 ---
 
