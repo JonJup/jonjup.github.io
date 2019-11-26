@@ -9,10 +9,6 @@ digital image analysis (Vaduva et al. 2013) and bioinformatics (Liu et al. 2010)
 With LDA we can describe each sampling unit (e.g. a site or a site at a certain time. In NLP this would be the document) using its communities (topics in NLP). The communities are characterized by their species (words in NLP). One species can occur very often in certain communities but rarely in others, while another species occurs often in all kinds of communities and is therefore not useful as an indicator (however if a species generally occurs across sampling units its absence might be informative). 
 This is achieved by decomposing the original multivariate abundnace data into two matrices (see Figure 1). 
 
-
-
-For this see: Valle et al. (2014)
-
 ## References
 Blei, D., Ng, A. & Jordan, M. (2003). Latent Dirichlet Allocation. J. Mach. Learn. Res., 3, 993–1022.     
 
