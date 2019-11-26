@@ -13,6 +13,8 @@ This is achieved by decomposing the original multivariate abundnace data into tw
 
 For this see: Valle et al. (2014)
 
-\h2 References
-Blei, D., Ng, A. & Jordan, M. (2003). Latent Dirichlet Allocation. J. Mach. Learn. Res., 3, 993–1022.
-Valle, D., Baiser, B., Woodall, C. W., & Chazdon, R. (2014). Decomposing biodiversity data using the Latent Dirichlet Allocation model, a probabilistic multivariate statistical method. Ecology Letters, 17(12), 1591–1601. https://doi.org/10.1111/ele.12380
+## References
+Blei, D., Ng, A. & Jordan, M. (2003). Latent Dirichlet Allocation. J. Mach. Learn. Res., 3, 993–1022.     
+
+Valle, D., Baiser, B., Woodall, C. W., & Chazdon, R. (2014). Decomposing biodiversity data using the Latent Dirichlet 
+&ensp; &ensp; &ensp; Allocation model, a  probabilistic multivariate statistical method. Ecology Letters, 17(12), 1591–1601. https://doi.org/10.1111/ele.12380
