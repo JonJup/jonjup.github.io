@@ -1,0 +1,118 @@
+---
+title: "Exploring European River Biodiversity Patterns with R"
+description: "A worked example showing how to visualize spatial patterns in freshwater biodiversity data using R, sf, and ggplot2."
+author: "Jonathan"
+date: "2025-02-20"
+categories: [R, spatial analysis, biodiversity]
+draft: false
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Introduction
+
+One of the core tasks in the PULSE project is understanding how freshwater biodiversity is distributed across European rivers. In this post, I walk through a simple workflow for visualizing spatial biodiversity patterns using R.
+
+## Setup
+
+```{r}
+#| label: setup
+library(ggplot2)
+library(dplyr)
+
+# Simulate some biodiversity data
+set.seed(42)
+n_sites <- 200
+
+sites <- tibble(
+  site_id = paste0("S", sprintf("%03d", 1:n_sites)),
+  longitude = runif(n_sites, -10, 30),
+  latitude = runif(n_sites, 36, 70),
+  richness = rpois(n_sites, lambda = 15 + 8 * scale(runif(n_sites))),
+  ecoregion = sample(
+    c("Alpine", "Atlantic", "Continental", "Mediterranean", "Boreal"),
+    n_sites, replace = TRUE,
+    prob = c(0.15, 0.25, 0.3, 0.15, 0.15)
+  )
+)
+
+head(sites)
+```
+
+## Visualizing richness across space
+
+```{r}
+#| label: fig-richness-map
+#| fig-cap: "Simulated taxon richness at sampling sites across Europe."
+#| fig-width: 8
+#| fig-height: 6
+
+ggplot(sites, aes(x = longitude, y = latitude)) +
+  geom_point(aes(color = richness, size = richness), alpha = 0.7) +
+  scale_color_viridis_c(option = "mako", direction = -1, name = "Richness") +
+  scale_size_continuous(range = c(1, 5), guide = "none") +
+  labs(
+    title = "Taxon richness across European river sites",
+    subtitle = "Simulated data for demonstration",
+    x = "Longitude", y = "Latitude"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    panel.grid.minor = element_blank()
+  )
+```
+
+## Richness by ecoregion
+
+```{r}
+#| label: fig-richness-ecoregion
+#| fig-cap: "Distribution of taxon richness across biogeographical ecoregions."
+#| fig-width: 7
+#| fig-height: 4.5
+
+palette <- c(
+  Alpine = "#2e6b8a", Atlantic = "#1e7a5a", Continental = "#a67c3d",
+  Mediterranean = "#b85c3a", Boreal = "#0a1628"
+)
+
+ggplot(sites, aes(x = reorder(ecoregion, richness, FUN = median), y = richness)) +
+  geom_boxplot(aes(fill = ecoregion), alpha = 0.8, outlier.size = 1) +
+  scale_fill_manual(values = palette, guide = "none") +
+  labs(title = "Taxon richness by ecoregion", x = NULL, y = "Taxon richness") +
+  coord_flip() +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.y = element_blank()
+  )
+```
+
+## Summary
+
+```{r}
+#| label: summary-stats
+sites |>
+  group_by(ecoregion) |>
+  summarise(
+    n_sites = n(),
+    mean_richness = round(mean(richness), 1),
+    sd_richness = round(sd(richness), 1),
+    .groups = "drop"
+  ) |>
+  arrange(desc(mean_richness)) |>
+  knitr::kable()
+```
+
+## Takeaways
+
+This example illustrates how Quarto blog posts can integrate R code, figures, and narrative. In practice, I use similar workflows for analyzing real PULSE data — with `sf` geometries, river network topologies, and spatial models.
+
+The beauty of this setup: write in RStudio, render locally to check, then `git push` — and GitHub Actions handles the rest.
+
+---
+
+*This is a demo post. Replace it with your own content!*

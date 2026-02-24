@@ -1,0 +1,16 @@
+---
+title: "Blog"
+listing:
+  contents: posts/*/index.qmd
+  sort: "date desc"
+  type: default
+  categories: true
+  fields: [date, title, description, categories, reading-time]
+  feed: true
+page-layout: full
+toc: false
+---
+
+Notes on freshwater ecology, R workflows, statistical methods, and fieldwork.
+
+[← Back to main site](../index.html)

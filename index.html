@@ -649,6 +649,100 @@
             color: var(--text-light);
         }
 
+        /* ─── BLOG ─── */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.8rem;
+        }
+
+        .blog-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .blog-card:hover {
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+            transform: translateY(-3px);
+            border-color: var(--water-light);
+        }
+
+        .blog-card-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--river-deep), var(--water-blue));
+        }
+
+        .blog-card-body {
+            padding: 1.8rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .blog-card-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-bottom: 0.6rem;
+        }
+
+        .blog-card-title {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: var(--river-deep);
+            margin-bottom: 0.6rem;
+            line-height: 1.3;
+        }
+
+        .blog-card:hover .blog-card-title {
+            color: var(--accent);
+        }
+
+        .blog-card-excerpt {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .blog-card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 1.2rem;
+        }
+
+        .blog-card-tags .tag {
+            font-size: 0.72rem;
+            padding: 0.2rem 0.6rem;
+        }
+
+        .blog-view-all {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2.5rem;
+            font-size: 0.95rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            transition: gap 0.3s ease;
+        }
+
+        .blog-view-all:hover {
+            gap: 0.8rem;
+        }
+
         /* ─── FOOTER ─── */
         footer {
             padding: 2.5rem 2rem;
@@ -733,6 +827,7 @@
             <li><a href="#research">Research</a></li>
             <li><a href="#publications">Publications</a></li>
             <li><a href="#tools">Tools</a></li>
+            <li><a href="#blog">Blog</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
     </div>
@@ -946,6 +1041,73 @@
                 <a href="#" class="tool-link">View on GitHub ↗</a>
             </div>
         </div>
+    </div>
+</section>
+
+<!-- ─── BLOG ─── -->
+<section id="blog">
+    <div class="container">
+        <div class="section-label reveal">Blog</div>
+        <h2 class="section-title reveal">Notes &amp; methods</h2>
+        <p class="section-subtitle reveal">Thoughts on freshwater ecology, R workflows, statistical methods, and fieldwork.</p>
+
+        <div class="blog-grid">
+
+            <!-- ✏️ BLOG POST TEMPLATE — copy this block for each new post -->
+            <a href="blog/posts/exploring-river-biodiversity/index.html" class="blog-card reveal">
+                <div class="blog-card-image" style="background: linear-gradient(135deg, #0a1628 0%, #2e6b8a 100%);"></div>
+                <div class="blog-card-body">
+                    <div class="blog-card-date">2025-02-20</div>
+                    <div class="blog-card-title">Exploring European River Biodiversity Patterns with R</div>
+                    <div class="blog-card-excerpt">
+                        A worked example showing how to visualize spatial patterns in freshwater biodiversity data using R, sf, and ggplot2.
+                    </div>
+                    <div class="blog-card-tags">
+                        <span class="tag">R</span>
+                        <span class="tag">Spatial Analysis</span>
+                        <span class="tag">Biodiversity</span>
+                    </div>
+                </div>
+            </a>
+            <!-- END POST TEMPLATE -->
+
+            <!-- Example post 2 -->
+            <a href="blog/posts/hmsc-hpc-workflow/index.html" class="blog-card reveal" style="transition-delay: 0.1s;">
+                <div class="blog-card-image" style="background: linear-gradient(135deg, #1e7a5a 0%, #122240 100%);"></div>
+                <div class="blog-card-body">
+                    <div class="blog-card-date">2025-01-15</div>
+                    <div class="blog-card-title">Running HMSC Models on an HPC Cluster</div>
+                    <div class="blog-card-excerpt">
+                        Lessons learned from fitting joint species distribution models at scale using SLURM, Singularity containers, and parallel R.
+                    </div>
+                    <div class="blog-card-tags">
+                        <span class="tag">HMSC</span>
+                        <span class="tag">HPC</span>
+                        <span class="tag">R</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Example post 3 -->
+            <a href="blog/posts/fuzzy-clustering-rivers/index.html" class="blog-card reveal" style="transition-delay: 0.2s;">
+                <div class="blog-card-image" style="background: linear-gradient(135deg, #2e6b8a 0%, #1e7a5a 100%);"></div>
+                <div class="blog-card-body">
+                    <div class="blog-card-date">2024-12-03</div>
+                    <div class="blog-card-title">Fuzzy Clustering for River Typology</div>
+                    <div class="blog-card-excerpt">
+                        Why hard classification boundaries don't work for rivers, and how fuzzy clustering offers a more ecologically meaningful alternative.
+                    </div>
+                    <div class="blog-card-tags">
+                        <span class="tag">Methods</span>
+                        <span class="tag">Clustering</span>
+                        <span class="tag">PULSE</span>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+
+        <a href="blog/index.html" class="blog-view-all reveal">View all posts →</a>
     </div>
 </section>
 

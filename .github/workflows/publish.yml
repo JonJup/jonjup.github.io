@@ -1,0 +1,70 @@
+name: Render blog and deploy site
+
+on:
+  push:
+    branches: main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Install R packages
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::knitr
+            any::rmarkdown
+            any::ggplot2
+            any::dplyr
+          # ↑ Add any R packages your blog posts use
+
+      - name: Setup Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render blog only
+        run: |
+          cd blog
+          quarto render
+
+      - name: Prepare deploy directory
+        run: |
+          mkdir -p _site
+          # Copy the handcrafted main site files
+          cp index.html _site/
+          cp .nojekyll _site/
+          # Copy any top-level assets (images, css, etc.)
+          # cp -r images _site/ 2>/dev/null || true
+          # Copy the rendered blog
+          cp -r blog _site/blog
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

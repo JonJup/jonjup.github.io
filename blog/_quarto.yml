@@ -1,0 +1,35 @@
+project:
+  type: website
+  output-dir: .
+
+website:
+  title: "Jonathan's Blog"
+  site-url: https://yourusername.github.io/blog
+  
+  navbar:
+    background: "#f5f1ea"
+    foreground: "#1a1a1a"
+    title: "Jonathan"
+    left:
+      - href: ../index.html
+        text: Home
+      - href: index.qmd
+        text: Blog
+    right:
+      - icon: github
+        href: https://github.com/yourusername
+
+  page-footer:
+    center: |
+      [← Back to main site](../index.html) · © 2025 Jonathan
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    toc-depth: 2
+    link-external-newwindow: true
+    smooth-scroll: true
+    code-overflow: wrap
+    highlight-style: github

@@ -1,0 +1,269 @@
+/* ─────────────────────────────────────────────
+   Blog styles — matches the main site aesthetic
+   ───────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+    --river-deep: #0a1628;
+    --river-dark: #122240;
+    --water-blue: #2e6b8a;
+    --water-light: #4a9aba;
+    --foam: #b8d8e8;
+    --accent: #1e7a5a;
+    --accent-light: #2a9d6e;
+    --parchment: #f5f1ea;
+    --white: #fefefe;
+    --text-primary: #1a1a1a;
+    --text-secondary: #4a4a4a;
+    --text-light: #7a7a7a;
+    --border: #e0dcd4;
+}
+
+/* ─── BASE ─── */
+body {
+    font-family: 'Source Sans 3', Georgia, serif !important;
+    background: var(--parchment) !important;
+    color: var(--text-primary);
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ─── NAVBAR ─── */
+.navbar {
+    background: rgba(245, 241, 234, 0.95) !important;
+    border-bottom: 1px solid var(--border) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.navbar-brand {
+    font-family: 'Instrument Serif', Georgia, serif !important;
+    font-size: 1.35rem !important;
+    letter-spacing: -0.02em;
+    color: var(--river-deep) !important;
+}
+
+.nav-link {
+    font-family: 'Source Sans 3', sans-serif !important;
+    font-size: 0.85rem !important;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-secondary) !important;
+    transition: color 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--accent) !important;
+}
+
+/* ─── HEADINGS ─── */
+h1, h2, h3, h4, h5, h6,
+.title {
+    font-family: 'Instrument Serif', Georgia, serif !important;
+    font-weight: 400 !important;
+    color: var(--river-deep);
+    letter-spacing: -0.02em;
+}
+
+h1, .title { font-size: clamp(2rem, 4vw, 2.8rem) !important; }
+h2 { font-size: 1.7rem; margin-top: 2.5rem; }
+h3 { font-size: 1.3rem; color: var(--river-dark); }
+
+/* ─── ARTICLE CONTENT ─── */
+#quarto-content {
+    background: var(--parchment);
+}
+
+.content {
+    max-width: 800px;
+}
+
+main p,
+main li {
+    color: var(--text-secondary);
+}
+
+main a {
+    color: var(--accent);
+    transition: color 0.2s;
+}
+
+main a:hover {
+    color: var(--accent-light);
+}
+
+/* ─── ARTICLE METADATA ─── */
+.quarto-title-meta {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+    margin: 1.5rem 0;
+}
+
+/* ─── CATEGORIES / TAGS ─── */
+.quarto-category {
+    background: rgba(46, 107, 138, 0.06) !important;
+    color: var(--water-blue) !important;
+    border-radius: 20px !important;
+    font-size: 0.78rem !important;
+    font-weight: 500;
+    border: none !important;
+    padding: 0.25rem 0.75rem !important;
+}
+
+/* ─── CODE ─── */
+code {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.88em;
+    color: var(--water-blue);
+    background: rgba(46, 107, 138, 0.06);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+}
+
+pre {
+    background: #faf9f6 !important;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem !important;
+}
+
+pre code {
+    background: transparent;
+    padding: 0;
+    font-size: 0.85rem;
+}
+
+div.sourceCode {
+    background: #faf9f6 !important;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+/* ─── FIGURES ─── */
+figure {
+    margin: 2rem 0;
+}
+
+figure img {
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+figcaption,
+.figure-caption {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    font-style: italic;
+    margin-top: 0.5rem;
+}
+
+/* ─── TABLES ─── */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.9rem;
+    margin: 1.5rem 0;
+}
+
+thead {
+    border-bottom: 2px solid var(--border);
+}
+
+th {
+    font-weight: 500;
+    color: var(--river-deep);
+    padding: 0.6rem 1rem;
+    text-align: left;
+}
+
+td {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+}
+
+tr:hover td {
+    background: rgba(46, 107, 138, 0.03);
+}
+
+/* ─── BLOG LISTING ─── */
+.quarto-listing .listing-item {
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 0;
+}
+
+.listing-title {
+    font-family: 'Instrument Serif', Georgia, serif !important;
+    font-weight: 400 !important;
+    color: var(--river-deep) !important;
+    font-size: 1.35rem !important;
+}
+
+.listing-title:hover {
+    color: var(--accent) !important;
+}
+
+.listing-description {
+    color: var(--text-secondary) !important;
+    font-size: 0.95rem !important;
+}
+
+.listing-date {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.8rem !important;
+    color: var(--text-light) !important;
+}
+
+.listing-categories .listing-category {
+    background: rgba(46, 107, 138, 0.06) !important;
+    color: var(--water-blue) !important;
+    border-radius: 20px !important;
+    font-size: 0.75rem !important;
+    border: none !important;
+}
+
+/* ─── TABLE OF CONTENTS ─── */
+#TOC a,
+.sidebar nav a {
+    color: var(--text-light);
+    font-size: 0.88rem;
+    transition: color 0.2s;
+}
+
+#TOC a:hover,
+#TOC a.active,
+.sidebar nav a:hover,
+.sidebar nav a.active {
+    color: var(--accent);
+}
+
+/* ─── CALLOUTS ─── */
+.callout {
+    border-radius: 8px;
+    border-left-width: 4px;
+}
+
+/* ─── FOOTER ─── */
+.nav-footer {
+    background: var(--parchment) !important;
+    border-top: 1px solid var(--border);
+    color: var(--text-light);
+    font-size: 0.82rem;
+}
+
+.nav-footer a {
+    color: var(--accent);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+    h1, .title { font-size: 1.8rem !important; }
+    h2 { font-size: 1.4rem; }
+}
