@@ -1,0 +1,76 @@
+---
+title: "How Good Is Your River Typology? A New Tool for Context-Dependent Benchmarking"
+description: "A worked example showing how to visualize spatial patterns in freshwater biodiversity data using R, sf, and ggplot2."
+author: "Jonathan"
+date: "2026-02-25"
+categories: [R, shiny, typologies]
+draft: false
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+
+# 
+
+If you work in freshwater ecology or water management in Europe, you probably rely on some form of river typology — a classification of rivers into types based on their physical, chemical, or biological characteristics. These typologies underpin the Water Framework Directive (WFD), guiding how we set reference conditions, design monitoring programmes, and assess ecological status across tens of thousands of water bodies. But how do you know whether your typology is actually any good?
+
+That question — deceptively simple, surprisingly hard to answer — is at the heart of **PROJECT PULSE** (*Advancing Pan-European Freshwater Typologies*), a DFG-funded postdoctoral research project based at the University of Helsinki. And as part of that project, we have built an interactive tool that provides the first **context-dependent benchmarks** for evaluating freshwater typology systems.
+
+## The problem: benchmarks that don't exist
+
+Freshwater ecologists have developed a range of metrics to evaluate typologies — measures of cluster validity like the Average Silhouette Width, Calinski–Harabasz Index, or biologically-focused metrics like Fuzzy Divergence and Fuzzy Mantel correlations. These metrics quantify how well a typology captures real biological structure: whether communities within a type are more similar to each other than to communities in other types.
+
+The trouble is that these metrics are hard to interpret in isolation. Is a Silhouette Width of 0.15 good or bad? It depends. It depends on how many types you have, how many sites you sampled, where in Europe your data comes from, what taxonomic group you are looking at, and how much of the community variation is driven by environmental filtering versus stochastic processes. Without a frame of reference, a raw metric value tells you very little.
+
+Until now, no systematic framework has existed for generating such benchmarks. Researchers either compare against arbitrary thresholds, against one or two other systems, or simply report values without interpretation. PULSE changes that.
+
+## What we built
+
+The **PULSE Benchmark Predictor** is an R Shiny application backed by Quantile Random Forest (QRF) models trained on a large collection of empirical and simulated typology evaluations spanning four taxonomic groups — diatoms, fishes, macroinvertebrates, and macrophytes — across European rivers.
+
+Given a set of characteristics describing your typology and data, the tool predicts the **full conditional distribution** of each evaluation metric: not just a single expected value, but the 5th through 95th percentiles, telling you what range of metric values is plausible *for a system like yours*.
+
+The application offers:
+
+- **Quantile predictions** at user-selected levels (5th–95th percentiles), providing expected ranges rather than point estimates.
+- **A density visualisation** of the predicted distribution, estimated from a dense quantile grid, giving you an intuitive picture of where your typology falls.
+- **Observed value marking** — enter your actual metric value and see exactly where it sits in the predicted distribution, with a percentile rank and interpretive guidance.
+- **Flexible partial input** — you rarely have all the information. Toggle on only the parameters you know. Missing predictors are imputed using one of three methods: hard-coded defaults, training-set medians, or conditional averages via k-nearest-neighbor lookup that preserves the realistic covariance structure among predictors. Compositional variables (e.g., variation partitioning fractions) are automatically rescaled to sum to one.
+- **Batch mode** — upload a CSV with multiple typology scenarios and get predictions for all of them at once, with the same imputation support and a progress indicator.
+
+## Why this matters
+
+Typology evaluation has always been comparative, but the comparisons have been ad hoc. If your macroinvertebrate typology based on 500 samples across Scandinavia yields a Fuzzy Divergence of 0.3, you need to know whether that is high or low *for that configuration*. A 12-type system evaluated on a continental dataset will behave differently from a 4-type system evaluated on a regional one. Assembly mechanisms matter too: when stochastic processes dominate community composition, even a perfect typology will show limited biovalidity.
+
+Our QRF models learn these relationships from data — hundreds of thousands of typology evaluations across different spatial scales, numbers of types, taxonomic resolutions, and ecological contexts. The result is a benchmark that adapts to your situation rather than applying a one-size-fits-all threshold.
+
+For **researchers**, this means you can evaluate novel typology approaches against a principled baseline. For **water managers**, it provides a reality check on existing national or regional typologies. And for **policy**, it supports evidence-based decisions about whether current WFD typology systems are performing as well as can be expected — or whether investment in improved classification is warranted.
+
+## How to use it
+
+**Single prediction:**
+
+1. Select your taxonomic group (diatoms, fishes, macroinvertebrates, or macrophytes).
+2. Select the evaluation metric you want to benchmark.
+3. Toggle on the parameters you can provide — number of types, sample size, spatial extent, variation partitioning results, taxonomic resolution — and enter their values.
+4. Choose how missing parameters should be handled.
+5. Optionally enter your observed metric value.
+6. Click predict.
+
+The app returns predicted quantiles, a density curve of the expected distribution, and — if you provided an observed value — its percentile rank with a plain-language interpretation.
+
+**Batch prediction:**
+
+Upload a CSV where each row describes a different typology scenario. The app identifies which predictor columns are present, imputes any that are missing, and returns quantile predictions for every row.
+
+## Looking ahead
+
+The Benchmark Predictor is one component of PULSE's broader effort to develop the first truly pan-European, probabilistic freshwater typology framework. Upcoming work will extend the tool with variable importance rankings and partial dependence plots specific to each prediction, helping users understand which characteristics of their system most strongly drive expected performance.
+
+The application and its underlying models will be made available as open-source resources. We believe that transparent, reproducible benchmarking tools are essential for advancing freshwater typology science and for ensuring that the classification systems underpinning European water policy are as good as they can be.
+
+---
+
+*The PULSE project is funded by the Deutsche Forschungsgemeinschaft (DFG) through a Walter Benjamin Fellowship and is hosted at the University of Helsinki, Department of Geosciences and Geography.*
