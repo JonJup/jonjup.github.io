@@ -1,1141 +1,401 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-
-<title>midfire-licensing-and-attributionv2</title>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIDFIRE — Licensing and Attribution</title>
 <style>
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-  width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
-  vertical-align: middle;
-}
+  :root {
+    --navy: #1a3c5e;
+    --mid-blue: #2c5f8a;
+    --light-blue: #f0f4f8;
+    --border: #d0d7de;
+    --text: #24292f;
+    --text-light: #57606a;
+    --bg: #ffffff;
+    --warning: #9a6700;
+    --warning-bg: #fff8e1;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Charter', 'Georgia', 'Cambria', serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.6;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 2.5rem;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    color: var(--navy);
+    border-bottom: 2px solid var(--navy);
+    padding-bottom: 0.4rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    color: var(--navy);
+    margin: 2rem 0 0.8rem 0;
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: 1.05rem;
+    color: var(--mid-blue);
+    margin: 1.5rem 0 0.6rem 0;
+    font-weight: 600;
+  }
+
+  p {
+    margin-bottom: 0.8rem;
+    text-align: justify;
+    hyphens: auto;
+  }
+
+  a {
+    color: var(--mid-blue);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+  a:hover {
+    border-bottom-color: var(--mid-blue);
+  }
+
+  ul.provider-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0.8rem;
+  }
+  ul.provider-list li {
+    padding: 0.2rem 0 0.2rem 1.2rem;
+    position: relative;
+    font-size: 0.92rem;
+  }
+  ul.provider-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--mid-blue);
+  }
+
+  .callout {
+    background: var(--warning-bg);
+    border-left: 3px solid var(--warning);
+    padding: 0.7rem 1rem;
+    margin: 0.8rem 0;
+    font-size: 0.9rem;
+  }
+
+  /* ── TABLES ── */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 0.8rem 0 1.5rem 0;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  thead th {
+    background: var(--navy);
+    color: #fff;
+    font-weight: 600;
+    text-align: left;
+    padding: 0.5rem 0.6rem;
+    position: sticky;
+    top: 0;
+    white-space: nowrap;
+    font-family: -apple-system, 'Segoe UI', Helvetica, sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.01em;
+  }
+
+  tbody td {
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  tbody tr:nth-child(even) {
+    background: var(--light-blue);
+  }
+
+  tbody tr:hover {
+    background: #e4ecf4;
+  }
+
+  td:nth-child(1) { /* # column */
+    text-align: center;
+    font-family: -apple-system, 'Segoe UI', Helvetica, sans-serif;
+    font-size: 0.78rem;
+    color: var(--text-light);
+    white-space: nowrap;
+  }
+
+  td:nth-child(3) { /* Country column */
+    text-align: center;
+    font-family: -apple-system, 'Segoe UI', Helvetica, sans-serif;
+    font-weight: 600;
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+
+  /* ── CITATION BLOCK ── */
+  .citation-block {
+    background: var(--light-blue);
+    border-left: 3px solid var(--mid-blue);
+    padding: 1rem 1.2rem;
+    margin: 0.5rem 0 1rem 0;
+    font-size: 0.88rem;
+  }
+  .citation-block p {
+    margin-bottom: 0.6rem;
+    text-indent: -1.5rem;
+    padding-left: 1.5rem;
+  }
+  .citation-block p:last-child { margin-bottom: 0; }
+
+  /* ── ACKNOWLEDGMENT ── */
+  .ack-block {
+    background: var(--light-blue);
+    border-left: 3px solid var(--mid-blue);
+    padding: 1rem 1.2rem;
+    margin: 0.5rem 0 1rem 0;
+    font-size: 0.88rem;
+    text-align: justify;
+  }
+
+  /* ── NOTES ── */
+  .note {
+    font-size: 0.88rem;
+    margin-bottom: 0.7rem;
+    padding-left: 0.5rem;
+  }
+  .note strong {
+    color: var(--navy);
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    body { padding: 1cm; max-width: none; font-size: 10pt; }
+    .table-wrap { overflow: visible; }
+    thead th { background: var(--navy) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    tbody tr:nth-child(even) { background: var(--light-blue) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    a { color: var(--text); border-bottom: none; }
+    a[href]::after { content: " (" attr(href) ")"; font-size: 0.75em; color: var(--text-light); }
+  }
+
+  @media (max-width: 768px) {
+    body { padding: 1rem; }
+    h1 { font-size: 1.4rem; }
+    table { font-size: 0.75rem; }
+  }
 </style>
-
-
-<script src="MIDFIRE Licensing and AttributionV2_files/libs/clipboard/clipboard.min.js"></script>
-<script src="MIDFIRE Licensing and AttributionV2_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="MIDFIRE Licensing and AttributionV2_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="MIDFIRE Licensing and AttributionV2_files/libs/quarto-html/popper.min.js"></script>
-<script src="MIDFIRE Licensing and AttributionV2_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="MIDFIRE Licensing and AttributionV2_files/libs/quarto-html/anchor.min.js"></script>
-<link href="MIDFIRE Licensing and AttributionV2_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="MIDFIRE Licensing and AttributionV2_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="MIDFIRE Licensing and AttributionV2_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="MIDFIRE Licensing and AttributionV2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="MIDFIRE Licensing and AttributionV2_files/libs/bootstrap/bootstrap-bb462d781dde1847d9e3ccf7736099dd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-
-
 </head>
+<body>
 
-<body class="fullcontent quarto-light">
-
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
-<main class="content" id="quarto-document-content">
-
-
-
-
-<section id="midfire-licensing-and-attribution" class="level1">
 <h1>MIDFIRE — Licensing and Attribution</h1>
-<section id="overview" class="level2">
-<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+
+<h2>Overview</h2>
+
 <p>MIDFIRE is a compilation of datasets from multiple sources, each governed by its own license or terms of use. The compilation as a whole is published under <strong>CC BY-NC-SA 4.0</strong>, but downstream users must additionally comply with the original terms of each constituent dataset as listed below.</p>
+
 <p>Where the original license of a constituent dataset is more restrictive than CC BY-NC-SA 4.0, the original terms take precedence for that component. All datasets were modified during harmonization and do not represent the original state of the data as provided by the source.</p>
-<p>Some components have more lenient licenses than the complete MIDFIRE dataset. The non-commercial clause is only valid when including data from the following providers:<br>
-- Bundesministerium für Land- und Forstwirtschaft, Klima- und Umweltschutz, Regionen und Wasserwirtschaft (Austria) - Landesbetrieb für Hochwasserschutz und Wasserwirtschaft Sachsen-Anhalt (LHW) (Germany) - Biodiversity Monitoring, Switzerland</p>
-<p>The French data component (Office français de la biodiversité) is licensed under CC BY-SA 2.0 FR, which is <strong>incompatible with CC BY-NC-SA 4.0</strong>. This component retains its original license within the compilation. Downstream users of the French component may use it commercially but must share derivatives under the same or a compatible ShareAlike license. See Note 6 for details.</p>
-<p>Spanish public sector data sources (CHD, CHE, MITECO) operate under the national PSI reuse framework (Ley 37/2007, as amended). Under this framework, reuse — including modification and commercial use — is permitted by default, subject to: source attribution, non-misrepresentation, no implied endorsement, and preservation of update date metadata where available. See datos.gob.es for the overarching framework.</p>
-<hr>
-</section>
-<section id="license-table" class="level2">
-<h2 class="anchored" data-anchor-id="license-table">License Table</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
-</colgroup>
+
+<p>Some components have more lenient licenses than the complete MIDFIRE dataset. The non-commercial clause is only valid when including data from the following providers:</p>
+
+<ul class="provider-list">
+  <li>Bundesministerium für Land- und Forstwirtschaft, Klima- und Umweltschutz, Regionen und Wasserwirtschaft (Austria)</li>
+  <li>Landesbetrieb für Hochwasserschutz und Wasserwirtschaft Sachsen-Anhalt (LHW) (Germany)</li>
+  <li>Biodiversity Monitoring, Switzerland</li>
+</ul>
+
+<div class="callout">
+  <strong>CC BY-SA 2.0 FR incompatibility:</strong> The French data component (Office français de la biodiversité) is licensed under CC BY-SA 2.0 FR, which is <strong>incompatible with CC BY-NC-SA 4.0</strong>. This component retains its original license within the compilation. Downstream users of the French component may use it commercially but must share derivatives under the same or a compatible ShareAlike license. See <a href="#note6">Note 6</a> for details.
+</div>
+
+<p>Spanish public sector data sources (CHD, CHE, MITECO) operate under the national PSI reuse framework (Ley 37/2007, as amended). Under this framework, reuse — including modification and commercial use — is permitted by default, subject to: source attribution, non-misrepresentation, no implied endorsement, and preservation of update date metadata where available. See <a href="https://datos.gob.es">datos.gob.es</a> for the overarching framework.</p>
+
+<!-- ════════════════════════════ LICENSE TABLE ════════════════════════════ -->
+
+<h2>License Table</h2>
+
+<div class="table-wrap">
+<table>
 <thead>
-<tr class="header">
-<th>#</th>
-<th>Data Provider</th>
-<th>Country</th>
-<th>License / Terms</th>
-<th>Permits modification?</th>
-<th>Commercial use?</th>
-<th>Key conditions</th>
-<th>Reference / Link</th>
-</tr>
+  <tr><th>#</th><th>Data Provider</th><th>Country</th><th>License / Terms</th><th>Permits modification?</th><th>Commercial use?</th><th>Key conditions</th><th>Reference / Link</th></tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td>1</td>
-<td>Bundesministerium für Land- und Forstwirtschaft, Klima- und Umweltschutz, Regionen und Wasserwirtschaft</td>
-<td>AT</td>
-<td>Custom terms (Umweltbundesamt Nutzungsgenehmigung)</td>
-<td>Not explicitly addressed</td>
-<td>No</td>
-<td>Attribution required; reprints permitted for non-commercial purposes only; data are partially raw and subject to change</td>
-<td>https://wasser.umweltbundesamt.at/wisa-datenabfrage/#/</td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td>Gana Gecheva</td>
-<td>BG</td>
-<td>No formal license, personal communication</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>None</td>
-<td>None</td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td>Tsvetelina Isheva</td>
-<td>BG</td>
-<td>No formal license, personal communication</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>None</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td>Biodiversity Monitoring, Switzerland</td>
-<td>CH</td>
-<td>Formal data use agreement</td>
-<td>Yes</td>
-<td>No</td>
-<td>Mandatory BAFU attribution. Site coordinates must not be published. Formal contract requires BDM clearance before publication.</td>
-<td>None</td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td>Federal Office for the Environment (FOEN) – Surface Water Quality Monitoring</td>
-<td>CH</td>
-<td>No formal license; data described as publicly accessible (personal communication)</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>Mandatory attribution: “Data collected by BAFU, Switzerland”</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<td>6</td>
-<td>Czech Hydrometeorological Institute</td>
-<td>CZ</td>
-<td>Personal communication</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>None</td>
-</tr>
-<tr class="odd">
-<td>7</td>
-<td>Bayerisches Landesamt für Umwelt</td>
-<td>DE</td>
-<td>CC-BY 4.0</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>Attribution required: “Datenquelle: Bayerisches Landesamt für Umwelt, www.lfu.bayern.de”</td>
-<td>https://www.gkd.bayern.de/de/downloadcenter/wizard</td>
-</tr>
-<tr class="even">
-<td>8</td>
-<td>Hessisches Landesamt für Naturschutz, Umwelt und Geologie</td>
-<td>DE</td>
-<td>No formal license; written permission via personal communication</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>Attribution required: source must be identified as “WFD-monitoring of the HLNUG”</td>
-<td>None</td>
-</tr>
-<tr class="odd">
-<td>9</td>
-<td>Landesamt für Natur, Umwelt und Klima Nordrhein-Westfalen</td>
-<td>DE</td>
-<td>CC-BY 4.0</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>Attribution required: source must be identified as “WFD-monitoring of the LANUV-NRW”</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<td>10</td>
-<td>Landesamt für Umwelt Brandenburg</td>
-<td>DE</td>
-<td>Datenlizenz Deutschland – Namensnennung – Version 2.0</td>
-<td>Yes, with notice</td>
-<td>Yes</td>
-<td>Attribution required: “Landesamt für Umwelt Brandenburg”</td>
-<td>https://www.metaver.de/trefferanzeige?docuuid=f66df1a0-c279-4296-ba6d-891783bdad2c</td>
-</tr>
-<tr class="odd">
-<td>11</td>
-<td>Landesamt für Umwelt des Landes Schleswig-Holstein</td>
-<td>DE</td>
-<td>Datenlizenz Deutschland – Namensnennung – Version 2.0</td>
-<td>Yes, with notice</td>
-<td>Yes</td>
-<td>Attribution required: “Landesamt für Umwelt des Landes Schleswig-Holstein”</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<td>12</td>
-<td>Landesanstalt für Umwelt Baden-Württemberg</td>
-<td>DE</td>
-<td>No formal license; terms of use with requested attribution</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>Attribution requested: “Grundlage: Daten aus dem Biologischen Fließgewässermonitoring der LUBW – Landesanstalt für Umwelt Baden-Württemberg”. No warranty; no liability.</td>
-<td>None</td>
-</tr>
-<tr class="odd">
-<td>13</td>
-<td>Landesbetrieb für Hochwasserschutz und Wasserwirtschaft Sachsen-Anhalt (LHW)</td>
-<td>DE</td>
-<td>Custom terms (Nutzungsbestimmungen GLD, v1.0, 2016)</td>
-<td>Yes, with change notice in attribution</td>
-<td>Non-commercial and scientific only; free-of-charge publication permitted</td>
-<td>Specific attribution format required: “© LHW (Daten verändert)”</td>
-<td>https://gld.lhw-sachsen-anhalt.de/</td>
-</tr>
-<tr class="even">
-<td>14</td>
-<td>Niedersächsisches Landesamt für Verbraucherschutz und Lebensmittelsicherheit</td>
-<td>DE</td>
-<td>No formal license; written permission via personal communication</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>Attribution required: source must be identified as “WFD-monitoring of the LAVES”</td>
-<td>None</td>
-</tr>
-<tr class="odd">
-<td>15</td>
-<td>Sächsisches Landesamt für Umwelt, Landwirtschaft und Geologie</td>
-<td>DE</td>
-<td>No formal license; written permission via personal communication</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>Attribution required: source must be identified as “WFD-monitoring of the LfULG”</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<td>16</td>
-<td>Environmental Protection Agency</td>
-<td>DK</td>
-<td>Personal communication</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>None</td>
-</tr>
-<tr class="odd">
-<td>17</td>
-<td>Confederación Hidrográfica del Duero (CHD)</td>
-<td>ES</td>
-<td>Spanish PSI framework (see Note 7)</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>Attribution required: Confederación Hidrográfica del Duero (CHD)</td>
-<td>https://www.chduero.es/web/guest</td>
-</tr>
-<tr class="even">
-<td>18</td>
-<td>Confederación Hidrográfica del Ebro (CHE)</td>
-<td>ES</td>
-<td>Spanish PSI framework (see Note 7)</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>Attribution required: Confederación Hidrográfica del Ebro (CHE)</td>
-<td>https://datossuperficiales.chebro.es/WCASF/</td>
-</tr>
-<tr class="odd">
-<td>19</td>
-<td>Joan Gomà</td>
-<td>ES</td>
-<td>No formal license, personal communication</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>None</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<td>20</td>
-<td>Ministerio para la Transición Ecológica y el Reto Demográfico (MITECO)</td>
-<td>ES</td>
-<td>Spanish PSI framework (see Note 7)</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>Attribution required: MITECO</td>
-<td>None</td>
-</tr>
-<tr class="odd">
-<td>21</td>
-<td>Saúl Blanco</td>
-<td>ES</td>
-<td>No formal license, personal communication</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>None</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<td>22</td>
-<td>Janne Soininen</td>
-<td>FI</td>
-<td>No formal license, personal communication</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>None</td>
-<td>None</td>
-</tr>
-<tr class="odd">
-<td>23</td>
-<td>Jenny Jyrkänkallio-Mikkola</td>
-<td>FI</td>
-<td>No formal license, personal communication</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>None</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<td>24</td>
-<td>Kaisa-Leena Huttunen, Riku Paavola, Timo Muotka</td>
-<td>FI</td>
-<td>No formal license, personal communication</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>None</td>
-<td>None</td>
-</tr>
-<tr class="odd">
-<td>25</td>
-<td>LUKE</td>
-<td>FI</td>
-<td>Personal communication</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<td>26</td>
-<td>SYKE</td>
-<td>FI</td>
-<td>Personal communication</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>None</td>
-</tr>
-<tr class="odd">
-<td>27</td>
-<td>INRAE</td>
-<td>FR</td>
-<td>No formal license, personal communication</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>None</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<td>28</td>
-<td>Office français de la biodiversité</td>
-<td>FR</td>
-<td>CC BY-SA 2.0 FR (see Note 6)</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>Attribution required; derivatives must be shared under the same or compatible license (ShareAlike). Incompatible with CC BY-NC-SA 4.0 — this component retains its original license.</td>
-<td>https://naiades.eaufrance.fr/</td>
-</tr>
-<tr class="odd">
-<td>29</td>
-<td>Maria Lazaridou</td>
-<td>GR</td>
-<td>No formal license, personal communication</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>None</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<td>30</td>
-<td>Project Ecosurv</td>
-<td>HU</td>
-<td>No formal license, personal communication</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>None</td>
-<td>None</td>
-</tr>
-<tr class="odd">
-<td>31</td>
-<td>Environmental Protection Agency of Lithuania</td>
-<td>LT</td>
-<td>No formal license, personal communication</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>None</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<td>32</td>
-<td>Informatiehuis Water</td>
-<td>NL</td>
-<td>No formal license; data ownership rests with individual water managers (waterschappen). Citation requested, not required.</td>
-<td>Not explicitly addressed</td>
-<td>Not explicitly addressed</td>
-<td>Attribution requested: cite Informatiehuis Water as data source</td>
-<td>https://wkp.rws.nl/downloadmodule</td>
-</tr>
-<tr class="odd">
-<td>33</td>
-<td>Norwegian Environment Agency</td>
-<td>NO</td>
-<td>No formal license, personal communication</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>None</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<td>34</td>
-<td>GIOŚ – Chief Inspectorate for Environmental Protection</td>
-<td>PL</td>
-<td>No formal license, personal communication</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>None</td>
-<td>None</td>
-</tr>
-<tr class="odd">
-<td>35</td>
-<td>Maria Teresa Ferreira</td>
-<td>PT</td>
-<td>No formal license, personal communication</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>None</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<td>36</td>
-<td>Mirela Cimpea, Karina Battes, Anca-Mihaela Suteu Ciorca</td>
-<td>RO</td>
-<td>No formal license, personal communication</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>None</td>
-<td>None</td>
-</tr>
-<tr class="odd">
-<td>37</td>
-<td>Miljödata MVM, SLU</td>
-<td>SE</td>
-<td>Open access; public and free to use</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>Attribution required: Data obtained from SLU’s Miljödata MVM database (miljodata.slu.se/mvm), collected within Swedish coordinated environmental monitoring</td>
-<td>https://miljodata.slu.se/MVM/Search</td>
-</tr>
-<tr class="even">
-<td>38</td>
-<td>Water Research Institute Bratislava</td>
-<td>SK</td>
-<td>No formal license, personal communication</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>None</td>
-<td>None</td>
-</tr>
-<tr class="odd">
-<td>39</td>
-<td>Environment Agency</td>
-<td>UK</td>
-<td>Open Government Licence v3.0 (OGL 3.0)</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>Attribution required: “Contains public sector information licensed under the Open Government Licence v3.0.”</td>
-<td>https://environment.data.gov.uk/ecology/explorer/</td>
-</tr>
+  <tr><td>1</td><td>Bundesministerium für Land- u. Forstwirtschaft, Klima- u. Umweltschutz, Regionen u. Wasserwirtschaft</td><td>AT</td><td>Custom terms (Umweltbundesamt Nutzungsgenehmigung)</td><td>Not explicitly addressed</td><td>No</td><td>Attribution required; reprints for non-commercial purposes only; data partially raw and subject to change</td><td><a href="https://wasser.umweltbundesamt.at/wisa-datenabfrage/#/">wasser.umweltbundesamt.at</a></td></tr>
+  <tr><td>2</td><td>Gana Gecheva</td><td>BG</td><td>Personal communication</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>None</td><td>None</td></tr>
+  <tr><td>3</td><td>Tsvetelina Isheva</td><td>BG</td><td>Personal communication</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>None</td><td>None</td></tr>
+  <tr><td>4</td><td>Biodiversity Monitoring, Switzerland</td><td>CH</td><td>Formal data use agreement</td><td>Yes</td><td>No</td><td>Mandatory BAFU attribution. Site coordinates must not be published. BDM clearance required before publication.</td><td>None</td></tr>
+  <tr><td>5</td><td>Federal Office for the Environment (FOEN) – Surface Water Quality Monitoring</td><td>CH</td><td>No formal license; publicly accessible (personal communication)</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>Mandatory attribution: "Data collected by BAFU, Switzerland"</td><td>None</td></tr>
+  <tr><td>6</td><td>Czech Hydrometeorological Institute</td><td>CZ</td><td>Personal communication</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>None</td></tr>
+  <tr><td>7</td><td>Bayerisches Landesamt für Umwelt</td><td>DE</td><td>CC-BY 4.0</td><td>Yes</td><td>Yes</td><td>Attribution required: "Datenquelle: Bayerisches Landesamt für Umwelt, www.lfu.bayern.de"</td><td><a href="https://www.gkd.bayern.de/de/downloadcenter/wizard">gkd.bayern.de</a></td></tr>
+  <tr><td>8</td><td>Hessisches Landesamt für Naturschutz, Umwelt und Geologie</td><td>DE</td><td>No formal license; written permission</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>Attribution required: "WFD-monitoring of the HLNUG"</td><td>None</td></tr>
+  <tr><td>9</td><td>Landesamt für Natur, Umwelt und Klima Nordrhein-Westfalen</td><td>DE</td><td>CC-BY 4.0</td><td>Yes</td><td>Yes</td><td>Attribution required: "WFD-monitoring of the LANUV-NRW"</td><td>None</td></tr>
+  <tr><td>10</td><td>Landesamt für Umwelt Brandenburg</td><td>DE</td><td><a href="https://www.govdata.de/dl-de/by-2-0">Datenlizenz Deutschland – Namensnennung – v2.0</a></td><td>Yes, with notice</td><td>Yes</td><td>Attribution required: "Landesamt für Umwelt Brandenburg"</td><td><a href="https://www.metaver.de/trefferanzeige?docuuid=f66df1a0-c279-4296-ba6d-891783bdad2c">metaver.de</a></td></tr>
+  <tr><td>11</td><td>Landesamt für Umwelt des Landes Schleswig-Holstein</td><td>DE</td><td><a href="https://www.govdata.de/dl-de/by-2-0">Datenlizenz Deutschland – Namensnennung – v2.0</a></td><td>Yes, with notice</td><td>Yes</td><td>Attribution required: "Landesamt für Umwelt des Landes Schleswig-Holstein"</td><td>None</td></tr>
+  <tr><td>12</td><td>Landesanstalt für Umwelt Baden-Württemberg</td><td>DE</td><td>No formal license; requested attribution</td><td>Yes</td><td>Yes</td><td>Attribution requested: "Grundlage: Daten aus dem Biologischen Fließgewässermonitoring der LUBW – Landesanstalt für Umwelt Baden-Württemberg"</td><td>None</td></tr>
+  <tr><td>13</td><td>Landesbetrieb für Hochwasserschutz u. Wasserwirtschaft Sachsen-Anhalt (LHW)</td><td>DE</td><td>Custom terms (<a href="https://gld.lhw-sachsen-anhalt.de/">Nutzungsbestimmungen GLD, v1.0, 2016</a>)</td><td>Yes, with change notice</td><td>Non-commercial and scientific only</td><td>Attribution: "© LHW (Daten verändert)"</td><td><a href="https://gld.lhw-sachsen-anhalt.de/">gld.lhw-sachsen-anhalt.de</a></td></tr>
+  <tr><td>14</td><td>Niedersächsisches Landesamt für Verbraucherschutz u. Lebensmittelsicherheit</td><td>DE</td><td>No formal license; written permission</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>Attribution required: "WFD-monitoring of the LAVES"</td><td>None</td></tr>
+  <tr><td>15</td><td>Sächsisches Landesamt für Umwelt, Landwirtschaft u. Geologie</td><td>DE</td><td>No formal license; written permission</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>Attribution required: "WFD-monitoring of the LfULG"</td><td>None</td></tr>
+  <tr><td>16</td><td>Environmental Protection Agency</td><td>DK</td><td>Personal communication</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>None</td></tr>
+  <tr><td>17</td><td>Confederación Hidrográfica del Duero (CHD)</td><td>ES</td><td>Spanish PSI framework (see <a href="#note7">Note 7</a>)</td><td>Yes</td><td>Yes</td><td>Attribution required: CHD</td><td><a href="https://www.chduero.es/web/guest">chduero.es</a></td></tr>
+  <tr><td>18</td><td>Confederación Hidrográfica del Ebro (CHE)</td><td>ES</td><td>Spanish PSI framework (see <a href="#note7">Note 7</a>)</td><td>Yes</td><td>Yes</td><td>Attribution required: CHE</td><td><a href="https://datossuperficiales.chebro.es/WCASF/">chebro.es</a></td></tr>
+  <tr><td>19</td><td>Joan Gomà</td><td>ES</td><td>Personal communication</td><td>Yes</td><td>Yes</td><td>None</td><td>None</td></tr>
+  <tr><td>20</td><td>Ministerio para la Transición Ecológica y el Reto Demográfico (MITECO)</td><td>ES</td><td>Spanish PSI framework (see <a href="#note7">Note 7</a>)</td><td>Yes</td><td>Yes</td><td>Attribution required: MITECO</td><td>None</td></tr>
+  <tr><td>21</td><td>Saúl Blanco</td><td>ES</td><td>Personal communication</td><td>Yes</td><td>Yes</td><td>None</td><td>None</td></tr>
+  <tr><td>22</td><td>Janne Soininen</td><td>FI</td><td>Personal communication</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>None</td><td>None</td></tr>
+  <tr><td>23</td><td>Jenny Jyrkänkallio-Mikkola</td><td>FI</td><td>Personal communication</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>None</td><td>None</td></tr>
+  <tr><td>24</td><td>Kaisa-Leena Huttunen, Riku Paavola, Timo Muotka</td><td>FI</td><td>Personal communication</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>None</td><td>None</td></tr>
+  <tr><td>25</td><td>LUKE</td><td>FI</td><td>Personal communication</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>None</td></tr>
+  <tr><td>26</td><td>SYKE</td><td>FI</td><td>Personal communication</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>None</td></tr>
+  <tr><td>27</td><td>INRAE</td><td>FR</td><td>Personal communication</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>None</td><td>None</td></tr>
+  <tr><td>28</td><td>Office français de la biodiversité</td><td>FR</td><td><a href="https://creativecommons.org/licenses/by-sa/2.0/fr/">CC BY-SA 2.0 FR</a> (see <a href="#note6">Note 6</a>)</td><td>Yes</td><td>Yes</td><td>Attribution required; ShareAlike. Incompatible with CC BY-NC-SA 4.0 — retains original license.</td><td><a href="https://naiades.eaufrance.fr/">naiades.eaufrance.fr</a></td></tr>
+  <tr><td>29</td><td>Maria Lazaridou</td><td>GR</td><td>Personal communication</td><td>Yes</td><td>Yes</td><td>None</td><td>None</td></tr>
+  <tr><td>30</td><td>Project Ecosurv</td><td>HU</td><td>Personal communication</td><td>Yes</td><td>Yes</td><td>None</td><td>None</td></tr>
+  <tr><td>31</td><td>Environmental Protection Agency of Lithuania</td><td>LT</td><td>Personal communication</td><td>Yes</td><td>Yes</td><td>None</td><td>None</td></tr>
+  <tr><td>32</td><td>Informatiehuis Water</td><td>NL</td><td>No formal license; data owned by waterschappen</td><td>Not explicitly addressed</td><td>Not explicitly addressed</td><td>Attribution requested: cite Informatiehuis Water</td><td><a href="https://wkp.rws.nl/downloadmodule">wkp.rws.nl</a></td></tr>
+  <tr><td>33</td><td>Norwegian Environment Agency</td><td>NO</td><td>Personal communication</td><td>Yes</td><td>Yes</td><td>None</td><td>None</td></tr>
+  <tr><td>34</td><td>GIOŚ – Chief Inspectorate for Environmental Protection</td><td>PL</td><td>Personal communication</td><td>Yes</td><td>Yes</td><td>None</td><td>None</td></tr>
+  <tr><td>35</td><td>Maria Teresa Ferreira</td><td>PT</td><td>Personal communication</td><td>Yes</td><td>Yes</td><td>None</td><td>None</td></tr>
+  <tr><td>36</td><td>Mirela Cimpea, Karina Battes, Anca-Mihaela Suteu Ciorca</td><td>RO</td><td>Personal communication</td><td>Yes</td><td>Yes</td><td>None</td><td>None</td></tr>
+  <tr><td>37</td><td>Miljödata MVM, SLU</td><td>SE</td><td>Open access; public and free to use</td><td>Yes</td><td>Yes</td><td>Attribution required: cite SLU's Miljödata MVM database</td><td><a href="https://miljodata.slu.se/MVM/Search">miljodata.slu.se/mvm</a></td></tr>
+  <tr><td>38</td><td>Water Research Institute Bratislava</td><td>SK</td><td>Personal communication</td><td>Yes</td><td>Yes</td><td>None</td><td>None</td></tr>
+  <tr><td>39</td><td>Environment Agency</td><td>UK</td><td><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a></td><td>Yes</td><td>Yes</td><td>Attribution required: "Contains public sector information licensed under the OGL v3.0."</td><td><a href="https://environment.data.gov.uk/ecology/explorer/">environment.data.gov.uk</a></td></tr>
 </tbody>
 </table>
-<section id="translations-of-non-english-data-provider-names" class="level3">
-<h3 class="anchored" data-anchor-id="translations-of-non-english-data-provider-names">Translations of Non-English Data Provider Names</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
+</div>
+
+<!-- ════════════════════════════ TRANSLATIONS ════════════════════════════ -->
+
+<h3>Translations of Non-English Data Provider Names</h3>
+
+<div class="table-wrap">
+<table>
 <thead>
-<tr class="header">
-<th>#</th>
-<th>Original name</th>
-<th>English translation</th>
-</tr>
+  <tr><th>#</th><th>Original name</th><th>English translation</th></tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td>1</td>
-<td>Bundesministerium für Land- und Forstwirtschaft, Klima- und Umweltschutz, Regionen und Wasserwirtschaft</td>
-<td>Federal Ministry of Agriculture, Forestry, Climate and Environmental Protection, Regions and Water Management</td>
-</tr>
-<tr class="even">
-<td>7</td>
-<td>Bayerisches Landesamt für Umwelt</td>
-<td>Bavarian State Office for the Environment</td>
-</tr>
-<tr class="odd">
-<td>8</td>
-<td>Hessisches Landesamt für Naturschutz, Umwelt und Geologie (HLNUG)</td>
-<td>Hessian State Office for Nature Conservation, the Environment and Geology</td>
-</tr>
-<tr class="even">
-<td>9</td>
-<td>Landesamt für Natur, Umwelt und Klima Nordrhein-Westfalen (LANUV-NRW)</td>
-<td>State Office for Nature, the Environment and Consumer Protection, North Rhine-Westphalia</td>
-</tr>
-<tr class="odd">
-<td>10</td>
-<td>Landesamt für Umwelt Brandenburg</td>
-<td>Brandenburg State Office for the Environment</td>
-</tr>
-<tr class="even">
-<td>11</td>
-<td>Landesamt für Umwelt des Landes Schleswig-Holstein</td>
-<td>Schleswig-Holstein State Office for the Environment</td>
-</tr>
-<tr class="odd">
-<td>12</td>
-<td>Landesanstalt für Umwelt Baden-Württemberg (LUBW)</td>
-<td>State Institute for the Environment, Baden-Württemberg</td>
-</tr>
-<tr class="even">
-<td>13</td>
-<td>Landesbetrieb für Hochwasserschutz und Wasserwirtschaft Sachsen-Anhalt (LHW)</td>
-<td>Saxony-Anhalt State Agency for Flood Protection and Water Management</td>
-</tr>
-<tr class="odd">
-<td>14</td>
-<td>Niedersächsisches Landesamt für Verbraucherschutz und Lebensmittelsicherheit (LAVES)</td>
-<td>Lower Saxony State Office for Consumer Protection and Food Safety</td>
-</tr>
-<tr class="even">
-<td>15</td>
-<td>Sächsisches Landesamt für Umwelt, Landwirtschaft und Geologie (LfULG)</td>
-<td>Saxon State Office for the Environment, Agriculture and Geology</td>
-</tr>
-<tr class="odd">
-<td>17</td>
-<td>Confederación Hidrográfica del Duero (CHD)</td>
-<td>Duero River Basin Authority</td>
-</tr>
-<tr class="even">
-<td>18</td>
-<td>Confederación Hidrográfica del Ebro (CHE)</td>
-<td>Ebro River Basin Authority</td>
-</tr>
-<tr class="odd">
-<td>20</td>
-<td>Ministerio para la Transición Ecológica y el Reto Demográfico (MITECO)</td>
-<td>Ministry for the Ecological Transition and the Demographic Challenge</td>
-</tr>
-<tr class="even">
-<td>28</td>
-<td>Office français de la biodiversité</td>
-<td>French Office for Biodiversity</td>
-</tr>
-<tr class="odd">
-<td>32</td>
-<td>Informatiehuis Water</td>
-<td>Water Information Centre</td>
-</tr>
-<tr class="even">
-<td>34</td>
-<td>GIOŚ – Główny Inspektorat Ochrony Środowiska</td>
-<td>Chief Inspectorate for Environmental Protection</td>
-</tr>
+  <tr><td>1</td><td>Bundesministerium für Land- u. Forstwirtschaft, Klima- u. Umweltschutz, Regionen u. Wasserwirtschaft</td><td>Federal Ministry of Agriculture, Forestry, Climate and Environmental Protection, Regions and Water Management</td></tr>
+  <tr><td>7</td><td>Bayerisches Landesamt für Umwelt</td><td>Bavarian State Office for the Environment</td></tr>
+  <tr><td>8</td><td>Hessisches Landesamt für Naturschutz, Umwelt und Geologie (HLNUG)</td><td>Hessian State Office for Nature Conservation, the Environment and Geology</td></tr>
+  <tr><td>9</td><td>Landesamt für Natur, Umwelt und Klima Nordrhein-Westfalen (LANUV-NRW)</td><td>State Office for Nature, the Environment and Consumer Protection, North Rhine-Westphalia</td></tr>
+  <tr><td>10</td><td>Landesamt für Umwelt Brandenburg</td><td>Brandenburg State Office for the Environment</td></tr>
+  <tr><td>11</td><td>Landesamt für Umwelt des Landes Schleswig-Holstein</td><td>Schleswig-Holstein State Office for the Environment</td></tr>
+  <tr><td>12</td><td>Landesanstalt für Umwelt Baden-Württemberg (LUBW)</td><td>State Institute for the Environment, Baden-Württemberg</td></tr>
+  <tr><td>13</td><td>Landesbetrieb für Hochwasserschutz und Wasserwirtschaft Sachsen-Anhalt (LHW)</td><td>Saxony-Anhalt State Agency for Flood Protection and Water Management</td></tr>
+  <tr><td>14</td><td>Niedersächsisches Landesamt für Verbraucherschutz und Lebensmittelsicherheit (LAVES)</td><td>Lower Saxony State Office for Consumer Protection and Food Safety</td></tr>
+  <tr><td>15</td><td>Sächsisches Landesamt für Umwelt, Landwirtschaft und Geologie (LfULG)</td><td>Saxon State Office for the Environment, Agriculture and Geology</td></tr>
+  <tr><td>17</td><td>Confederación Hidrográfica del Duero (CHD)</td><td>Duero River Basin Authority</td></tr>
+  <tr><td>18</td><td>Confederación Hidrográfica del Ebro (CHE)</td><td>Ebro River Basin Authority</td></tr>
+  <tr><td>20</td><td>Ministerio para la Transición Ecológica y el Reto Demográfico (MITECO)</td><td>Ministry for the Ecological Transition and the Demographic Challenge</td></tr>
+  <tr><td>28</td><td>Office français de la biodiversité</td><td>French Office for Biodiversity</td></tr>
+  <tr><td>32</td><td>Informatiehuis Water</td><td>Water Information Centre</td></tr>
+  <tr><td>34</td><td>GIOŚ – Główny Inspektorat Ochrony Środowiska</td><td>Chief Inspectorate for Environmental Protection</td></tr>
 </tbody>
 </table>
-</section>
-<section id="previously-published-datasets" class="level3">
-<h3 class="anchored" data-anchor-id="previously-published-datasets">Previously Published Datasets</h3>
-<table class="caption-top table">
+</div>
+
+<!-- ════════════════════════════ PUBLISHED DATASETS ════════════════════════════ -->
+
+<h3>Previously Published Datasets</h3>
+
+<div class="table-wrap">
+<table>
 <thead>
-<tr class="header">
-<th>#</th>
-<th>Dataset</th>
-<th>License / Terms</th>
-<th>Permits modification?</th>
-<th>Commercial use?</th>
-<th>Reference</th>
-</tr>
+  <tr><th>#</th><th>Dataset</th><th>License / Terms</th><th>Permits mod.?</th><th>Commercial use?</th><th>Reference</th></tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td>P1</td>
-<td>Baker et al.&nbsp;(2025) – Long-term riverine biodiversity data</td>
-<td>No formal license; written permission via personal communication</td>
-<td>Yes</td>
-<td>Not explicitly addressed</td>
-<td><a href="https://doi.org/10.1007/s10750-024-05665-5">DOI: 10.1007/s10750-024-05665-5</a></td>
-</tr>
-<tr class="even">
-<td>P2</td>
-<td>De Jonge et al.&nbsp;(2022) – VMM Inland water macrophytes, Flanders</td>
-<td>CC-BY 4.0</td>
-<td>Yes</td>
-<td>Yes</td>
-<td><a href="https://doi.org/10.15468/8e9te4">DOI: 10.15468/8e9te4</a></td>
-</tr>
-<tr class="odd">
-<td>P3</td>
-<td>EPA Ireland – National macroinvertebrate dataset 2007–2018</td>
-<td>CC-BY 4.0</td>
-<td>Yes</td>
-<td>Yes</td>
-<td><a href="https://maps.biodiversityireland.ie/Dataset/335">biodiversityireland.ie/Dataset/335</a></td>
-</tr>
-<tr class="even">
-<td>P4</td>
-<td>EPA Ireland – River Biologists’ Database</td>
-<td>CC-BY 4.0</td>
-<td>Yes</td>
-<td>Yes</td>
-<td><a href="https://maps.biodiversityireland.ie/Dataset/19">biodiversityireland.ie/Dataset/19</a></td>
-</tr>
-<tr class="odd">
-<td>P5</td>
-<td>Fornaroli et al.&nbsp;(2020) – Macroinvertebrates, River Po basin</td>
-<td>CC-BY 4.0</td>
-<td>Yes</td>
-<td>Yes</td>
-<td><a href="https://doi.org/10.5281/zenodo.3991564">DOI: 10.5281/zenodo.3991564</a></td>
-</tr>
-<tr class="even">
-<td>P6</td>
-<td>Vanek et al.&nbsp;(2022) – BMS South Tyrol, PANGAEA</td>
-<td>CC-BY 4.0</td>
-<td>Yes</td>
-<td>Yes</td>
-<td><a href="https://doi.org/10.1594/PANGAEA.941503">DOI: 10.1594/PANGAEA.941503</a></td>
-</tr>
-<tr class="odd">
-<td>P7</td>
-<td>Vannevel et al.&nbsp;(2018) – Inland water macro-invertebrates, Flanders</td>
-<td>CC-BY 4.0</td>
-<td>Yes</td>
-<td>Yes</td>
-<td><a href="https://doi.org/10.3897/zookeys.759.24810">DOI: 10.3897/zookeys.759.24810</a></td>
-</tr>
+  <tr><td>P1</td><td>Baker et al. (2025) – Long-term riverine biodiversity data</td><td>No formal license; written permission</td><td>Yes</td><td>Not explicitly addressed</td><td><a href="https://doi.org/10.1007/s10750-024-05665-5">DOI: 10.1007/s10750-024-05665-5</a></td></tr>
+  <tr><td>P2</td><td>De Jonge et al. (2022) – VMM macrophytes, Flanders</td><td>CC-BY 4.0</td><td>Yes</td><td>Yes</td><td><a href="https://doi.org/10.15468/8e9te4">DOI: 10.15468/8e9te4</a></td></tr>
+  <tr><td>P3</td><td>EPA Ireland – National macroinvertebrate dataset 2007–2018</td><td>CC-BY 4.0</td><td>Yes</td><td>Yes</td><td><a href="https://maps.biodiversityireland.ie/Dataset/335">biodiversityireland.ie/Dataset/335</a></td></tr>
+  <tr><td>P4</td><td>EPA Ireland – River Biologists' Database</td><td>CC-BY 4.0</td><td>Yes</td><td>Yes</td><td><a href="https://maps.biodiversityireland.ie/Dataset/19">biodiversityireland.ie/Dataset/19</a></td></tr>
+  <tr><td>P5</td><td>Fornaroli et al. (2020) – Macroinvertebrates, River Po basin</td><td>CC-BY 4.0</td><td>Yes</td><td>Yes</td><td><a href="https://doi.org/10.5281/zenodo.3991564">DOI: 10.5281/zenodo.3991564</a></td></tr>
+  <tr><td>P6</td><td>Vanek et al. (2022) – BMS South Tyrol, PANGAEA</td><td>CC-BY 4.0</td><td>Yes</td><td>Yes</td><td><a href="https://doi.org/10.1594/PANGAEA.941503">DOI: 10.1594/PANGAEA.941503</a></td></tr>
+  <tr><td>P7</td><td>Vannevel et al. (2018) – Macro-invertebrates, Flanders</td><td>CC-BY 4.0</td><td>Yes</td><td>Yes</td><td><a href="https://doi.org/10.3897/zookeys.759.24810">DOI: 10.3897/zookeys.759.24810</a></td></tr>
 </tbody>
 </table>
-</section>
-<section id="project-funded-datasets" class="level3">
-<h3 class="anchored" data-anchor-id="project-funded-datasets">Project-Funded Datasets</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
+</div>
+
+<!-- ════════════════════════════ PROJECT-FUNDED ════════════════════════════ -->
+
+<h3>Project-Funded Datasets</h3>
+
+<div class="table-wrap">
+<table>
 <thead>
-<tr class="header">
-<th>#</th>
-<th>Dataset</th>
-<th>Funding</th>
-</tr>
+  <tr><th>#</th><th>Dataset</th><th>Funding</th></tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td>F1</td>
-<td>STAR project data</td>
-<td>EC 5th Framework, Contract EVK1-CT-2001-00089</td>
-</tr>
-<tr class="even">
-<td>F2</td>
-<td>WISER project data</td>
-<td>EC 7th Framework, Contract 226273</td>
-</tr>
-<tr class="odd">
-<td>F3</td>
-<td>Slovak ecological status validation data</td>
-<td>EU Cohesion Funds, Grant 7195735/17.4.2020</td>
-</tr>
-<tr class="even">
-<td>F4</td>
-<td>Bulgarian typology validation data</td>
-<td>DICON-UBA, Grant 7195735/17.4.2020</td>
-</tr>
-<tr class="odd">
-<td>F5</td>
-<td>AQEM project data</td>
-<td>EC 5th Framework, EVK1-CT-1999-00027</td>
-</tr>
+  <tr><td>F1</td><td>STAR project data</td><td>EC 5th Framework, Contract EVK1-CT-2001-00089</td></tr>
+  <tr><td>F2</td><td>WISER project data</td><td>EC 7th Framework, Contract 226273</td></tr>
+  <tr><td>F3</td><td>Slovak ecological status validation data</td><td>EU Cohesion Funds, Grant 7195735/17.4.2020</td></tr>
+  <tr><td>F4</td><td>Bulgarian typology validation data</td><td>DICON-UBA, Grant 7195735/17.4.2020</td></tr>
+  <tr><td>F5</td><td>AQEM project data</td><td>EC 5th Framework, EVK1-CT-1999-00027</td></tr>
 </tbody>
 </table>
-<hr>
-</section>
-</section>
-<section id="suggested-citation-for-previously-published-datasets" class="level2">
-<h2 class="anchored" data-anchor-id="suggested-citation-for-previously-published-datasets">Suggested Citation for Previously Published Datasets</h2>
+</div>
+
+<!-- ════════════════════════════ CITATIONS ════════════════════════════ -->
+
+<h2>Suggested Citation for Previously Published Datasets</h2>
+
 <p>When using MIDFIRE data that originates from previously published datasets, please cite the original publications in addition to the MIDFIRE compilation:</p>
-<blockquote class="blockquote">
-<p>Baker, N.J., Pilotto, F., Welti, E.A.R., Osadčaja, D. &amp; Palinauskas, V. (2025). Recovery or reorganisation? Long-term increases in riverine taxonomic and functional diversity are confounded by compositional dynamics. <em>Hydrobiologia</em>, 852, 1693–1715. https://doi.org/10.1007/s10750-024-05665-5</p>
-<p>De Jonge, M., Lavens, F., Gabriels, W., Verdievel, M., Haspeslagh, B., Reyserhove, L., Oldoni, D. &amp; Desmet, P. (2022). VMM – Inland water macrophyte occurrences in Flanders, Belgium. Version 1.43. Flanders Environment Agency (VMM). https://doi.org/10.15468/8e9te4</p>
-<p>Environmental Protection Agency. A national macroinvertebrate dataset collected for the biomonitoring of Ireland’s river network, 2007–2018 (EPA), National Biodiversity Data Centre, Ireland. https://maps.biodiversityireland.ie/Dataset/335</p>
-<p>Environmental Protection Agency. River Biologists’ Database (EPA), National Biodiversity Data Centre, Ireland. https://maps.biodiversityireland.ie/Dataset/19</p>
-<p>Fornaroli, R., Agostini, A., Arnaud, E., Berselli, A., Bettoni, E., Boggero, A. et al.&nbsp;(2020). A ten-year geographic data set on the occurrence and abundance of macroinvertebrates in the River Po basin (Italy). <em>Biogeographia – The Journal of Integrative Biogeography</em>, 35. https://doi.org/10.5281/zenodo.3991564</p>
-<p>Vanek, M. et al.&nbsp;(2022). Abundances of benthic invertebrates and related environmental variables collected for the Biodiversity Monitoring project of South Tyrol – BMS (Italy). Eurac Research, PANGAEA. https://doi.org/10.1594/PANGAEA.941503</p>
-<p>Vannevel, R., Brosens, D., De Cooman, W., Gabriels, W., Lavens, F., Mertens, J. &amp; Vervaeke, B. (2018). The inland water macro-invertebrate occurrences in Flanders, Belgium. <em>ZooKeys</em>, 759, 117–136. https://doi.org/10.3897/zookeys.759.24810</p>
-</blockquote>
-<hr>
-</section>
-<section id="suggested-acknowledgment-text" class="level2">
-<h2 class="anchored" data-anchor-id="suggested-acknowledgment-text">Suggested Acknowledgment Text</h2>
+
+<div class="citation-block">
+  <p>Baker, N.J., Pilotto, F., Welti, E.A.R., Osadčaja, D. &amp; Palinauskas, V. (2025). Recovery or reorganisation? Long-term increases in riverine taxonomic and functional diversity are confounded by compositional dynamics. <em>Hydrobiologia</em>, 852, 1693–1715. <a href="https://doi.org/10.1007/s10750-024-05665-5">https://doi.org/10.1007/s10750-024-05665-5</a></p>
+  <p>De Jonge, M., Lavens, F., Gabriels, W., Verdievel, M., Haspeslagh, B., Reyserhove, L., Oldoni, D. &amp; Desmet, P. (2022). VMM – Inland water macrophyte occurrences in Flanders, Belgium. Version 1.43. Flanders Environment Agency (VMM). <a href="https://doi.org/10.15468/8e9te4">https://doi.org/10.15468/8e9te4</a></p>
+  <p>Environmental Protection Agency. A national macroinvertebrate dataset collected for the biomonitoring of Ireland's river network, 2007–2018 (EPA), National Biodiversity Data Centre, Ireland. <a href="https://maps.biodiversityireland.ie/Dataset/335">https://maps.biodiversityireland.ie/Dataset/335</a></p>
+  <p>Environmental Protection Agency. River Biologists' Database (EPA), National Biodiversity Data Centre, Ireland. <a href="https://maps.biodiversityireland.ie/Dataset/19">https://maps.biodiversityireland.ie/Dataset/19</a></p>
+  <p>Fornaroli, R., Agostini, A., Arnaud, E., Berselli, A., Bettoni, E., Boggero, A. et al. (2020). A ten-year geographic data set on the occurrence and abundance of macroinvertebrates in the River Po basin (Italy). <em>Biogeographia – The Journal of Integrative Biogeography</em>, 35. <a href="https://doi.org/10.5281/zenodo.3991564">https://doi.org/10.5281/zenodo.3991564</a></p>
+  <p>Vanek, M. et al. (2022). Abundances of benthic invertebrates and related environmental variables collected for the Biodiversity Monitoring project of South Tyrol – BMS (Italy). Eurac Research, PANGAEA. <a href="https://doi.org/10.1594/PANGAEA.941503">https://doi.org/10.1594/PANGAEA.941503</a></p>
+  <p>Vannevel, R., Brosens, D., De Cooman, W., Gabriels, W., Lavens, F., Mertens, J. &amp; Vervaeke, B. (2018). The inland water macro-invertebrate occurrences in Flanders, Belgium. <em>ZooKeys</em>, 759, 117–136. <a href="https://doi.org/10.3897/zookeys.759.24810">https://doi.org/10.3897/zookeys.759.24810</a></p>
+</div>
+
+<!-- ════════════════════════════ ACKNOWLEDGMENT ════════════════════════════ -->
+
+<h2>Suggested Acknowledgment Text</h2>
+
 <p>The following text satisfies the attribution requirements of all constituent datasets. Users of MIDFIRE are encouraged to include it (or an adapted version) in publications that make use of the compilation:</p>
-<blockquote class="blockquote">
-<p>We acknowledge the following organizations and individuals for providing data included in the MIDFIRE compilation. Austrian data: Bundesministerium für Land- und Forstwirtschaft, Klima- und Umweltschutz, Regionen und Wasserwirtschaft, via Umweltbundesamt Austria (data modified). Bulgarian data: Gana Gecheva and Tsvetelina Isheva. Swiss data: the Bundesamt für Umwelt (BAFU) for providing data from the National Surface Water Quality Monitoring programme, and the Bundesamt für Umwelt (BAFU) for providing data from the Biodiversitätsmonitoring Schweiz (BDM); we also thank the BDM field team (Hintermann &amp; Weber AG) for data collection. Czech data: Czech Hydrometeorological Institute. German data: Bayerisches Landesamt für Umwelt (source: www.lfu.bayern.de); Data from the biological monitroing of the LUBW – Landesanstalt für Umwelt Baden-Württemberg; WFD-monitoring of the HLNUG; WFD-monitoring of the LANUV-NRW; Landesamt für Umwelt Brandenburg; Landesamt für Umwelt des Landes Schleswig-Holstein; © Landesbetrieb für Hochwasserschutz und Wasserwirtschaft Sachsen-Anhalt (LHW) (data modified); WFD-monitoring of the LAVES; WFD-monitoring of the LfULG. Danish data: Environmental Protection Agency, Denmark. Spanish data: Confederación Hidrográfica del Duero (CHD), datos.chduero.es (data modified); Confederación Hidrográfica del Ebro (CHE) (data modified); Ministerio para la Transición Ecológica y el Reto Demográfico (MITECO) (data modified); Saúl Blanco; Joan Gomà. Finnish data: LUKE; SYKE; Janne Soininen; Jenny Jyrkänkallio-Mikkola; Kaisa-Leena Huttunen, Riku Paavola and Timo Muotka. French data: Office français de la biodiversité, via Naïades (CC BY-SA 2.0 FR); INRAE. Greek data: Maria Lazaridou. Hungarian data: Project Ecosurv. Lithuanian data: Environmental Protection Agency of Lithuania; Nathan J. Baker and Diana Osadčaja. Dutch data: Informatiehuis Water, via waterkwaliteitsportaal.nl, thanks to Edwin THM Peeters and Michiel Verhofstad. Norwegian data: Norwegian Environment Agency. Polish data: GIOŚ – Chief Inspectorate for Environmental Protection. Portuguese data: Maria Teresa Ferreira. Romanian data: Mirela Cimpea, Karina Battes and Anca-Mihaela Suteu Ciorca. Swedish data obtained from SLU’s Miljödata MVM database (miljodata.slu.se/mvm), collected within Swedish coordinated environmental monitoring. Slovak data: Water Research Institute Bratislava. UK data contains public sector information licensed under the Open Government Licence v3.0 (Environment Agency). Italian data: see Fornaroli et al.&nbsp;(2020) and Vanek et al.&nbsp;(2022). Belgian data: see De Jonge et al.&nbsp;(2022) and Vannevel et al.&nbsp;(2018). Irish data: Environmental Protection Agency, Ireland.</p>
-<p>The STAR project was funded by the European Commission, 5th Framework Programme (Contract EVK1-CT-2001-00089). The WISER project was funded by the European Commission, 7th Framework Programme (Contract 226273). Slovak data were collected within the project “Monitoring and assessment of water status”, co-funded by EU Cohesion Funds. Bulgarian data were collected within the project “Validation of the typology and classification system in Bulgaria” (Grant No.&nbsp;7195735/17.4.2020, DICON-UBA). The AQEM project was funded by the European Commission, 5th Framework Programme (Contract EVK1-CT-1999-00027).</p>
-</blockquote>
-<hr>
-</section>
-<section id="notes" class="level2">
-<h2 class="anchored" data-anchor-id="notes">Notes</h2>
-<ol type="1">
-<li><p><strong>Compilation license</strong>: The MIDFIRE compilation as a whole is released under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>. This applies to the structure, harmonization, and added value of the compilation.</p></li>
-<li><p><strong>Constituent dataset terms</strong>: Where original terms are more restrictive than CC BY-NC-SA 4.0 (e.g., the LHW Sachsen-Anhalt Nutzungsbestimmungen or the BDM Datennutzungsvertrag), users must comply with the original terms for the respective data component. The CC BY-NC-SA 4.0 license does not override or replace these terms.</p></li>
-<li><p><strong>Data modification notice</strong>: As part of the harmonization process, all constituent datasets were modified (taxonomic standardization, format unification, spatial harmonization). They do not represent the original state of the data. See the Methods section of the accompanying publication for details.</p></li>
-<li><p><strong>No sublicensing guarantee</strong>: Some data providers did not grant sublicensing rights. Users intending to redistribute individual components should consult the original terms linked above.</p></li>
-<li><p><strong>Attribution</strong>: When using MIDFIRE, please cite both the compilation and the relevant original data sources as listed in the main publication.</p></li>
-<li><p><strong>CC BY-SA 2.0 FR incompatibility (French data)</strong>: The French data component (Office français de la biodiversité, via Naïades) is licensed under CC BY-SA 2.0 FR. This license is incompatible with the compilation’s CC BY-NC-SA 4.0 license because the Non-Commercial restriction is more restrictive than the original ShareAlike terms, which permit commercial use. The French component therefore retains its original CC BY-SA 2.0 FR license within the compilation. Downstream users of the French data component may use it commercially, but must distribute any derivatives under CC BY-SA 2.0 FR or a compatible license. Users of the full MIDFIRE compilation (including non-French components) remain bound by CC BY-NC-SA 4.0 for all other components.</p></li>
-<li><p><strong>Spanish public sector data sources</strong>: CHD, CHE, and MITECO operate under Spain’s national PSI reuse framework (Ley 37/2007, as amended by Ley 18/2015; RD 1495/2011; Ley 27/2006). Under this framework, reuse — including modification and commercial use — is permitted by default, subject to: source attribution, non-misrepresentation, no implied endorsement, and preservation of update date metadata where available. See <a href="https://datos.gob.es">datos.gob.es</a> for the overarching framework. Data were modified during harmonization.</p></li>
-</ol>
-</section>
-</section>
 
-</main>
-<!-- /main column -->
-<script id="quarto-html-after-body" type="application/javascript">
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-    const icon = "";
-    const anchorJS = new window.AnchorJS();
-    anchorJS.options = {
-      placement: 'right',
-      icon: icon
-    };
-    anchorJS.add('.anchored');
-    const isCodeAnnotation = (el) => {
-      for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {                     
-          return true;
-        }
-      }
-      return false;
-    }
-    const onCopySuccess = function(e) {
-      // button target
-      const button = e.trigger;
-      // don't keep focus
-      button.blur();
-      // flash "checked"
-      button.classList.add('code-copy-button-checked');
-      var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copied!");
-      let tooltip;
-      if (window.bootstrap) {
-        button.setAttribute("data-bs-toggle", "tooltip");
-        button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copied!");
-        tooltip = new bootstrap.Tooltip(button, 
-          { trigger: "manual", 
-            customClass: "code-copy-button-tooltip",
-            offset: [0, -8]});
-        tooltip.show();    
-      }
-      setTimeout(function() {
-        if (tooltip) {
-          tooltip.hide();
-          button.removeAttribute("data-bs-title");
-          button.removeAttribute("data-bs-toggle");
-          button.removeAttribute("data-bs-placement");
-        }
-        button.setAttribute("title", currentTitle);
-        button.classList.remove('code-copy-button-checked');
-      }, 1000);
-      // clear code selection
-      e.clearSelection();
-    }
-    const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
-        }
-        return codeEl.innerText;
-    }
-    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-      text: getTextToCopy
-    });
-    clipboard.on('success', onCopySuccess);
-    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-        text: getTextToCopy,
-        container: window.document.getElementById('quarto-embedded-source-code-modal')
-      });
-      clipboardModal.on('success', onCopySuccess);
-    }
-      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
-      var isInternal = (href) => {
-          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-      }
-      // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-      for (var i=0; i<links.length; i++) {
-        const link = links[i];
-        if (!isInternal(link.href)) {
-          // undo the damage that might have been done by quarto-nav.js in the case of
-          // links that we want to consider external
-          if (link.dataset.originalHref !== undefined) {
-            link.href = link.dataset.originalHref;
-          }
-        }
-      }
-    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-      const config = {
-        allowHTML: true,
-        maxWidth: 500,
-        delay: 100,
-        arrow: false,
-        appendTo: function(el) {
-            return el.parentElement;
-        },
-        interactive: true,
-        interactiveBorder: 10,
-        theme: 'quarto',
-        placement: 'bottom-start',
-      };
-      if (contentFn) {
-        config.content = contentFn;
-      }
-      if (onTriggerFn) {
-        config.onTrigger = onTriggerFn;
-      }
-      if (onUntriggerFn) {
-        config.onUntrigger = onUntriggerFn;
-      }
-      window.tippy(el, config); 
-    }
-    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-    for (var i=0; i<noterefs.length; i++) {
-      const ref = noterefs[i];
-      tippyHover(ref, function() {
-        // use id or data attribute instead here
-        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-        try { href = new URL(href).hash; } catch {}
-        const id = href.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note) {
-          return note.innerHTML;
-        } else {
-          return "";
-        }
-      });
-    }
-    const xrefs = window.document.querySelectorAll('a.quarto-xref');
-    const processXRef = (id, note) => {
-      // Strip column container classes
-      const stripColumnClz = (el) => {
-        el.classList.remove("page-full", "page-columns");
-        if (el.children) {
-          for (const child of el.children) {
-            stripColumnClz(child);
-          }
-        }
-      }
-      stripColumnClz(note)
-      if (id === null || id.startsWith('sec-')) {
-        // Special case sections, only their first couple elements
-        const container = document.createElement("div");
-        if (note.children && note.children.length > 2) {
-          container.appendChild(note.children[0].cloneNode(true));
-          for (let i = 1; i < note.children.length; i++) {
-            const child = note.children[i];
-            if (child.tagName === "P" && child.innerText === "") {
-              continue;
-            } else {
-              container.appendChild(child.cloneNode(true));
-              break;
-            }
-          }
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(container);
-          }
-          return container.innerHTML
-        } else {
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(note);
-          }
-          return note.innerHTML;
-        }
-      } else {
-        // Remove any anchor links if they are present
-        const anchorLink = note.querySelector('a.anchorjs-link');
-        if (anchorLink) {
-          anchorLink.remove();
-        }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(note);
-        }
-        if (note.classList.contains("callout")) {
-          return note.outerHTML;
-        } else {
-          return note.innerHTML;
-        }
-      }
-    }
-    for (var i=0; i<xrefs.length; i++) {
-      const xref = xrefs[i];
-      tippyHover(xref, undefined, function(instance) {
-        instance.disable();
-        let url = xref.getAttribute('href');
-        let hash = undefined; 
-        if (url.startsWith('#')) {
-          hash = url;
-        } else {
-          try { hash = new URL(url).hash; } catch {}
-        }
-        if (hash) {
-          const id = hash.replace(/^#\/?/, "");
-          const note = window.document.getElementById(id);
-          if (note !== null) {
-            try {
-              const html = processXRef(id, note.cloneNode(true));
-              instance.setContent(html);
-            } finally {
-              instance.enable();
-              instance.show();
-            }
-          } else {
-            // See if we can fetch this
-            fetch(url.split('#')[0])
-            .then(res => res.text())
-            .then(html => {
-              const parser = new DOMParser();
-              const htmlDoc = parser.parseFromString(html, "text/html");
-              const note = htmlDoc.getElementById(id);
-              if (note !== null) {
-                const html = processXRef(id, note);
-                instance.setContent(html);
-              } 
-            }).finally(() => {
-              instance.enable();
-              instance.show();
-            });
-          }
-        } else {
-          // See if we can fetch a full url (with no hash to target)
-          // This is a special case and we should probably do some content thinning / targeting
-          fetch(url)
-          .then(res => res.text())
-          .then(html => {
-            const parser = new DOMParser();
-            const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.querySelector('main.content');
-            if (note !== null) {
-              // This should only happen for chapter cross references
-              // (since there is no id in the URL)
-              // remove the first header
-              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-                note.children[0].remove();
-              }
-              const html = processXRef(null, note);
-              instance.setContent(html);
-            } 
-          }).finally(() => {
-            instance.enable();
-            instance.show();
-          });
-        }
-      }, function(instance) {
-      });
-    }
-        let selectedAnnoteEl;
-        const selectorForAnnotation = ( cell, annotation) => {
-          let cellAttr = 'data-code-cell="' + cell + '"';
-          let lineAttr = 'data-code-annotation="' +  annotation + '"';
-          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-          return selector;
-        }
-        const selectCodeLines = (annoteEl) => {
-          const doc = window.document;
-          const targetCell = annoteEl.getAttribute("data-target-cell");
-          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-          const lineIds = lines.map((line) => {
-            return targetCell + "-" + line;
-          })
-          let top = null;
-          let height = null;
-          let parent = null;
-          if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
-            }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
-            }
-            selectedAnnoteEl = annoteEl;
-          }
-        };
-        const unselectCodeLines = () => {
-          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-          elementsIds.forEach((elId) => {
-            const div = window.document.getElementById(elId);
-            if (div) {
-              div.remove();
-            }
-          });
-          selectedAnnoteEl = undefined;
-        };
-          // Handle positioning of the toggle
-      window.addEventListener(
-        "resize",
-        throttle(() => {
-          elRect = undefined;
-          if (selectedAnnoteEl) {
-            selectCodeLines(selectedAnnoteEl);
-          }
-        }, 10)
-      );
-      function throttle(fn, ms) {
-      let throttle = false;
-      let timer;
-        return (...args) => {
-          if(!throttle) { // first call gets through
-              fn.apply(this, args);
-              throttle = true;
-          } else { // all the others get throttled
-              if(timer) clearTimeout(timer); // cancel #2
-              timer = setTimeout(() => {
-                fn.apply(this, args);
-                timer = throttle = false;
-              }, ms);
-          }
-        };
-      }
-        // Attach click handler to the DT
-        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-        for (const annoteDlNode of annoteDls) {
-          annoteDlNode.addEventListener('click', (event) => {
-            const clickedEl = event.target;
-            if (clickedEl !== selectedAnnoteEl) {
-              unselectCodeLines();
-              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-              if (activeEl) {
-                activeEl.classList.remove('code-annotation-active');
-              }
-              selectCodeLines(clickedEl);
-              clickedEl.classList.add('code-annotation-active');
-            } else {
-              // Unselect the line
-              unselectCodeLines();
-              clickedEl.classList.remove('code-annotation-active');
-            }
-          });
-        }
-    const findCites = (el) => {
-      const parentEl = el.parentElement;
-      if (parentEl) {
-        const cites = parentEl.dataset.cites;
-        if (cites) {
-          return {
-            el,
-            cites: cites.split(' ')
-          };
-        } else {
-          return findCites(el.parentElement)
-        }
-      } else {
-        return undefined;
-      }
-    };
-    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-    for (var i=0; i<bibliorefs.length; i++) {
-      const ref = bibliorefs[i];
-      const citeInfo = findCites(ref);
-      if (citeInfo) {
-        tippyHover(citeInfo.el, function() {
-          var popup = window.document.createElement('div');
-          citeInfo.cites.forEach(function(cite) {
-            var citeDiv = window.document.createElement('div');
-            citeDiv.classList.add('hanging-indent');
-            citeDiv.classList.add('csl-entry');
-            var biblioDiv = window.document.getElementById('ref-' + cite);
-            if (biblioDiv) {
-              citeDiv.innerHTML = biblioDiv.innerHTML;
-            }
-            popup.appendChild(citeDiv);
-          });
-          return popup.innerHTML;
-        });
-      }
-    }
-  });
-  </script>
-</div> <!-- /content -->
+<div class="ack-block">
+  <p>We acknowledge the following organizations and individuals for providing data included in the MIDFIRE compilation. <strong>Austrian data:</strong> Bundesministerium für Land- und Forstwirtschaft, Klima- und Umweltschutz, Regionen und Wasserwirtschaft, via Umweltbundesamt Austria (data modified). <strong>Bulgarian data:</strong> Gana Gecheva and Tsvetelina Isheva. <strong>Swiss data:</strong> the Bundesamt für Umwelt (BAFU) for providing data from the National Surface Water Quality Monitoring programme, and the Bundesamt für Umwelt (BAFU) for providing data from the Biodiversitätsmonitoring Schweiz (BDM); we also thank the BDM field team (Hintermann &amp; Weber AG) for data collection. <strong>Czech data:</strong> Czech Hydrometeorological Institute. <strong>German data:</strong> Bayerisches Landesamt für Umwelt (Datenquelle: www.lfu.bayern.de); Grundlage: Daten aus dem Biologischen Fließgewässermonitoring der LUBW – Landesanstalt für Umwelt Baden-Württemberg; WFD-monitoring of the HLNUG; WFD-monitoring of the LANUV-NRW; Landesamt für Umwelt Brandenburg; Landesamt für Umwelt des Landes Schleswig-Holstein; © Landesbetrieb für Hochwasserschutz und Wasserwirtschaft Sachsen-Anhalt (LHW) (data modified); WFD-monitoring of the LAVES; WFD-monitoring of the LfULG; Thüringer Landesamt für Umwelt, Bergbau und Naturschutz. <strong>Danish data:</strong> Environmental Protection Agency, Denmark. <strong>Spanish data:</strong> Confederación Hidrográfica del Duero (CHD), datos.chduero.es (data modified); Confederación Hidrográfica del Ebro (CHE) (data modified); Ministerio para la Transición Ecológica y el Reto Demográfico (MITECO) (data modified); Saúl Blanco; Joan Gomà. <strong>Finnish data:</strong> LUKE; SYKE; Janne Soininen; Jenny Jyrkänkallio-Mikkola; Kaisa-Leena Huttunen, Riku Paavola and Timo Muotka. <strong>French data:</strong> Office français de la biodiversité, via Naïades (CC BY-SA 2.0 FR); INRAE. <strong>Greek data:</strong> Maria Lazaridou. <strong>Hungarian data:</strong> Project Ecosurv. <strong>Lithuanian data:</strong> Environmental Protection Agency of Lithuania; Nathan J. Baker and Diana Osadčaja. <strong>Dutch data:</strong> Informatiehuis Water, via waterkwaliteitsportaal.nl, thanks to Edwin THM Peeters and Michiel Verhofstad. <strong>Norwegian data:</strong> Norwegian Environment Agency. <strong>Polish data:</strong> GIOŚ – Chief Inspectorate for Environmental Protection. <strong>Portuguese data:</strong> Maria Teresa Ferreira. <strong>Romanian data:</strong> Mirela Cimpea, Karina Battes and Anca-Mihaela Suteu Ciorca. <strong>Swedish data</strong> obtained from SLU's Miljödata MVM database (miljodata.slu.se/mvm), collected within Swedish coordinated environmental monitoring. <strong>Slovak data:</strong> Water Research Institute Bratislava. <strong>UK data</strong> contains public sector information licensed under the Open Government Licence v3.0 (Environment Agency). <strong>Italian data:</strong> see Fornaroli et al. (2020) and Vanek et al. (2022). <strong>Belgian data:</strong> see De Jonge et al. (2022) and Vannevel et al. (2018). <strong>Irish data:</strong> Environmental Protection Agency, Ireland.</p>
+  <p>The STAR project was funded by the European Commission, 5th Framework Programme (Contract EVK1-CT-2001-00089). The WISER project was funded by the European Commission, 7th Framework Programme (Contract 226273). Slovak data were collected within the project "Monitoring and assessment of water status", co-funded by EU Cohesion Funds. Bulgarian data were collected within the project "Validation of the typology and classification system in Bulgaria" (Grant No. 7195735/17.4.2020, DICON-UBA). The AQEM project was funded by the European Commission, 5th Framework Programme (Contract EVK1-CT-1999-00027).</p>
+</div>
 
+<!-- ════════════════════════════ NOTES ════════════════════════════ -->
 
+<h2>Notes</h2>
 
+<p class="note"><strong>Note 1 — Compilation license:</strong> The MIDFIRE compilation as a whole is released under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>. This applies to the structure, harmonization, and added value of the compilation.</p>
 
-</body></html>
+<p class="note"><strong>Note 2 — Constituent dataset terms:</strong> Where original terms are more restrictive than CC BY-NC-SA 4.0 (e.g., the LHW Sachsen-Anhalt Nutzungsbestimmungen or the BDM Datennutzungsvertrag), users must comply with the original terms for the respective data component. The CC BY-NC-SA 4.0 license does not override or replace these terms.</p>
+
+<p class="note"><strong>Note 3 — Data modification notice:</strong> As part of the harmonization process, all constituent datasets were modified (taxonomic standardization, format unification, spatial harmonization). They do not represent the original state of the data. See the Methods section of the accompanying publication for details.</p>
+
+<p class="note"><strong>Note 4 — No sublicensing guarantee:</strong> Some data providers did not grant sublicensing rights. Users intending to redistribute individual components should consult the original terms linked above.</p>
+
+<p class="note"><strong>Note 5 — Attribution:</strong> When using MIDFIRE, please cite both the compilation and the relevant original data sources as listed in the main publication.</p>
+
+<p class="note" id="note6"><strong>Note 6 — CC BY-SA 2.0 FR incompatibility (French data):</strong> The French data component (Office français de la biodiversité, via Naïades) is licensed under <a href="https://creativecommons.org/licenses/by-sa/2.0/fr/">CC BY-SA 2.0 FR</a>. This license is incompatible with the compilation's CC BY-NC-SA 4.0 license because the Non-Commercial restriction is more restrictive than the original ShareAlike terms, which permit commercial use. The French component therefore retains its original CC BY-SA 2.0 FR license within the compilation. Downstream users of the French data component may use it commercially, but must distribute any derivatives under CC BY-SA 2.0 FR or a compatible license. Users of the full MIDFIRE compilation (including non-French components) remain bound by CC BY-NC-SA 4.0 for all other components.</p>
+
+<p class="note" id="note7"><strong>Note 7 — Spanish public sector data sources:</strong> CHD, CHE, and MITECO operate under Spain's national PSI reuse framework (Ley 37/2007, as amended by Ley 18/2015; RD 1495/2011; Ley 27/2006). Under this framework, reuse — including modification and commercial use — is permitted by default, subject to: source attribution, non-misrepresentation, no implied endorsement, and preservation of update date metadata where available. See <a href="https://datos.gob.es">datos.gob.es</a> for the overarching framework. Data were modified during harmonization.</p>
+
+</body>
+</html>
