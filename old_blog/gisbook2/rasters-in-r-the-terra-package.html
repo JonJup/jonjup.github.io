@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 Rasters in R: The terra package | Spatial Data Science in R</title>
+  <meta name="description" content="Lessons and tasks from GIS courses by Jonathan Jupke" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 Rasters in R: The terra package | Spatial Data Science in R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Lessons and tasks from GIS courses by Jonathan Jupke" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 Rasters in R: The terra package | Spatial Data Science in R" />
+  
+  <meta name="twitter:description" content="Lessons and tasks from GIS courses by Jonathan Jupke" />
+  
+
+<meta name="author" content="Jonathan Jupke" />
+
+
+<meta name="date" content="2024-11-18" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="introduction-to-the-sf-package.html"/>
+<link rel="next" href="point-pattern-analysis.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="libs/proj4-2.6.2/proj4.min.js"></script>
+<script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding-2.2.2/leaflet.js"></script>
+<script src="libs/leaflet-providers-2.0.0/leaflet-providers_2.0.0.js"></script>
+<script src="libs/leaflet-providers-plugin-2.2.2/leaflet-providers-plugin.js"></script>
+<link href="libs/HomeButton-0.0.1/home-button.css" rel="stylesheet" />
+<script src="libs/HomeButton-0.0.1/home-button.js"></script>
+<script src="libs/HomeButton-0.0.1/easy-button-src.min.js"></script>
+<script src="libs/clipboard-0.0.1/setClipboardText.js"></script>
+<link href="libs/mapviewCSS-0.0.1/mapview-popup.css" rel="stylesheet" />
+<link href="libs/mapviewCSS-0.0.1/mapview.css" rel="stylesheet" />
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Spatial Data Science in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html"><i class="fa fa-check"></i><b>1</b> Introduction to the sf package</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#loading-spatial-data-into-r"><i class="fa fa-check"></i><b>1.1</b> Loading spatial data into R</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#creating-spatial-data-yourself"><i class="fa fa-check"></i><b>1.2</b> Creating spatial data yourself</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#basic-operations"><i class="fa fa-check"></i><b>1.3</b> Basic operations</a></li>
+<li class="chapter" data-level="1.4" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#useful-functions"><i class="fa fa-check"></i><b>1.4</b> Useful functions</a>
+<ul>
+<li class="chapter" data-level="1.4.1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_area"><i class="fa fa-check"></i><b>1.4.1</b> <code>st_area</code></a></li>
+<li class="chapter" data-level="1.4.2" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_bbox"><i class="fa fa-check"></i><b>1.4.2</b> <code>st_bbox()</code></a></li>
+<li class="chapter" data-level="1.4.3" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_buffer"><i class="fa fa-check"></i><b>1.4.3</b> <code>st_buffer()</code></a></li>
+<li class="chapter" data-level="1.4.4" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_coordinates"><i class="fa fa-check"></i><b>1.4.4</b> <code>st_coordinates()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#geometric-set-operations"><i class="fa fa-check"></i><b>1.5</b> Geometric set operations</a>
+<ul>
+<li class="chapter" data-level="1.5.1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_distance"><i class="fa fa-check"></i><b>1.5.1</b> <code>st_distance</code></a></li>
+<li class="chapter" data-level="1.5.2" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_nearest_feature"><i class="fa fa-check"></i><b>1.5.2</b> <code>st_nearest_feature</code></a></li>
+<li class="chapter" data-level="1.5.3" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#spatial-subsetting"><i class="fa fa-check"></i><b>1.5.3</b> spatial subsetting</a></li>
+<li class="chapter" data-level="1.5.4" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#spatial-joins"><i class="fa fa-check"></i><b>1.5.4</b> spatial joins</a></li>
+<li class="chapter" data-level="1.5.5" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#spatial-sggregation"><i class="fa fa-check"></i><b>1.5.5</b> spatial sggregation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html"><i class="fa fa-check"></i><b>2</b> Rasters in R: The terra package</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#basic-idea"><i class="fa fa-check"></i><b>2.1</b> Basic idea</a></li>
+<li class="chapter" data-level="2.2" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#creating-a-new-raster"><i class="fa fa-check"></i><b>2.2</b> Creating a new Raster</a></li>
+<li class="chapter" data-level="2.3" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#going-beyond-the-hull"><i class="fa fa-check"></i><b>2.3</b> Going beyond the hull</a></li>
+<li class="chapter" data-level="2.4" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#multiple-layers-in-one-spatraster"><i class="fa fa-check"></i><b>2.4</b> Multiple layers in one SpatRaster</a></li>
+<li class="chapter" data-level="2.5" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#raster-algebra"><i class="fa fa-check"></i><b>2.5</b> Raster algebra</a></li>
+<li class="chapter" data-level="2.6" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#high-level-functions"><i class="fa fa-check"></i><b>2.6</b> High-level functions</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#extracting-raster-values-with-vectors"><i class="fa fa-check"></i><b>2.6.1</b> Extracting raster values with vectors</a></li>
+<li class="chapter" data-level="2.6.2" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#masking"><i class="fa fa-check"></i><b>2.6.2</b> Masking</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#cell-level-functions"><i class="fa fa-check"></i><b>2.7</b> Cell-level functions</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html"><i class="fa fa-check"></i><b>3</b> Point Pattern Analysis</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#the-ppp-class"><i class="fa fa-check"></i><b>3.1</b> the ppp class</a></li>
+<li class="chapter" data-level="3.2" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#first-order-processes"><i class="fa fa-check"></i><b>3.2</b> First order processes</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#kernel-density"><i class="fa fa-check"></i><b>3.2.1</b> Kernel density</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#second-order-processes"><i class="fa fa-check"></i><b>3.3</b> Second order processes</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#average-nearest-neighbor"><i class="fa fa-check"></i><b>3.3.1</b> Average nearest neighbor</a></li>
+<li class="chapter" data-level="3.3.2" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#the-k-funktion"><i class="fa fa-check"></i><b>3.3.2</b> The K-Funktion</a></li>
+<li class="chapter" data-level="3.3.3" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#morans-i"><i class="fa fa-check"></i><b>3.3.3</b> Morans I</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="interpolation.html"><a href="interpolation.html"><i class="fa fa-check"></i><b>4</b> Interpolation</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="interpolation.html"><a href="interpolation.html#the-data"><i class="fa fa-check"></i><b>4.1</b> The data</a></li>
+<li class="chapter" data-level="4.2" data-path="interpolation.html"><a href="interpolation.html#proximity-polygons"><i class="fa fa-check"></i><b>4.2</b> Proximity Polygons</a></li>
+<li class="chapter" data-level="4.3" data-path="interpolation.html"><a href="interpolation.html#trend-surface-analysis"><i class="fa fa-check"></i><b>4.3</b> Trend Surface Analysis</a></li>
+<li class="chapter" data-level="4.4" data-path="interpolation.html"><a href="interpolation.html#splines"><i class="fa fa-check"></i><b>4.4</b> Splines</a></li>
+<li class="chapter" data-level="4.5" data-path="interpolation.html"><a href="interpolation.html#weighted-averaging"><i class="fa fa-check"></i><b>4.5</b> Weighted averaging</a></li>
+<li class="chapter" data-level="4.6" data-path="interpolation.html"><a href="interpolation.html#kriging"><i class="fa fa-check"></i><b>4.6</b> Kriging</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="machine-learning.html"><a href="machine-learning.html"><i class="fa fa-check"></i><b>5</b> Machine Learning</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="machine-learning.html"><a href="machine-learning.html#terrain-analysis-with-terra"><i class="fa fa-check"></i><b>5.1</b> Terrain analysis with terra</a></li>
+<li class="chapter" data-level="5.2" data-path="machine-learning.html"><a href="machine-learning.html#ploting-the-data"><i class="fa fa-check"></i><b>5.2</b> Ploting the data</a></li>
+<li class="chapter" data-level="5.3" data-path="machine-learning.html"><a href="machine-learning.html#logistic-regression"><i class="fa fa-check"></i><b>5.3</b> Logistic regression</a></li>
+<li class="chapter" data-level="5.4" data-path="machine-learning.html"><a href="machine-learning.html#mlr3"><i class="fa fa-check"></i><b>5.4</b> mlr3</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="machine-learning.html"><a href="machine-learning.html#creating-a-task"><i class="fa fa-check"></i><b>5.4.1</b> Creating a <em>task</em></a></li>
+<li class="chapter" data-level="5.4.2" data-path="machine-learning.html"><a href="machine-learning.html#the-learner"><i class="fa fa-check"></i><b>5.4.2</b> The <em>learner</em></a></li>
+<li class="chapter" data-level="5.4.3" data-path="machine-learning.html"><a href="machine-learning.html#hyperparameter-tuning"><i class="fa fa-check"></i><b>5.4.3</b> Hyperparameter Tuning</a></li>
+<li class="chapter" data-level="5.4.4" data-path="machine-learning.html"><a href="machine-learning.html#predictions"><i class="fa fa-check"></i><b>5.4.4</b> Predictions</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="graph-analysis.html"><a href="graph-analysis.html"><i class="fa fa-check"></i><b>6</b> Graph Analysis</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="graph-analysis.html"><a href="graph-analysis.html#the-igraph-package"><i class="fa fa-check"></i><b>6.1</b> The igraph package</a></li>
+<li class="chapter" data-level="6.2" data-path="graph-analysis.html"><a href="graph-analysis.html#from-data-to-graph"><i class="fa fa-check"></i><b>6.2</b> From data to graph</a></li>
+<li class="chapter" data-level="6.3" data-path="graph-analysis.html"><a href="graph-analysis.html#centrality-measures"><i class="fa fa-check"></i><b>6.3</b> Centrality measures</a></li>
+<li class="chapter" data-level="6.4" data-path="graph-analysis.html"><a href="graph-analysis.html#visualization"><i class="fa fa-check"></i><b>6.4</b> Visualization</a></li>
+<li class="chapter" data-level="6.5" data-path="graph-analysis.html"><a href="graph-analysis.html#network-models"><i class="fa fa-check"></i><b>6.5</b> Network Models</a></li>
+<li class="chapter" data-level="6.6" data-path="graph-analysis.html"><a href="graph-analysis.html#optimal-channel-networks"><i class="fa fa-check"></i><b>6.6</b> Optimal Channel Networks</a></li>
+<li class="chapter" data-level="6.7" data-path="graph-analysis.html"><a href="graph-analysis.html#sfnetworks"><i class="fa fa-check"></i><b>6.7</b> sfnetworks</a>
+<ul>
+<li class="chapter" data-level="6.7.1" data-path="graph-analysis.html"><a href="graph-analysis.html#finding-paths-in-the-network"><i class="fa fa-check"></i><b>6.7.1</b> Finding paths in the network</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html"><i class="fa fa-check"></i><b>7</b> Creating Maps in R</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#tmap"><i class="fa fa-check"></i><b>7.1</b> tmap</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#basic-tmaps"><i class="fa fa-check"></i><b>7.1.1</b> Basic tmaps</a></li>
+<li class="chapter" data-level="7.1.2" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#adjusting-visual-elements-and-multiple-groups"><i class="fa fa-check"></i><b>7.1.2</b> Adjusting visual elements and multiple groups</a></li>
+<li class="chapter" data-level="7.1.3" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#map-extend"><i class="fa fa-check"></i><b>7.1.3</b> Map extend</a></li>
+<li class="chapter" data-level="7.1.4" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#further-map-elements"><i class="fa fa-check"></i><b>7.1.4</b> Further map elements</a></li>
+<li class="chapter" data-level="7.1.5" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#making-the-map-prettier"><i class="fa fa-check"></i><b>7.1.5</b> Making the map prettier</a></li>
+<li class="chapter" data-level="7.1.6" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#save-to-maps-to-file"><i class="fa fa-check"></i><b>7.1.6</b> Save to maps to file</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#rastervis"><i class="fa fa-check"></i><b>7.2</b> rasterVis</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#beyond-the-usual"><i class="fa fa-check"></i><b>7.2.1</b> Beyond the usual</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#cartographer"><i class="fa fa-check"></i><b>7.3</b> Cartographer</a></li>
+<li class="chapter" data-level="7.4" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#rayshader"><i class="fa fa-check"></i><b>7.4</b> Rayshader</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#setup"><i class="fa fa-check"></i><b>7.4.1</b> Setup</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html"><i class="fa fa-check"></i><b>8</b> Where do I get data❓</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#websites"><i class="fa fa-check"></i><b>8.1</b> Websites</a></li>
+<li class="chapter" data-level="8.2" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#packages"><i class="fa fa-check"></i><b>8.2</b> Packages</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#geodata"><i class="fa fa-check"></i><b>8.2.1</b> geodata</a></li>
+<li class="chapter" data-level="8.2.2" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#osmdata"><i class="fa fa-check"></i><b>8.2.2</b> osmdata</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="usefull-packages.html"><a href="usefull-packages.html"><i class="fa fa-check"></i><b>9</b> Usefull packages</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="usefull-packages.html"><a href="usefull-packages.html#coordinatecleaner"><i class="fa fa-check"></i><b>9.1</b> ‘CoordinateCleaner’</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>10</b> References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Spatial Data Science in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="rasters-in-r-the-terra-package" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Chapter 2</span> Rasters in R: The terra package<a href="rasters-in-r-the-terra-package.html#rasters-in-r-the-terra-package" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>For the longest time, when you wanted to manipulate raster files in R, the raster package was your tool of choice.
+And it still is a well-proven and tested alternative to the newer packages, one of which we will discuss today: terra.</p>
+<div id="basic-idea" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Basic idea<a href="rasters-in-r-the-terra-package.html#basic-idea" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>terra implements two new object classes: SpatRaster and SpatVector.
+It is written and maintained by Robert Hijmans who also did so for the raster package.
+In that sense you can think of terra as the sequel to raster.
+Why did Robert Hijmans decide we need a new package?
+Well, the problem of creating a widely used R package is that other packages start to use and depend on it.
+These packages depend on the originnal package working the way it did, when the secondary package was written.
+So even if you don’t like certain aspects of your package anymore, you can’t just go ahead and rewrite them.
+Robert Hijmans thinks that raster has grown to be unnecessarily complex with over 200 functions.
+It’s slower than it could be and doesn’t support HDF5 files, which is a popular format for complex satellite data.
+terra is faster, simpler, and more capable.
+However, when you know raster, you also know how to do most things in terra.</p>
+</div>
+<div id="creating-a-new-raster" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Creating a new Raster<a href="rasters-in-r-the-terra-package.html#creating-a-new-raster" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The easiest way to specify a new raster is by calling <code>rast()</code> without any arguments.</p>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="rasters-in-r-the-terra-package.html#cb118-1" tabindex="-1"></a><span class="co"># loading the required packages </span></span>
+<span id="cb118-2"><a href="rasters-in-r-the-terra-package.html#cb118-2" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb118-3"><a href="rasters-in-r-the-terra-package.html#cb118-3" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb118-4"><a href="rasters-in-r-the-terra-package.html#cb118-4" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb118-5"><a href="rasters-in-r-the-terra-package.html#cb118-5" tabindex="-1"></a><span class="fu">library</span>(tmap)</span></code></pre></div>
+<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="rasters-in-r-the-terra-package.html#cb119-1" tabindex="-1"></a>(x <span class="ot">&lt;-</span> <span class="fu">rast</span>())</span></code></pre></div>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 180, 360, 1  (nrow, ncol, nlyr)
+## resolution  : 1, 1  (x, y)
+## extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+## coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)</code></pre>
+<p>As you can see, the new object covers the whole earth and is projected using longitude and latitude on a WGS84 globe.
+The resolution is 1 by 1 which means each cell covers 1 degree of latitude and one degree of longitude.
+We can specify the extend and resolution of the rasters we create.
+This following raster covers the southern hemisphere.</p>
+<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb121-1"><a href="rasters-in-r-the-terra-package.html#cb121-1" tabindex="-1"></a>(<span class="at">x =</span> <span class="fu">rast</span>(<span class="at">ymax =</span> <span class="dv">0</span>))</span></code></pre></div>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 180, 360, 1  (nrow, ncol, nlyr)
+## resolution  : 1, 0.5  (x, y)
+## extent      : -180, 180, -90, 0  (xmin, xmax, ymin, ymax)
+## coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)</code></pre>
+<p>As you can see, this also automatically altered the resolution to 0.5.
+We cut the area in half so the corresponding resolution is also cut in half.
+By explicitly setting the resolution, we can prevent this from happening.</p>
+<div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb123-1"><a href="rasters-in-r-the-terra-package.html#cb123-1" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">rast</span>(<span class="at">ymax =</span> <span class="dv">0</span>, <span class="at">res =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
+<p>We can also specify the number of rows and cells.</p>
+<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="rasters-in-r-the-terra-package.html#cb124-1" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">rast</span>(<span class="at">nrow =</span> <span class="dv">180</span>, <span class="at">ncol =</span> <span class="dv">360</span>)</span></code></pre></div>
+<p>You can check the resolution of a raster with the <code>res()</code> function.
+The function can also be used to compare the resolution of two (or more) rasters.</p>
+<div class="sourceCode" id="cb125"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb125-1"><a href="rasters-in-r-the-terra-package.html#cb125-1" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rast</span>()</span>
+<span id="cb125-2"><a href="rasters-in-r-the-terra-package.html#cb125-2" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">res</span>(x) <span class="sc">==</span> <span class="fu">res</span>(y))</span></code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+<p>We can also <code>res()</code> to change the resolution of a raster after creating or loading it.</p>
+<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb127-1"><a href="rasters-in-r-the-terra-package.html#cb127-1" tabindex="-1"></a><span class="fu">res</span>(y) <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb127-2"><a href="rasters-in-r-the-terra-package.html#cb127-2" tabindex="-1"></a>y</span></code></pre></div>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 18, 36, 1  (nrow, ncol, nlyr)
+## resolution  : 10, 10  (x, y)
+## extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+## coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)</code></pre>
+<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb129-1"><a href="rasters-in-r-the-terra-package.html#cb129-1" tabindex="-1"></a><span class="fu">res</span>(y) <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">100</span>)</span>
+<span id="cb129-2"><a href="rasters-in-r-the-terra-package.html#cb129-2" tabindex="-1"></a>y</span></code></pre></div>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 2, 36, 1  (nrow, ncol, nlyr)
+## resolution  : 10, 100  (x, y)
+## extent      : -180, 180, -90, 110  (xmin, xmax, ymin, ymax)
+## coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)</code></pre>
+<p>The last thing we have not altered about this raster skeleton, is its coordinate reference system (CRS).
+In terra, we need the so-called PROJ.4 string to set the CRS.
+If you only have an EPSG code for you desired CRS check out this <a href="https://epsg.io/">website</a>.
+It provides you with the corresponding PROJ.4 string.
+Modern large language models should also be able to do so but I have not verified this.</p>
+<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb131-1"><a href="rasters-in-r-the-terra-package.html#cb131-1" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">rast</span>()</span>
+<span id="cb131-2"><a href="rasters-in-r-the-terra-package.html#cb131-2" tabindex="-1"></a><span class="fu">crs</span>(x)</span></code></pre></div>
+<pre><code>## [1] &quot;GEOGCRS[\&quot;WGS 84 (CRS84)\&quot;,\n    DATUM[\&quot;World Geodetic System 1984\&quot;,\n        ELLIPSOID[\&quot;WGS 84\&quot;,6378137,298.257223563,\n            LENGTHUNIT[\&quot;metre\&quot;,1]]],\n    PRIMEM[\&quot;Greenwich\&quot;,0,\n        ANGLEUNIT[\&quot;degree\&quot;,0.0174532925199433]],\n    CS[ellipsoidal,2],\n        AXIS[\&quot;geodetic longitude (Lon)\&quot;,east,\n            ORDER[1],\n            ANGLEUNIT[\&quot;degree\&quot;,0.0174532925199433]],\n        AXIS[\&quot;geodetic latitude (Lat)\&quot;,north,\n            ORDER[2],\n            ANGLEUNIT[\&quot;degree\&quot;,0.0174532925199433]],\n    USAGE[\n        SCOPE[\&quot;unknown\&quot;],\n        AREA[\&quot;World\&quot;],\n        BBOX[-90,-180,90,180]],\n    ID[\&quot;OGC\&quot;,\&quot;CRS84\&quot;]]&quot;</code></pre>
+<div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb133-1"><a href="rasters-in-r-the-terra-package.html#cb133-1" tabindex="-1"></a><span class="co"># set to WGS 84</span></span>
+<span id="cb133-2"><a href="rasters-in-r-the-terra-package.html#cb133-2" tabindex="-1"></a><span class="fu">crs</span>(x) <span class="ot">&lt;-</span> <span class="st">&quot;+proj=longlat +datum=WGS84 +no_defs &quot;</span></span>
+<span id="cb133-3"><a href="rasters-in-r-the-terra-package.html#cb133-3" tabindex="-1"></a><span class="co"># set to UTM 48</span></span>
+<span id="cb133-4"><a href="rasters-in-r-the-terra-package.html#cb133-4" tabindex="-1"></a><span class="fu">crs</span>(x) <span class="ot">&lt;-</span> <span class="st">&quot;+proj=utm +zone=48 +datum=WGS84&quot;</span></span>
+<span id="cb133-5"><a href="rasters-in-r-the-terra-package.html#cb133-5" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 180, 360, 1  (nrow, ncol, nlyr)
+## resolution  : 1, 1  (x, y)
+## extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+## coord. ref. : +proj=utm +zone=48 +datum=WGS84 +units=m +no_defs</code></pre>
+</div>
+<div id="going-beyond-the-hull" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Going beyond the hull<a href="rasters-in-r-the-terra-package.html#going-beyond-the-hull" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We can now create an empty raster anywhere on the world.
+However, as long as no values are in the cells this doesn’t get us anywhere.
+About time we introduce some values.</p>
+<div class="sourceCode" id="cb135"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb135-1"><a href="rasters-in-r-the-terra-package.html#cb135-1" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="at">ncol=</span><span class="dv">10</span>, <span class="at">nrow=</span><span class="dv">10</span>)</span>
+<span id="cb135-2"><a href="rasters-in-r-the-terra-package.html#cb135-2" tabindex="-1"></a><span class="co"># number of cells (ncol * nrow)</span></span>
+<span id="cb135-3"><a href="rasters-in-r-the-terra-package.html#cb135-3" tabindex="-1"></a><span class="fu">ncell</span>(r)</span></code></pre></div>
+<pre><code>## [1] 100</code></pre>
+<div class="sourceCode" id="cb137"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb137-1"><a href="rasters-in-r-the-terra-package.html#cb137-1" tabindex="-1"></a><span class="co"># do we have any values yet? </span></span>
+<span id="cb137-2"><a href="rasters-in-r-the-terra-package.html#cb137-2" tabindex="-1"></a><span class="fu">hasValues</span>(r)</span></code></pre></div>
+<pre><code>## [1] FALSE</code></pre>
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb139-1"><a href="rasters-in-r-the-terra-package.html#cb139-1" tabindex="-1"></a><span class="co"># now we fill the raster with increasing numbers, staring with 1 </span></span>
+<span id="cb139-2"><a href="rasters-in-r-the-terra-package.html#cb139-2" tabindex="-1"></a><span class="fu">values</span>(r) <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">ncell</span>(r)</span>
+<span id="cb139-3"><a href="rasters-in-r-the-terra-package.html#cb139-3" tabindex="-1"></a><span class="fu">plot</span>(r, <span class="at">main=</span><span class="st">&#39;Raster with 100 cells&#39;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-80-1.png" width="672" /></p>
+<p>Let’s have a look at two actual raster file from my hard drive. You can download them <a href="https://seafile.rlp.net/d/c757bff20f1f49f99cb2/">here</a>.
+With <code>par(mfrow = c(1,2))</code>, I change the number of plots in a single plot window to two (1 row and two columns).</p>
+<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="rasters-in-r-the-terra-package.html#cb140-1" tabindex="-1"></a>dem1 <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">&quot;data/DGM25_2905530.xyz&quot;</span>)</span>
+<span id="cb140-2"><a href="rasters-in-r-the-terra-package.html#cb140-2" tabindex="-1"></a>dem2 <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">&quot;data/DGM25_2905540.xyz&quot;</span>)</span>
+<span id="cb140-3"><a href="rasters-in-r-the-terra-package.html#cb140-3" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb140-4"><a href="rasters-in-r-the-terra-package.html#cb140-4" tabindex="-1"></a><span class="fu">plot</span>(dem1)</span>
+<span id="cb140-5"><a href="rasters-in-r-the-terra-package.html#cb140-5" tabindex="-1"></a><span class="fu">plot</span>(dem2)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-81-1.png" width="672" /></p>
+<div class="sourceCode" id="cb141"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb141-1"><a href="rasters-in-r-the-terra-package.html#cb141-1" tabindex="-1"></a><span class="fu">crs</span>(dem1) <span class="ot">=</span> <span class="st">&quot;+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs &quot;</span></span>
+<span id="cb141-2"><a href="rasters-in-r-the-terra-package.html#cb141-2" tabindex="-1"></a><span class="fu">crs</span>(dem2) <span class="ot">=</span> <span class="st">&quot;+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs &quot;</span></span></code></pre></div>
+<p>They are digital elevation models (DEMs).</p>
+<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb142-1"><a href="rasters-in-r-the-terra-package.html#cb142-1" tabindex="-1"></a>dem1</span></code></pre></div>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 161, 161, 1  (nrow, ncol, nlyr)
+## resolution  : 25, 25  (x, y)
+## extent      : 295987.5, 300012.5, 5535988, 5540013  (xmin, xmax, ymin, ymax)
+## coord. ref. : +proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs 
+## source      : DGM25_2905530.xyz 
+## name        : DGM25_2905530 
+## min value   :       207.683 
+## max value   :       511.909</code></pre>
+</div>
+<div id="multiple-layers-in-one-spatraster" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Multiple layers in one SpatRaster<a href="rasters-in-r-the-terra-package.html#multiple-layers-in-one-spatraster" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>One <code>SpatRaster</code> can have multiple raster layers.
+Think of the temperature in the same area in several years where each layer is one year.
+Let’s simulate such an example.</p>
+<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb144-1"><a href="rasters-in-r-the-terra-package.html#cb144-1" tabindex="-1"></a><span class="co"># First we create a raster with temperatures between 10 and 15 degrees</span></span>
+<span id="cb144-2"><a href="rasters-in-r-the-terra-package.html#cb144-2" tabindex="-1"></a>r1 <span class="ot">=</span> <span class="fu">rast</span>(<span class="at">nrow =</span> <span class="dv">25</span>, <span class="at">ncol =</span> <span class="dv">25</span>)</span>
+<span id="cb144-3"><a href="rasters-in-r-the-terra-package.html#cb144-3" tabindex="-1"></a><span class="fu">values</span>(r1) <span class="ot">=</span> <span class="fu">runif</span>(<span class="at">n =</span> <span class="dv">25</span><span class="sc">^</span><span class="dv">2</span>, <span class="at">min =</span> <span class="dv">10</span>, <span class="at">max =</span> <span class="dv">15</span>)</span>
+<span id="cb144-4"><a href="rasters-in-r-the-terra-package.html#cb144-4" tabindex="-1"></a><span class="fu">plot</span>(r1)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-83-1.png" width="672" /></p>
+<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="rasters-in-r-the-terra-package.html#cb145-1" tabindex="-1"></a><span class="co"># Now we create two rasters that are based on r1 but slightly warmer. </span></span>
+<span id="cb145-2"><a href="rasters-in-r-the-terra-package.html#cb145-2" tabindex="-1"></a>r2 <span class="ot">=</span> r1 <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb145-3"><a href="rasters-in-r-the-terra-package.html#cb145-3" tabindex="-1"></a>r3 <span class="ot">=</span> r2 <span class="sc">+</span> <span class="dv">1</span></span></code></pre></div>
+<p>We can combine the three rasters into one multi-layer object.
+With terra this is as easy as writing a simple vector</p>
+<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="rasters-in-r-the-terra-package.html#cb146-1" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">c</span>(r1, r2, r3)</span>
+<span id="cb146-2"><a href="rasters-in-r-the-terra-package.html#cb146-2" tabindex="-1"></a>s</span></code></pre></div>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 25, 25, 3  (nrow, ncol, nlyr)
+## resolution  : 14.4, 7.2  (x, y)
+## extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+## coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+## source(s)   : memory
+## names       :    lyr.1,    lyr.1,    lyr.1 
+## min values  : 10.00379, 11.00379, 12.00379 
+## max values  : 14.99796, 15.99796, 16.99796</code></pre>
+<p>Note that the class of a multi-layer object is the same as a single layer raster.</p>
+<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="rasters-in-r-the-terra-package.html#cb148-1" tabindex="-1"></a><span class="fu">class</span>(s)</span></code></pre></div>
+<pre><code>## [1] &quot;SpatRaster&quot;
+## attr(,&quot;package&quot;)
+## [1] &quot;terra&quot;</code></pre>
+<p>Calling the generic plot function on such a multi-layer raster plots all layers, so be care full with this if you have many layers!</p>
+<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="rasters-in-r-the-terra-package.html#cb150-1" tabindex="-1"></a><span class="fu">plot</span>(s)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-86-1.png" width="672" /></p>
+<p>We can subset the object like a list.</p>
+<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="rasters-in-r-the-terra-package.html#cb151-1" tabindex="-1"></a>s[[<span class="dv">1</span>]]</span></code></pre></div>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 25, 25, 1  (nrow, ncol, nlyr)
+## resolution  : 14.4, 7.2  (x, y)
+## extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+## coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+## source(s)   : memory
+## name        :    lyr.1 
+## min value   : 10.00379 
+## max value   : 14.99796</code></pre>
+</div>
+<div id="raster-algebra" class="section level2 hasAnchor" number="2.5">
+<h2><span class="header-section-number">2.5</span> Raster algebra<a href="rasters-in-r-the-terra-package.html#raster-algebra" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>SpatRaster objects can be passed to most algebraic operations in R such as <code>+</code> and <code>-</code> or <code>sum()</code> and <code>abs()</code>.
+You have just seen this above, when I added a degree of temperature to our simulated temperature rasters.
+Below are some more examples</p>
+<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb153-1"><a href="rasters-in-r-the-terra-package.html#cb153-1" tabindex="-1"></a>p <span class="ot">=</span> r1 <span class="sc">+</span> <span class="dv">4</span></span>
+<span id="cb153-2"><a href="rasters-in-r-the-terra-package.html#cb153-2" tabindex="-1"></a>o <span class="ot">=</span> <span class="fu">sqrt</span>(r1)</span>
+<span id="cb153-3"><a href="rasters-in-r-the-terra-package.html#cb153-3" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">values</span>(r))</span></code></pre></div>
+<p>You can also add, substract, multiply and divide rasters with each other.</p>
+<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb154-1"><a href="rasters-in-r-the-terra-package.html#cb154-1" tabindex="-1"></a>xo <span class="ot">=</span> x <span class="sc">+</span> o </span>
+<span id="cb154-2"><a href="rasters-in-r-the-terra-package.html#cb154-2" tabindex="-1"></a>ox <span class="ot">=</span> x <span class="sc">+</span> o</span>
+<span id="cb154-3"><a href="rasters-in-r-the-terra-package.html#cb154-3" tabindex="-1"></a>px <span class="ot">=</span> p <span class="sc">/</span> x</span></code></pre></div>
+</div>
+<div id="high-level-functions" class="section level2 hasAnchor" number="2.6">
+<h2><span class="header-section-number">2.6</span> High-level functions<a href="rasters-in-r-the-terra-package.html#high-level-functions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In most situations you will have rasters that are larger than what you need.
+You might be interested in the landcover of your study area but the data covers all of Europe.
+Conversely, you might also need to combine different rasters if the scale of your analysis is larger than the data you are using.
+Often this is the case when larger rasters are split in smaller areas to reduce their size.</p>
+<p>In the first case, you would use <code>crop()</code>.
+Provided with a raster and an extend, <code>crop()</code> will return only the part of the raster that lies within the extend.
+An extend usually is a named vector with four elements: xmin, xmax, ymin and ymax.
+It might for example be the bounding box you derived from the vector data you were analyzing in <code>sf</code>.
+You can create this vector yourself if you know the relevant numbers.
+An alternative is the <code>drawExtent()</code> function from the <code>raster</code> package.
+This lets you click on an already plotted raster an returns the extend of the thus created rectangle.
+Try the code below in your own R instance to see what I mean.</p>
+<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb155-1"><a href="rasters-in-r-the-terra-package.html#cb155-1" tabindex="-1"></a><span class="fu">plot</span>(dem1)</span>
+<span id="cb155-2"><a href="rasters-in-r-the-terra-package.html#cb155-2" tabindex="-1"></a>extent <span class="ot">=</span> raster<span class="sc">::</span><span class="fu">drawExtent</span>()</span>
+<span id="cb155-3"><a href="rasters-in-r-the-terra-package.html#cb155-3" tabindex="-1"></a>dem1crop <span class="ot">=</span> terra<span class="sc">::</span><span class="fu">crop</span>(<span class="at">x =</span>dem1, <span class="at">y=</span>extent)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-91-1.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-91-2.png" width="672" /></p>
+<p>Nice!
+Now have reduced the raster to the area we are actually interested in.
+We can compute the mean height or the sum of all heights with <code>global()</code>.</p>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="rasters-in-r-the-terra-package.html#cb156-1" tabindex="-1"></a><span class="fu">global</span>(dem1crop, <span class="st">&quot;sum&quot;</span>)</span></code></pre></div>
+<pre><code>##                    sum
+## DGM25_2905530 100724.5</code></pre>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="rasters-in-r-the-terra-package.html#cb158-1" tabindex="-1"></a><span class="fu">global</span>(dem1crop, <span class="st">&quot;mean&quot;</span>)</span></code></pre></div>
+<pre><code>##                   mean
+## DGM25_2905530 331.3307</code></pre>
+<p>We can also expand a raster with the <code>extend()</code> function.
+That means we add rows and/ or columns with <code>NA</code> values.
+The other way around we can also trim them, removing all cells with <code>NA</code>s in the margins.</p>
+<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="rasters-in-r-the-terra-package.html#cb160-1" tabindex="-1"></a>dem1.exp <span class="ot">=</span> <span class="fu">extend</span>(dem1, <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">100</span>,<span class="dv">100</span>))</span>
+<span id="cb160-2"><a href="rasters-in-r-the-terra-package.html#cb160-2" tabindex="-1"></a><span class="fu">plot</span>(dem1.exp)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-93-1.png" width="672" /></p>
+<p>Since all the <code>NA</code>s are just white, it’s hard to see what we actually did here.
+Let’s give them some random value so we can see the cells we added.</p>
+<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="rasters-in-r-the-terra-package.html#cb161-1" tabindex="-1"></a>na_cells <span class="ot">=</span> <span class="fu">which</span>(<span class="fu">is.na</span>(<span class="fu">values</span>(dem1.exp)))</span>
+<span id="cb161-2"><a href="rasters-in-r-the-terra-package.html#cb161-2" tabindex="-1"></a><span class="fu">values</span>(dem1.exp)[na_cells] <span class="ot">=</span> <span class="dv">300</span></span>
+<span id="cb161-3"><a href="rasters-in-r-the-terra-package.html#cb161-3" tabindex="-1"></a><span class="fu">plot</span>(dem1.exp)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-94-1.png" width="672" /></p>
+<p>We can now clearly see the added cells in blue.
+With <code>trim()</code> we can remove them again.</p>
+<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="rasters-in-r-the-terra-package.html#cb162-1" tabindex="-1"></a>na_cells <span class="ot">=</span> <span class="fu">which</span>(<span class="fu">values</span>(dem1.exp) <span class="sc">==</span> <span class="dv">300</span>)</span>
+<span id="cb162-2"><a href="rasters-in-r-the-terra-package.html#cb162-2" tabindex="-1"></a><span class="fu">values</span>(dem1.exp)[na_cells] <span class="ot">=</span> <span class="cn">NA</span></span>
+<span id="cb162-3"><a href="rasters-in-r-the-terra-package.html#cb162-3" tabindex="-1"></a>dem1.trm <span class="ot">=</span> <span class="fu">trim</span>(dem1.exp)</span>
+<span id="cb162-4"><a href="rasters-in-r-the-terra-package.html#cb162-4" tabindex="-1"></a><span class="fu">plot</span>(dem1.trm)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-95-1.png" width="672" /></p>
+<p>As mentioned before, sometimes you want to combine rasters.
+For example our two DEMs are both part of a larger DEM that covers all of the German federal state Rhineland-Palatinate.
+We can combine the two rasters with <code>merge()</code></p>
+<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb163-1"><a href="rasters-in-r-the-terra-package.html#cb163-1" tabindex="-1"></a>dem_merge <span class="ot">=</span> <span class="fu">merge</span>(dem1, dem2)</span>
+<span id="cb163-2"><a href="rasters-in-r-the-terra-package.html#cb163-2" tabindex="-1"></a><span class="fu">plot</span>(dem_merge)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-96-1.png" width="672" /></p>
+<p>Whenever you want to use multiple raster in an operation, it is important that they have the same CRS and cell sizes.
+You can increase cell sizes with <code>aggregate()</code> and reduce cell sizes with <code>disaggregate()</code>.
+In the first case, several cells are combined into one.
+The number of cells is set with the <code>fact</code> argument.
+When you supply one number it is used for both directions.
+So if you call <code>aggregate(x, fact = 2)</code> and raster has the cell size 10m by 10m, the new raster will be 20m by 20m.
+You can also provide <code>fact</code> with a vector that specifies the aggregation factor in each direction.
+The third argument is <code>fun</code> which specifies how to calculate the new cell value.
+If our new cell consists of four old cells (i.e., we used an aggregation factor of 2) we somehow need to combine those four numbers into one.
+Common options here are the mean, the median, the modal, the maximum, the minimum, or the sum.</p>
+<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="rasters-in-r-the-terra-package.html#cb164-1" tabindex="-1"></a>dem1_agg_2_mean <span class="ot">=</span> <span class="fu">aggregate</span>(dem1, <span class="at">fact=</span><span class="dv">2</span>, <span class="at">fun =</span> <span class="st">&quot;mean&quot;</span>)</span>
+<span id="cb164-2"><a href="rasters-in-r-the-terra-package.html#cb164-2" tabindex="-1"></a>dem1_agg_3_mean <span class="ot">=</span> <span class="fu">aggregate</span>(dem1, <span class="at">fact=</span><span class="dv">4</span>, <span class="at">fun =</span> <span class="st">&quot;mean&quot;</span>)</span>
+<span id="cb164-3"><a href="rasters-in-r-the-terra-package.html#cb164-3" tabindex="-1"></a>dem1_agg_4_mean <span class="ot">=</span> <span class="fu">aggregate</span>(dem1, <span class="at">fact=</span><span class="dv">6</span>, <span class="at">fun =</span> <span class="st">&quot;mean&quot;</span>)</span>
+<span id="cb164-4"><a href="rasters-in-r-the-terra-package.html#cb164-4" tabindex="-1"></a>dem1_agg_5_mean <span class="ot">=</span> <span class="fu">aggregate</span>(dem1, <span class="at">fact=</span><span class="dv">8</span>, <span class="at">fun =</span> <span class="st">&quot;mean&quot;</span>)</span>
+<span id="cb164-5"><a href="rasters-in-r-the-terra-package.html#cb164-5" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb164-6"><a href="rasters-in-r-the-terra-package.html#cb164-6" tabindex="-1"></a><span class="fu">plot</span>(dem1_agg_2_mean)</span>
+<span id="cb164-7"><a href="rasters-in-r-the-terra-package.html#cb164-7" tabindex="-1"></a><span class="fu">plot</span>(dem1_agg_3_mean)</span>
+<span id="cb164-8"><a href="rasters-in-r-the-terra-package.html#cb164-8" tabindex="-1"></a><span class="fu">plot</span>(dem1_agg_4_mean)</span>
+<span id="cb164-9"><a href="rasters-in-r-the-terra-package.html#cb164-9" tabindex="-1"></a><span class="fu">plot</span>(dem1_agg_5_mean)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-97-1.png" width="672" /></p>
+<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb165-1"><a href="rasters-in-r-the-terra-package.html#cb165-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb165-2"><a href="rasters-in-r-the-terra-package.html#cb165-2" tabindex="-1"></a>dem1_agg_mean <span class="ot">=</span> <span class="fu">aggregate</span>(dem1, <span class="at">fact =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">6</span>), <span class="at">fun =</span> <span class="st">&quot;mean&quot;</span>)</span>
+<span id="cb165-3"><a href="rasters-in-r-the-terra-package.html#cb165-3" tabindex="-1"></a>dem1_agg_min <span class="ot">=</span> <span class="fu">aggregate</span>(dem1, <span class="at">fact =</span> <span class="dv">4</span>, <span class="at">fun =</span> <span class="st">&quot;min&quot;</span>)</span>
+<span id="cb165-4"><a href="rasters-in-r-the-terra-package.html#cb165-4" tabindex="-1"></a>dem1_agg_max <span class="ot">=</span> <span class="fu">aggregate</span>(dem1, <span class="at">fact =</span> <span class="dv">4</span>, <span class="at">fun =</span> <span class="st">&quot;max&quot;</span>)</span>
+<span id="cb165-5"><a href="rasters-in-r-the-terra-package.html#cb165-5" tabindex="-1"></a>dem1_agg_sum <span class="ot">=</span> <span class="fu">aggregate</span>(dem1, <span class="at">fact =</span> <span class="dv">4</span>, <span class="at">fun =</span> <span class="st">&quot;sum&quot;</span>)</span>
+<span id="cb165-6"><a href="rasters-in-r-the-terra-package.html#cb165-6" tabindex="-1"></a><span class="fu">plot</span>(dem1_agg_mean,  <span class="at">main =</span> <span class="st">&quot;directed aggregation&quot;</span>)</span>
+<span id="cb165-7"><a href="rasters-in-r-the-terra-package.html#cb165-7" tabindex="-1"></a><span class="fu">plot</span>(dem1_agg_min,   <span class="at">main =</span> <span class="st">&quot;minimum&quot;</span>)</span>
+<span id="cb165-8"><a href="rasters-in-r-the-terra-package.html#cb165-8" tabindex="-1"></a><span class="fu">plot</span>(dem1_agg_max,   <span class="at">main =</span> <span class="st">&quot;maximum&quot;</span>)</span>
+<span id="cb165-9"><a href="rasters-in-r-the-terra-package.html#cb165-9" tabindex="-1"></a><span class="fu">plot</span>(dem1_agg_sum , <span class="at">main =</span> <span class="st">&quot;sum&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-97-2.png" width="672" /></p>
+<p>When we want to go in the other direction, we disaggregate raster cells with the <code>disagg()</code> function.
+Sadly, we cannot magically determine what values are the field truth for the new, smaller cells.
+Instead each new cell gets the same value as it’s parent.</p>
+<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="rasters-in-r-the-terra-package.html#cb166-1" tabindex="-1"></a>dem1_disagg <span class="ot">=</span> <span class="fu">disagg</span>(dem1, <span class="at">fact =</span> <span class="dv">2</span>)</span>
+<span id="cb166-2"><a href="rasters-in-r-the-terra-package.html#cb166-2" tabindex="-1"></a><span class="fu">plot</span>(dem1_disagg)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-98-1.png" width="672" /></p>
+<div id="extracting-raster-values-with-vectors" class="section level3 hasAnchor" number="2.6.1">
+<h3><span class="header-section-number">2.6.1</span> Extracting raster values with vectors<a href="rasters-in-r-the-terra-package.html#extracting-raster-values-with-vectors" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We often encounter situations where we want to extract the values of a raster that coincide with vector data we have.
+For example, we might have taken soil samples along an elevational gradient and now we want to know the altitude of the samples.
+Or we are interested in the land cover of a river catchment.</p>
+<p>To demonstrate this, we will need some vector data.
+For the point data, we can simulate points within the bounding box of our DEMs.</p>
+<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="rasters-in-r-the-terra-package.html#cb167-1" tabindex="-1"></a><span class="co"># - extract extend of DEM</span></span>
+<span id="cb167-2"><a href="rasters-in-r-the-terra-package.html#cb167-2" tabindex="-1"></a>dem.ext <span class="ot">&lt;-</span> <span class="fu">ext</span>(dem1)</span>
+<span id="cb167-3"><a href="rasters-in-r-the-terra-package.html#cb167-3" tabindex="-1"></a><span class="co"># - convert extend to bounding box usable by sf</span></span>
+<span id="cb167-4"><a href="rasters-in-r-the-terra-package.html#cb167-4" tabindex="-1"></a>dem.bb <span class="ot">&lt;-</span> <span class="fu">st_bbox</span>(dem.ext)</span>
+<span id="cb167-5"><a href="rasters-in-r-the-terra-package.html#cb167-5" tabindex="-1"></a><span class="co"># - create 10 random points within bounding box</span></span>
+<span id="cb167-6"><a href="rasters-in-r-the-terra-package.html#cb167-6" tabindex="-1"></a>random_points <span class="ot">&lt;-</span> <span class="fu">st_sample</span>(<span class="at">x =</span> <span class="fu">st_as_sfc</span>(dem.bb), <span class="dv">10</span>)</span>
+<span id="cb167-7"><a href="rasters-in-r-the-terra-package.html#cb167-7" tabindex="-1"></a>random_points <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(random_points, <span class="at">crs =</span> <span class="dv">25832</span>)</span>
+<span id="cb167-8"><a href="rasters-in-r-the-terra-package.html#cb167-8" tabindex="-1"></a><span class="co">#- interactive map</span></span>
+<span id="cb167-9"><a href="rasters-in-r-the-terra-package.html#cb167-9" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">&quot;plot&quot;</span>)</span></code></pre></div>
+<pre><code>## tmap mode set to plotting</code></pre>
+<div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="rasters-in-r-the-terra-package.html#cb169-1" tabindex="-1"></a><span class="fu">tm_shape</span>(dem1) <span class="sc">+</span> <span class="fu">tm_raster</span>() <span class="sc">+</span> <span class="fu">tm_shape</span>(random_points) <span class="sc">+</span> <span class="fu">tm_dots</span>(<span class="at">size =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-99-1.png" width="672" /></p>
+<p>Now we have ten randomly distributed points.
+If your repeat this with you own computer your ten points will be at other positions.
+Now that we have vector data, we can extract the raster values, i.e., the altitude, at the locations of our points.
+This extraction is done with <code>extract()</code>.
+The first argument to <code>extract()</code> is the raster from which we want to extract values.
+The second argument is the location of points, at which we want to extract the values.
+Make sure that raster and vector data are in the same CRS.</p>
+<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="rasters-in-r-the-terra-package.html#cb170-1" tabindex="-1"></a>ex.points <span class="ot">&lt;-</span> <span class="fu">extract</span>(dem1, random_points)</span></code></pre></div>
+<pre><code>## Warning: [extract] transforming vector data to the CRS of the raster</code></pre>
+<p>We get a non-spatial data.frame that holds the row number of points and the elevation at these points.
+We can add the altitude values back to the points like this:</p>
+<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb172-1"><a href="rasters-in-r-the-terra-package.html#cb172-1" tabindex="-1"></a>random_points<span class="sc">$</span>altitude <span class="ot">&lt;-</span> ex.points<span class="sc">$</span>DGM25_2905530</span>
+<span id="cb172-2"><a href="rasters-in-r-the-terra-package.html#cb172-2" tabindex="-1"></a><span class="fu">tm_shape</span>(random_points) <span class="sc">+</span> <span class="fu">tm_dots</span>(<span class="at">col =</span> <span class="st">&quot;altitude&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-101-1.png" width="672" /></p>
+<p>How does this work with polygons instead of points?
+First, we need some polygons.
+Here, we use river catchments from Rhineland-Palatinate (available <a href="(https://seafile.rlp.net/d/c757bff20f1f49f99cb2)">here</a>).</p>
+<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="rasters-in-r-the-terra-package.html#cb173-1" tabindex="-1"></a>catchments <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">&quot;data/catchments.gpkg&quot;</span>)</span></code></pre></div>
+<pre><code>## Reading layer `catchments&#39; from data source `C:\Users\jonat\Documents\001_Uni\002_teaching\online books\book_spatial_data_science_in_R\data\catchments.gpkg&#39; using driver `GPKG&#39;
+## Simple feature collection with 2754 features and 55 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 4042743 ymin: 2874149 xmax: 4212789 ymax: 3094667
+## Projected CRS: ETRS89-extended / LAEA Europe</code></pre>
+<p>Let’s have a look at the data.</p>
+<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="rasters-in-r-the-terra-package.html#cb175-1" tabindex="-1"></a><span class="fu">tm_shape</span>(catchments) <span class="sc">+</span> </span>
+<span id="cb175-2"><a href="rasters-in-r-the-terra-package.html#cb175-2" tabindex="-1"></a>        <span class="fu">tm_polygons</span>(<span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb175-3"><a href="rasters-in-r-the-terra-package.html#cb175-3" tabindex="-1"></a>        <span class="fu">tm_shape</span>(dem_merge) <span class="sc">+</span> </span>
+<span id="cb175-4"><a href="rasters-in-r-the-terra-package.html#cb175-4" tabindex="-1"></a>        <span class="fu">tm_raster</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-103-1.png" width="672" /></p>
+<p>As we can see, we are missing elevation data for most of the catchments.
+Thus, we will first remove all catchments for which we are lacking data.</p>
+<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="rasters-in-r-the-terra-package.html#cb176-1" tabindex="-1"></a>dem.ext <span class="ot">&lt;-</span> <span class="fu">ext</span>(dem_merge)</span>
+<span id="cb176-2"><a href="rasters-in-r-the-terra-package.html#cb176-2" tabindex="-1"></a><span class="co"># - convert extend to bounding box usable by sf</span></span>
+<span id="cb176-3"><a href="rasters-in-r-the-terra-package.html#cb176-3" tabindex="-1"></a>dem.bb <span class="ot">&lt;-</span> <span class="fu">st_bbox</span>(dem.ext) <span class="sc">|&gt;</span> <span class="fu">st_as_sfc</span>() <span class="sc">|&gt;</span> <span class="fu">st_as_sf</span>(<span class="at">crs =</span> <span class="dv">25832</span>)</span>
+<span id="cb176-4"><a href="rasters-in-r-the-terra-package.html#cb176-4" tabindex="-1"></a><span class="co"># - transform catchments to same bb as the DEMs</span></span>
+<span id="cb176-5"><a href="rasters-in-r-the-terra-package.html#cb176-5" tabindex="-1"></a>catchments <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(catchments, <span class="at">crs =</span> <span class="dv">25832</span>)</span>
+<span id="cb176-6"><a href="rasters-in-r-the-terra-package.html#cb176-6" tabindex="-1"></a><span class="co"># - subset catchments to only those that are completely within the DEM </span></span>
+<span id="cb176-7"><a href="rasters-in-r-the-terra-package.html#cb176-7" tabindex="-1"></a>catchments2  <span class="ot">&lt;-</span> catchments[dem.bb, , op <span class="ot">=</span> st_within]</span></code></pre></div>
+<p>Let’s have a look at the result.</p>
+<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="rasters-in-r-the-terra-package.html#cb177-1" tabindex="-1"></a><span class="fu">tm_shape</span>(catchments2) <span class="sc">+</span> </span>
+<span id="cb177-2"><a href="rasters-in-r-the-terra-package.html#cb177-2" tabindex="-1"></a>        <span class="fu">tm_polygons</span>(<span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb177-3"><a href="rasters-in-r-the-terra-package.html#cb177-3" tabindex="-1"></a>        <span class="fu">tm_shape</span>(dem_merge) <span class="sc">+</span> </span>
+<span id="cb177-4"><a href="rasters-in-r-the-terra-package.html#cb177-4" tabindex="-1"></a>        <span class="fu">tm_raster</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-105-1.png" width="672" /></p>
+<p>Next, we extract the raster values from the cells within the polygons.
+For this we use the same function as before, <code>extract()</code>.
+As there is a function with the same name in the <code>raster</code> package, we preface our call with <code>terra::</code>.</p>
+<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="rasters-in-r-the-terra-package.html#cb178-1" tabindex="-1"></a>dem_ext <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">extract</span>(dem_merge, catchments2)</span></code></pre></div>
+<pre><code>## Warning: [extract] transforming vector data to the CRS of the raster</code></pre>
+<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="rasters-in-r-the-terra-package.html#cb180-1" tabindex="-1"></a><span class="fu">head</span>(dem_ext)</span></code></pre></div>
+<pre><code>##   ID DGM25_2905530
+## 1  1       458.403
+## 2  1       458.774
+## 3  1       459.436
+## 4  1       460.564
+## 5  1       461.968
+## 6  1       463.475</code></pre>
+<p>The result is a data.frame with two columns: <code>ID</code> and <code>DGM25_2905530</code>.
+The second column is named after the raster from which we extracted the values.
+The <code>ID</code> column assigns the raster values to the polygons we used for the extraction.</p>
+<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="rasters-in-r-the-terra-package.html#cb182-1" tabindex="-1"></a><span class="fu">unique</span>(dem_ext<span class="sc">$</span>ID)</span></code></pre></div>
+<pre><code>## [1] 1 2 3 4 5 6 7</code></pre>
+<p>As we can see, the ID values go from one to seven and we have</p>
+<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="rasters-in-r-the-terra-package.html#cb184-1" tabindex="-1"></a><span class="fu">nrow</span>(catchments2)</span></code></pre></div>
+<pre><code>## [1] 7</code></pre>
+<p>seven catchment polygons.
+So all rows in <code>dem_ext</code> in which the <code>ID</code> variable is <code>1</code>, contain raster cell values from cells that are within the polygon in the first row on <code>catchments2</code>.</p>
+<p>Now we can compute the mean elevation within each catchment and assign it as a variable to <code>catchments2</code>.
+Here, I will show two different ways to summarize one variable by another.
+In our case, the elevation (<code>DGM25_2905530</code>) by the catchment (<code>ID</code>).
+First, we can use <code>group_by()</code> and <code>summarize()</code> from the <code>dplyr</code> package.
+The first function defines the variable that groups the rows and the second computes some function of a variable.
+Note that I use the native R pipe (<code>|&gt;</code>) for this.
+It is functionally almost equivalent to the magrittr pipe (<code>%&gt;%</code>)</p>
+<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="rasters-in-r-the-terra-package.html#cb186-1" tabindex="-1"></a>dem_ext <span class="sc">|&gt;</span> </span>
+<span id="cb186-2"><a href="rasters-in-r-the-terra-package.html#cb186-2" tabindex="-1"></a>        <span class="fu">group_by</span>(ID) <span class="sc">|&gt;</span> </span>
+<span id="cb186-3"><a href="rasters-in-r-the-terra-package.html#cb186-3" tabindex="-1"></a>        <span class="fu">summarize</span>(<span class="at">mean_elev =</span> <span class="fu">mean</span>(DGM25_2905530))</span></code></pre></div>
+<pre><code>## # A tibble: 7 × 2
+##      ID mean_elev
+##   &lt;dbl&gt;     &lt;dbl&gt;
+## 1     1      392.
+## 2     2      283.
+## 3     3      377.
+## 4     4      327.
+## 5     5      278.
+## 6     6      385.
+## 7     7      364.</code></pre>
+<p>Alternatively, we can use the <code>data.table</code> package.
+Here, we need to turn <code>dem_ext</code> into a data.table object with <code>setDT()</code>.
+<code>setDT()</code> is a <strong>mutating function</strong>.
+That means the object within the function is changed (mutated) directly.<br />
+We do not need to assign the result to an object.
+data.tables can be subset or modified following the scheme <code>dt[i,j,by]</code>, we <code>i</code> is a logical expression subsetting the rows, <code>j</code> is an expression subsetting or modifying columns and <code>by</code> provides a grouping structure for <code>j</code>.</p>
+<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="rasters-in-r-the-terra-package.html#cb188-1" tabindex="-1"></a><span class="fu">library</span>(data.table)</span></code></pre></div>
+<pre><code>## data.table 1.16.2 using 6 threads (see ?getDTthreads).  Latest news: r-datatable.com
+## 
+## Attache Paket: &#39;data.table&#39;
+## 
+## Das folgende Objekt ist maskiert &#39;package:terra&#39;:
+## 
+##     shift
+## 
+## Die folgenden Objekte sind maskiert von &#39;package:dplyr&#39;:
+## 
+##     between, first, last</code></pre>
+<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb190-1"><a href="rasters-in-r-the-terra-package.html#cb190-1" tabindex="-1"></a><span class="fu">setDT</span>(dem_ext)</span>
+<span id="cb190-2"><a href="rasters-in-r-the-terra-package.html#cb190-2" tabindex="-1"></a>(dem_ext2 <span class="ot">&lt;-</span> dem_ext[, <span class="fu">mean</span>(DGM25_2905530), <span class="at">by =</span> <span class="st">&quot;ID&quot;</span>])</span></code></pre></div>
+<pre><code>##       ID       V1
+##    &lt;num&gt;    &lt;num&gt;
+## 1:     1 391.8343
+## 2:     2 282.9041
+## 3:     3 377.3319
+## 4:     4 326.7337
+## 5:     5 277.8304
+## 6:     6 385.4874
+## 7:     7 363.8802</code></pre>
+<p>Either way we get the same results, which we can now add back to the catchments.</p>
+<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="rasters-in-r-the-terra-package.html#cb192-1" tabindex="-1"></a>catchments2<span class="sc">$</span>elev_new <span class="ot">&lt;-</span> dem_ext2<span class="sc">$</span>V1</span>
+<span id="cb192-2"><a href="rasters-in-r-the-terra-package.html#cb192-2" tabindex="-1"></a><span class="fu">tm_shape</span>(catchments2) <span class="sc">+</span> <span class="fu">tm_polygons</span>(<span class="at">col =</span> <span class="st">&quot;elev_new&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-111-1.png" width="672" /></p>
+<p>The <code>lapp()</code> function is used for functional programming.
+It is similar to <code>apply()</code>-family functions or <code>map</code>-family functions from the <em>purrr</em> package.
+It applies a function to each layer of a raster.
+Here, we increase the height of a third of the cells by 10m.</p>
+<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="rasters-in-r-the-terra-package.html#cb193-1" tabindex="-1"></a>dem1_2 <span class="ot">=</span> dem1_3 <span class="ot">=</span> dem1</span>
+<span id="cb193-2"><a href="rasters-in-r-the-terra-package.html#cb193-2" tabindex="-1"></a><span class="fu">values</span>(dem1_2) <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="fu">ncell</span>(dem1),<span class="dv">1</span>,<span class="fl">0.33</span>)</span>
+<span id="cb193-3"><a href="rasters-in-r-the-terra-package.html#cb193-3" tabindex="-1"></a><span class="fu">values</span>(dem1_3) <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb193-4"><a href="rasters-in-r-the-terra-package.html#cb193-4" tabindex="-1"></a>dem1_all <span class="ot">=</span> <span class="fu">c</span>(dem1, dem1_2, dem1_3)</span>
+<span id="cb193-5"><a href="rasters-in-r-the-terra-package.html#cb193-5" tabindex="-1"></a>dem_lapp <span class="ot">=</span> <span class="fu">lapp</span>(dem1_all, <span class="cf">function</span>(x,y,z) x <span class="sc">+</span> y <span class="sc">*</span> z)</span>
+<span id="cb193-6"><a href="rasters-in-r-the-terra-package.html#cb193-6" tabindex="-1"></a><span class="fu">plot</span>(dem_lapp)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-112-1.png" width="672" /></p>
+<p>We can classify the cells with the <code>classify()</code> function.</p>
+<div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb194-1"><a href="rasters-in-r-the-terra-package.html#cb194-1" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dv">1</span>,</span>
+<span id="cb194-2"><a href="rasters-in-r-the-terra-package.html#cb194-2" tabindex="-1"></a>       <span class="dv">100</span>, <span class="dv">250</span>, <span class="dv">2</span>,</span>
+<span id="cb194-3"><a href="rasters-in-r-the-terra-package.html#cb194-3" tabindex="-1"></a>       <span class="dv">250</span>, <span class="dv">400</span>, <span class="dv">3</span>,</span>
+<span id="cb194-4"><a href="rasters-in-r-the-terra-package.html#cb194-4" tabindex="-1"></a>       <span class="dv">400</span>, <span class="dv">600</span>, <span class="dv">4</span>)</span>
+<span id="cb194-5"><a href="rasters-in-r-the-terra-package.html#cb194-5" tabindex="-1"></a>dem1_cut <span class="ot">=</span> <span class="fu">classify</span>(dem1, <span class="at">rcl =</span> m)</span>
+<span id="cb194-6"><a href="rasters-in-r-the-terra-package.html#cb194-6" tabindex="-1"></a><span class="fu">plot</span>(dem1_cut)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-113-1.png" width="672" /></p>
+<p><code>focal()</code> can be used to replace the value of a focal cell by some function of its neighbors.
+Which neighbors and what function to use can be chosen as arguments.</p>
+<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="rasters-in-r-the-terra-package.html#cb195-1" tabindex="-1"></a>mw <span class="ot">=</span> <span class="fu">focal</span>(dem1, <span class="at">w=</span><span class="dv">3</span>)</span>
+<span id="cb195-2"><a href="rasters-in-r-the-terra-package.html#cb195-2" tabindex="-1"></a><span class="fu">plot</span>(mw)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-114-1.png" width="672" /></p>
+</div>
+<div id="masking" class="section level3 hasAnchor" number="2.6.2">
+<h3><span class="header-section-number">2.6.2</span> Masking<a href="rasters-in-r-the-terra-package.html#masking" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Sometimes we might want to fill holes in rasters, i.e., areas that only contain NAs or some other non-informative value, with the values from a second raster.
+This operation is called <strong>masking</strong>.
+Here, we will work through a short example, where there are randomly scatted NAs throughout the raster.
+This might happen, if clouds prevented our satellite to accurately measure ground conditions.</p>
+<div class="sourceCode" id="cb196"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb196-1"><a href="rasters-in-r-the-terra-package.html#cb196-1" tabindex="-1"></a><span class="co"># Example1 </span></span>
+<span id="cb196-2"><a href="rasters-in-r-the-terra-package.html#cb196-2" tabindex="-1"></a>dem1_na <span class="ot">=</span> dem1 </span>
+<span id="cb196-3"><a href="rasters-in-r-the-terra-package.html#cb196-3" tabindex="-1"></a><span class="fu">values</span>(dem1_na)[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">ncell</span>(dem1), <span class="at">size =</span> <span class="dv">100</span>)] <span class="ot">=</span> <span class="cn">NA</span></span>
+<span id="cb196-4"><a href="rasters-in-r-the-terra-package.html#cb196-4" tabindex="-1"></a><span class="fu">plot</span>(dem1_na)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-115-1.png" width="672" /></p>
+<p>To fill these values with the values from another raster, we use the <code>cover()</code> function.</p>
+<div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb197-1"><a href="rasters-in-r-the-terra-package.html#cb197-1" tabindex="-1"></a>dem1_mask <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">cover</span>(<span class="at">x =</span> dem1_na, <span class="at">y =</span> dem1, <span class="at">values =</span> <span class="cn">NA</span>)</span>
+<span id="cb197-2"><a href="rasters-in-r-the-terra-package.html#cb197-2" tabindex="-1"></a><span class="fu">plot</span>(dem1_mask)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-116-1.png" width="672" /></p>
+</div>
+</div>
+<div id="cell-level-functions" class="section level2 hasAnchor" number="2.7">
+<h2><span class="header-section-number">2.7</span> Cell-level functions<a href="rasters-in-r-the-terra-package.html#cell-level-functions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In terra the cells within a raster a numbered from the upper left cell to the upper right and then continuing in the second row.
+See the first plot in <strong>Going beyond the hull</strong>.
+There is bunch of functions to help you figure out the values of specific cells:</p>
+<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb198-1"><a href="rasters-in-r-the-terra-package.html#cb198-1" tabindex="-1"></a><span class="co"># how many columns</span></span>
+<span id="cb198-2"><a href="rasters-in-r-the-terra-package.html#cb198-2" tabindex="-1"></a><span class="fu">ncol</span>(r)</span>
+<span id="cb198-3"><a href="rasters-in-r-the-terra-package.html#cb198-3" tabindex="-1"></a><span class="co"># how many rows</span></span>
+<span id="cb198-4"><a href="rasters-in-r-the-terra-package.html#cb198-4" tabindex="-1"></a><span class="fu">nrow</span>(r)</span>
+<span id="cb198-5"><a href="rasters-in-r-the-terra-package.html#cb198-5" tabindex="-1"></a><span class="co"># how many cells </span></span>
+<span id="cb198-6"><a href="rasters-in-r-the-terra-package.html#cb198-6" tabindex="-1"></a><span class="fu">ncell</span>(r)</span>
+<span id="cb198-7"><a href="rasters-in-r-the-terra-package.html#cb198-7" tabindex="-1"></a><span class="co"># in which row is cell 3?</span></span>
+<span id="cb198-8"><a href="rasters-in-r-the-terra-package.html#cb198-8" tabindex="-1"></a><span class="fu">rowFromCell</span>(dem1, <span class="dv">3</span>)</span>
+<span id="cb198-9"><a href="rasters-in-r-the-terra-package.html#cb198-9" tabindex="-1"></a><span class="co"># in which column is cell 3?</span></span>
+<span id="cb198-10"><a href="rasters-in-r-the-terra-package.html#cb198-10" tabindex="-1"></a><span class="fu">colFromCell</span>(dem1, <span class="dv">3</span>)</span>
+<span id="cb198-11"><a href="rasters-in-r-the-terra-package.html#cb198-11" tabindex="-1"></a><span class="co"># which cell is in row 5 and column 5?</span></span>
+<span id="cb198-12"><a href="rasters-in-r-the-terra-package.html#cb198-12" tabindex="-1"></a><span class="fu">cellFromRowCol</span>(dem1,<span class="dv">5</span>,<span class="dv">5</span>)</span>
+<span id="cb198-13"><a href="rasters-in-r-the-terra-package.html#cb198-13" tabindex="-1"></a><span class="co"># what are the coordinates of cell 100? </span></span>
+<span id="cb198-14"><a href="rasters-in-r-the-terra-package.html#cb198-14" tabindex="-1"></a><span class="fu">xyFromCell</span>(dem1, <span class="dv">100</span>)</span>
+<span id="cb198-15"><a href="rasters-in-r-the-terra-package.html#cb198-15" tabindex="-1"></a><span class="co"># which cell lies at the coordinates 0,0 </span></span>
+<span id="cb198-16"><a href="rasters-in-r-the-terra-package.html#cb198-16" tabindex="-1"></a><span class="fu">cellFromXY</span>(r, <span class="fu">cbind</span>(<span class="dv">0</span>,<span class="dv">0</span>))</span>
+<span id="cb198-17"><a href="rasters-in-r-the-terra-package.html#cb198-17" tabindex="-1"></a><span class="co"># which column has a Y coordinate of 0 </span></span>
+<span id="cb198-18"><a href="rasters-in-r-the-terra-package.html#cb198-18" tabindex="-1"></a><span class="fu">colFromX</span>(r, <span class="dv">0</span>)</span>
+<span id="cb198-19"><a href="rasters-in-r-the-terra-package.html#cb198-19" tabindex="-1"></a><span class="co"># which row has a Y coordinate of 0 </span></span>
+<span id="cb198-20"><a href="rasters-in-r-the-terra-package.html#cb198-20" tabindex="-1"></a><span class="fu">rowFromY</span>(r, <span class="dv">0</span>)</span></code></pre></div>
+<p>We have seen before that we can use <code>values()</code> to alter or extract the cell values of a raster to a vector.
+As alternatives we can use <code>valuesBlock()</code> to read a rectangle of blocks or <code>extract()</code> to get the cell values in a specific area.</p>
+<div class="sourceCode" id="cb199"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb199-1"><a href="rasters-in-r-the-terra-package.html#cb199-1" tabindex="-1"></a>cells <span class="ot">&lt;-</span> <span class="fu">cellFromRowCol</span>(dem1, <span class="dv">50</span>, <span class="dv">35</span><span class="sc">:</span><span class="dv">39</span>)</span>
+<span id="cb199-2"><a href="rasters-in-r-the-terra-package.html#cb199-2" tabindex="-1"></a>xy <span class="ot">&lt;-</span> <span class="fu">xyFromCell</span>(dem1, cells)</span>
+<span id="cb199-3"><a href="rasters-in-r-the-terra-package.html#cb199-3" tabindex="-1"></a><span class="fu">extract</span>(dem1, xy)</span></code></pre></div>
+<pre><code>##   DGM25_2905530
+## 1       227.560
+## 2       228.122
+## 3       225.683
+## 4       228.754
+## 5       231.383</code></pre>
+<p>This wraps up our quick first peek at the <em>terra</em> package.
+However there are many more things one can do with the package which we might cover in a later post.
+If you want to know more about it before, check out this <a href="https://www.youtube.com/watch?v=5b2xhqlH49I">talk</a> of Robert Hijmans and Anirddha Ghosh</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="introduction-to-the-sf-package.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="point-pattern-analysis.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/02-Rasters.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

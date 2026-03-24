@@ -1,0 +1,541 @@
+---
+title: 'Joint Species distribution modelling with HMSC '
+author: Jonathan Jupke
+date: '2021-01-05'
+slug: joint-species-distribution-modelling-with-hmsc
+categories: []
+tags:
+  - R
+  - HMSC
+bibliography: ref.bib
+comments: no
+images: ~
+---
+
+
+
+<style>
+body {
+text-align: justify}
+</style>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>In this short example, we will use the Hierarchical Modeling of species communities (HMSC, <span class="citation">Ovaskainen and Abrego (2020)</span>) approach through its implementation in the HMSC-R package <span class="citation">(Tikhonov et al. 2020)</span> to analyze and predict the distribution of the several bird species in Finland. This is a multi-species example of HMSC - if you are interested in a single-species example see <a href="https://jonjup.netlify.app/post/2020-10-26-species-distribution-model-with-hmsc/species-distribution-model-with-hmsc/">here</a>. This post is meant to accompany the advanced methods in multivariate statistics lecture at the University of Koblenz-Landau. It will not delve deeply into the theoretical aspects of HMSC but focuse on the implementation in R. For more introductory material to HMSC see <span class="citation">Ovaskainen et al. (2017)</span>, <span class="citation">Ovaskainen and Abrego (2020)</span>, or the <a href="https://www.helsinki.fi/en/researchgroups/statistical-ecology/hmsc">official website</a>.</p>
+</div>
+<div id="preparing-the-analysis" class="section level1">
+<h1>Preparing the analysis</h1>
+<p>To run this code you will need to install the <span style="color:CornflowerBlue">pacman</span> R package beforehand but this will take care of all the other packages required.</p>
+<pre class="r"><code>if (!require(pacman)) install.packages(pacman)</code></pre>
+<pre><code>## Lade nötiges Paket: pacman</code></pre>
+<pre class="r"><code>p_load(ape, colorspace, corrplot, data.table, dplyr, ggplot2, here, Hmsc, magrittr, stringr,vioplot)</code></pre>
+<p>The data we use in this example can be downloaded <a href="https://www.helsinki.fi/sites/default/files/atoms/files/section_11_1_birds_2020_05_31.zip">here</a>.
+We use the Finnish bird data that are often used by the creators of HMSC to demonstrate the method (e.g. Chapter 5 in <span class="citation">Ovaskainen and Abrego (2020)</span> or <span class="citation">Tikhonov et al. (2020)</span>).</p>
+<pre class="r"><code># SPECIES AND ENVIRONMENTAL DATA 
+dt_y = fread(file.path(dir_data, &quot;data.csv&quot;))
+# ENVIRONMENTAL COVARIATES 
+dt_x = dt_y[,c(5,6,7,8,9)]
+# PHYLOGENY 
+ph_phylo &lt;- read.tree(file.path(dir_data, &quot;CTree.tre&quot;))
+# TRAITS 
+dt_traits = fread(file.path(dir_data, &quot;traits.csv&quot;)) 
+dt_traits$LogMass = log(dt_traits$Mass)</code></pre>
+<p>To keep the length of this analysis manageable we restrict it to the nine most common bird species plus <em>Corvus monedula</em> (the species we used in the single species example).</p>
+<pre class="r"><code>vc_subset = sort(colSums(dt_y[, 10:59]), 
+                 decreasing = TRUE)
+vc_subset = names(vc_subset)[1:9]
+vc_subset = append(vc_subset, &quot;Corvus_monedula&quot;)
+vc_subset = which(names(dt_y) %in% vc_subset)
+
+dt_y = dt_y[, append(1:9, vc_subset), with = F]
+ma_y = as.matrix(dt_y[, 10:19])
+# trim traits
+dt_traits = dt_traits[Species %in% colnames(dt_y)]</code></pre>
+<p>Next, we define the study design matrix.
+It is a matrix with two columns (site and year) and as many rows as there are rows in the species data.</p>
+<pre class="r"><code>ma_studydesign = matrix(NA, nrow(ma_y), 2)
+ma_studydesign[, 1] = sprintf(&#39;Route_%.3d&#39;, dt_y$Route)
+ma_studydesign[, 2] = sprintf(&#39;Year_%.3d&#39;, dt_y$Year)
+df_studydesign = as.data.frame(ma_studydesign)
+colnames(df_studydesign) = c(&quot;Route&quot;, &quot;Year&quot;)
+df_studydesign[, 1] = as.factor(df_studydesign[, 1])
+df_studydesign[, 2] = as.factor(df_studydesign[, 2])</code></pre>
+<p>The last thing missing before we can fit our model is the random effect structure.
+The random effects are the mean spatial coordinates of the sampling sites.
+Mean because this gives them the possibility to move between years.
+Obviously these shift should be small compared to the distance between sites.
+With the last to lines we set the minimum and maximum numbers of latent variables.</p>
+<pre class="r"><code>vc_routes = levels(df_studydesign[, 1])
+in_nroutes = length(vc_routes)
+ma_xy = matrix(0, nrow = in_nroutes, ncol = 2)
+for (i in 1:in_nroutes) {
+        rows = df_studydesign[, 1] == vc_routes[[i]]
+        ma_xy[i, 1] = mean(dt_y[rows, ]$x)
+        ma_xy[i, 2] = mean(dt_y[rows, ]$y)
+}
+colnames(ma_xy) = c(&quot;x&quot;, &quot;y&quot;)
+ma_sRL = ma_xy
+rownames(ma_sRL) = vc_routes
+rL = HmscRandomLevel(sData = ma_sRL)
+rL$nfMin = 5
+rL$nfMax = 10</code></pre>
+</div>
+<div id="fitting-the-model" class="section level1">
+<h1>Fitting the model</h1>
+<p>With that done we can proceed to define out model.</p>
+<pre class="r"><code>m = Hmsc(
+        Y = ma_y,
+        XData = as.data.frame(dt_x),
+        XFormula = ~ Habitat + poly(AprMay, degree = 2, raw = TRUE),
+        TrData = dt_traits,
+        TrFormula = ~ Migration + LogMass,
+        phyloTree = ph_phylo,
+        distr = &quot;lognormal poisson&quot;,
+        studyDesign = df_studydesign,
+        ranLevels = list(Route = rL)
+)</code></pre>
+<p>Up to here, there is not much different from the single-species example and the same goes for the model fitting. We need to define the parameters of Markov chains and will assess them with Gelman diagnostic (same as potential scale reduction factor). The biggest difference here will be the time it takes to fit the model.</p>
+<pre class="r"><code>thin    = 5
+samples = 1000
+nChains = 4
+
+fit_m = sampleMcmc(
+                m,
+                samples = samples,
+                thin = thin[i],
+                adaptNf = rep(ceiling(0.4 * samples * thin), 1),
+                transient = ceiling(0.5 * samples * thin),
+                nChains = nChains,
+                nParallel = nChains,
+                initPar = &quot;fixed effects&quot;
+        )
+mpost = convertToCodaObject(m_fit,
+                            spNamesNumbers = c(T, F),
+                            covNamesNumbers = c(T, F))</code></pre>
+<p>We could still look at trace plots but there are so many now that focusing on the Gelman diagnostic is easier here. By all means, have a look at the trace plots in your own analyses! We will just skip this step here to not interrupt the document’s flow by several dozen plots.</p>
+<pre class="r"><code>ge.beta = gelman.diag(mpost$Beta,multivariate=FALSE)$psrf 
+ge.beta = data.table(o.name = rownames(ge.beta), 
+                     estimate = ge.beta[,1])
+ge.beta[, species := str_remove_all(string = o.name, 
+                                    pattern = &quot;B\\[.*,&quot;)]
+ge.beta[, species := str_remove_all(string = species, 
+                                    pattern = &quot;\\]&quot;)]
+ge.beta[, species := str_replace_all(string = species, 
+                                     pattern = &quot;\\ &quot;, replacement = &quot; &quot;)]
+ge.beta %&gt;% 
+        ggplot(aes(y=estimate, x=1)) + 
+        geom_dotplot(aes(fill = species), 
+                     binaxis = &quot;y&quot;, 
+                     stackdir = &quot;center&quot;, 
+                     position = &quot;dodge&quot;) + 
+        geom_hline(yintercept = 1.1)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+As before the estimate should be below 1.1 (black horizontal line). As we can see in the figure this is not the case for any of the species. Maybe for another parameter?</p>
+<pre class="r"><code>ge.gamma = gelman.diag(mpost$Gamma, multivariate = FALSE)$psrf
+ge.gamma = data.table(o.name = rownames(ge.gamma),
+                      estimate = ge.gamma[, 1])
+ge.gamma[, trait := str_remove_all(string = o.name,
+                                   pattern = &quot;G\\[.*,&quot;)]
+ge.gamma[, trait := str_remove_all(string = trait,
+                                   pattern = &quot;\\]&quot;)]
+ge.gamma[, trait := str_replace_all(string = trait,
+                                    pattern = &quot;\\ &quot;,
+                                    replacement = &quot; &quot;)]
+ge.gamma %&gt;%
+  ggplot(aes(y = estimate, x = 1)) +
+  geom_dotplot(
+    aes(fill = trait),
+    binaxis = &quot;y&quot;,
+    stackdir = &quot;center&quot;,
+    position = &quot;dodge&quot;
+  ) +
+  geom_hline(yintercept = 1.1)</code></pre>
+<pre><code>## `stat_bindot()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>The Gelman diagnostics of the <span class="math inline">\(\gamma\)</span> parameters are lower but still too high in some cases. If this were an analysis for a publication we should refit the model with more thinning. But for this example we will just keep going.</p>
+</div>
+<div id="model-fit" class="section level1">
+<h1>Model fit</h1>
+<p>Let’s have a look at model fit. In a multi-species context all the metrics are computed for each species separately.</p>
+<pre class="r"><code>predY = computePredictedValues(hM = fit_m, 
+                               expected = FALSE)
+MF    = evaluateModelFit(hM = fit_m, predY = predY)</code></pre>
+<pre class="r"><code>plot_data = data.frame (
+        species = str_replace(colnames(predY),
+                              &quot;\\_&quot;, &quot;\\ &quot;),
+        RMSE = MF$RMSE,
+        SR2 = MF$SR2,
+        O.AUC = MF$O.AUC,
+        O.TjurR2 = MF$O.TjurR2,
+        O.RMSE = MF$O.RMSE * 10,
+        C.SR2 = MF$C.SR2,
+        C.RMSE = MF$C.RMSE
+)
+plot_data %&lt;&gt;% 
+        tidyr::pivot_longer(!species, 
+                            names_to = &quot;statistic&quot;, 
+                            values_to = &quot;value&quot;)
+
+plot_data %&gt;%
+        filter(str_detect(pattern = &quot;RMSE&quot;, 
+                          string = statistic)) %&gt;%
+        ggplot(aes(x = species, y = value)) +
+        geom_point(aes(col = species)) +
+        facet_wrap(. ~ statistic) +
+        theme(
+                axis.text.x = element_blank(),
+                axis.ticks.x = element_blank()
+        )</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" width="672" />
+Most RMSEs and C.RMSEs lie around 5.
+Notable exceptions are <em>Parus major</em> and <em>Phylloscopus trochilus</em>.
+Both have mean errors above 10 (approx. 11 and 13, respectively).
+The largest difference between both RMSEs is in <em>Corvus mondedula</em>, for which the C.RMSE is high than the RMSE.
+So the error we should expect in predictions of abundance conditional on occurrence is higher than that we for predicting both occurrence and abundance.<br />
+The difference can not be explained by a low error in occurrence predictions, as this is also above average. The actual values of the RMSE to interpret without reference to the actual abundances.
+An error of five individuals can be remarkable for species with small populations and close to meaningless for larger populations.
+So to get a feel for the magnitude the errors we should compare them to the recorded abundances.</p>
+<pre class="r"><code>colnames(ma_y) %&lt;&gt;% str_replace(&quot;_&quot;, &quot;\\ &quot;)
+ma_y %&gt;%
+  as.data.frame %&gt;%
+  mutate(site_id = 1:nrow(ma_y)) %&gt;%
+  tidyr::pivot_longer(!site_id, names_to = &quot;species&quot;, values_to = &quot;abundance&quot;) %&gt;% 
+  left_join(filter(plot_data, statistic == &quot;RMSE&quot;), by = &quot;species&quot;) %&gt;% 
+  group_by(species) %&gt;% 
+  mutate(mean = mean(abundance)) %&gt;% 
+  ggplot(aes(y = abundance, x = species)) +
+  stat_summary(
+    fun.data = &quot;mean_sdl&quot;,
+    fun.args = list(mult = 1),
+    geom = &quot;crossbar&quot;,
+    width = 0.5,
+    aes(col = species)
+  ) +
+  geom_errorbar(aes(ymin = mean - value, ymax = mean + value),
+                width = .2,
+                position = position_dodge(0.05)) +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-15-1.png" width="672" />
+All errors (black bars) are within one standard deviation (colored boxes) of the observed values and species with higher mean abundance have larger errors.</p>
+<pre class="r"><code>plot_data %&gt;%
+  filter(str_detect(
+    pattern = &quot;RMSE&quot;,
+    string = statistic,
+    negate = TRUE
+  )) %&gt;%
+  ggplot(aes(x = species, y = value)) +
+  geom_point(aes(col = species)) +
+  ylim(0,1) + 
+  facet_wrap(. ~ statistic) +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>The two most abundant species also have some of the best fitting models which makes sense given that we have the most data to fit them. Overall the fit varies quite a bit between species but looks ok.</p>
+</div>
+<div id="interpretation" class="section level1">
+<h1>Interpretation</h1>
+<pre class="r"><code>VP = computeVariancePartitioning(fit_m)
+vals = VP$vals
+mycols = rainbow(nrow(VP$vals))
+par(mfrow=c(1,1))
+plotVariancePartitioning(hM=fit_m, VP=VP,cols = mycols, args.leg=list(bg=&quot;white&quot;,cex=0.7),
+                         main = paste0(&quot;Proportion of explained variance, &quot;,cex.main=0.8))</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>For each species most of the variance is unaccounted for (Random). There a myriad reason for variation to remain unexplained by environmental variables: missing predictors, mass effect, stochasticity, patch dynamics and species interactions are just some among them.
+For now let us focus on the explained variance.
+In most species the habitat type explains more variance than the mean temperature in in April and May.
+A Notable exception is <em>Carduelis spinus</em>.</p>
+<p>One might ask if the species niches (i.e. their <span class="math inline">\(\beta\)</span>s) are phylogenetically structured. Such questions can be answered with the plot below.
+For the three kinds of plots that follow we always have the choice between a continuous measure (the mean) without information on uncertainty or a categorical measure (is zero included in the 95% credible interval) without detailed information on strength.
+We will start with the latter:</p>
+<pre class="r"><code>postBeta = getPostEstimate(fit_m, parName=&quot;Beta&quot;)
+show.sp.names = (is.null(fit_m$phyloTree))
+plotBeta(
+  m,
+  post = postBeta,
+  supportLevel = 0.95,
+  param = &quot;Sign&quot;,
+  plotTree = !is.null(fit_m$phyloTree),
+  covNamesNumbers = c(TRUE, FALSE),
+  spNamesNumbers = c(TRUE, FALSE),
+  marTree = c(8, 0, 2, 0),
+  mar = c(8, 0, 2, 0)
+)</code></pre>
+<pre><code>## [1] 0.3 1.0 0.0 1.0</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p>The plot can be read like a matrix.
+When zero is part of the 95% credible interval the field remains white (0).
+If instead zero is not included then the field are red (if the estimate is positive) or blue (if the estimate is negative).
+I am keeping 95% because it is also used in other examples.
+On theoretical grounds there now reason not to use any other interval such as 66% or 83%.
+The intercept is positive which indicates that most species have higher mean abundances then the overall mean.
+This shows that some of the rarer species must be a lot rarer (especially <em>C. monedula</em>) than the others and consequently drag down the overall mean abundance.
+Next come the four levels of habitat type.
+Most species either have no or negative associations with the habitat types.
+Positive associations are most common with the urban habitat type (<em>C. monedula</em>, <em>P. major</em>, <em>T. pilaris</em>).
+The parameters of <em>P. trochilus</em> and <em>T. iliacus</em> for climate are noteworthy.
+Both show negative responses to first term, if temperatures decrease so does there abundance.
+However, they have positive responses the second, quadratic, term.
+This is a little harder to interpret, as quadratic effects often are, but think about the opposite case for a moment: positive first term and negative second.
+As long as the absolute value of the first parameter is larger then that of the second this creates a unimodal response.
+It’s easy enough to see this in a little simulation.</p>
+<pre class="r"><code>x = 1:1000
+y = 10 * x + -0.01 * x^2
+plot(y, type = &quot;l&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p>Since the signs of the parameters are the other way around in our case the unimodal response is “flipped”.
+First it decreases to some low point and then it increases again.
+However depending on the actual values of the parameters the pattern could also seem monotonically de- or increasing.
+We should have a look at this in the predictions.</p>
+<p>The second plot gives some additional information.
+<em>C. monedula</em> actually is considerably rarer than the other species.
+So rare that large uncertainty remains for its intercept parameter why it is not flagged as negative in the first plot.<br />
+As expected the positive coefficient of <em>P. trochilus</em> and <em>T. iliacus</em> for the second power of climate is very small.
+However this also means that the uncertainty must also be small, as zero is not included in the 95% credible interval.</p>
+<pre class="r"><code>plotBeta(
+  m,
+  post = postBeta,
+  param = &quot;Mean&quot;,
+  plotTree = !is.null(fit_m$phyloTree),
+  covNamesNumbers = c(TRUE, FALSE),
+  spNamesNumbers = c(TRUE, FALSE),
+  marTree = c(8, 0, 2, 0),
+  mar = c(8, 0, 2, 0)
+)</code></pre>
+<pre><code>## [1] 0.3 1.0 0.0 1.0</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p>Now lets see how traits modulate the response.</p>
+<pre class="r"><code>postGamma = getPostEstimate(fit_m, parName=&quot;Gamma&quot;)
+# categorical 
+plotGamma(
+  fit_m,
+  post = postGamma,
+  supportLevel = 0.95,
+  param = &quot;Sign&quot;,
+  covNamesNumbers = c(TRUE, FALSE),
+  trNamesNumbers = c(TRUE, FALSE),
+  cex = c(1, 1, 1)
+)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p>The interpretation for this plot is the same as for the one before.
+Again we see mostly white squares indicating that zero is part of the 95% credible interval.
+From this plot we can deduct: large species tend to be less abundant than smaller ones (LogMass and Intercept); birds that prefer urban habitats are less abundant and larger.
+The patterns don’t change when we look at the mean plot.</p>
+<pre class="r"><code># continuous 
+plotGamma(
+  fit_m,
+  post = postGamma,
+  param = &quot;Mean&quot;,
+  covNamesNumbers = c(TRUE, FALSE),
+  trNamesNumbers = c(TRUE, FALSE),
+  cex = c(1, 1, 1)
+)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p>We can have a look at species co-occurrences with the Omega matrix.
+Again we have to choice to plot a continuous measure (mean) without information on uncertainty or a categorical measure (support) with detailed information on strength.
+Here again, more information is better so we plot both.</p>
+<pre class="r"><code>par(xpd = TRUE)
+OmegaCor = computeAssociations(fit_m)
+supportLevel = 0.95
+plotOrder = corrMatOrder(OmegaCor[[1]]$mean, order = &quot;AOE&quot;)
+toPlot    = ((OmegaCor[[1]]$support &gt;
+                supportLevel) +
+               (OmegaCor[[1]]$support &lt;
+                  (1 - supportLevel)) &gt; 0) *
+  sign(OmegaCor[[1]]$mean)
+
+
+mymain = paste0(&quot;Associations: &quot;,names(fit_m$ranLevels)[[1]], &quot; - support&quot;)
+
+corrplot(
+        toPlot[plotOrder, plotOrder],
+        method = &quot;square&quot;,
+        col = colorRampPalette(c(&quot;red&quot;, &quot;white&quot;, &quot;blue&quot;))(3),
+        mar = c(0, 0, 8, 0),
+        main = mymain,
+        cex.main = 0.8,
+        type = &quot;lower&quot;,
+        diag = FALSE,
+        tl.srt = 45
+)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p>Most species associations are positive, but this might be due to some unmeasured environmental variables.
+The only negative association is between <em>P. trochilus</em> and <em>C. monedula</em>.
+We already saw before (in the phylogeny - niche plot) that the former is negatively associated with urban habitat while the latter is positively associated.
+What we can see in this plot however shows that these residuals of these species are even negatively correlated after accounting for the habitat.</p>
+<pre class="r"><code>mymain = paste0(&quot;Associations: &quot;,names(fit_m$ranLevels)[[1]], &quot; - mean&quot;)
+corrplot(
+        OmegaCor[[1]]$mean,
+        method = &quot;square&quot;,
+        #col = colorRampPalette(c(&quot;blue&quot;, &quot;white&quot;, &quot;red&quot;))(3),
+        mar = c(0, 0, 8, 0),
+        main = mymain,
+        cex.main = 0.8,
+        type = &quot;lower&quot;,
+        diag = FALSE,
+        tl.srt = 45
+)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p>A similar picture can be seen in the second plot.
+The associations of <em>C. monedula</em> closely track the distinction between urban and non-urban bird species, with the exception of <em>T. iliacus</em> which is negatively associated with <em>C. monedula</em> (though its 95% credible interval includes zero) but unassociated with urban habitat.</p>
+</div>
+<div id="prediction" class="section level1">
+<h1>Prediction</h1>
+<p>Lastly, we can use our model to predict the occurrence and abundance of our ten bird species across Finnland. Below, I show all three versions of accounting for <span style="color:CornflowerBlue">non.focalVariables</span>. As you will see the model performs bad in all cases.</p>
+<pre class="r"><code>m = fit_m
+covariates = all.vars(m$XFormula)
+#most common species as example species
+ex.sp = which.max(colMeans(m$Y, na.rm = TRUE))
+m$XData$Habitat = factor(m$XData$Habitat)
+Gradient = constructGradient(m,
+                             focalVariable = &quot;AprMay&quot;,
+                             non.focalVariables = list(Habitat = list(&quot;3&quot;, &quot;Urb&quot;)))
+predY = predict(
+  m,
+  XData = Gradient$XDataNew,
+  studyDesign = Gradient$studyDesignNew,
+  ranLevels = Gradient$rLNew,
+  expected = TRUE
+)</code></pre>
+<pre class="r"><code>par(mfrow=c(2,2))
+plotGradient(
+  m,
+  Gradient,
+  pred = predY,
+  measure = &quot;S&quot;,
+  las = 1,
+  showData = TRUE,
+  main = &#39;Species richness (measure=&quot;S&quot;)&#39;
+)</code></pre>
+<pre><code>## [1] 5e-04</code></pre>
+<pre class="r"><code>plotGradient(
+  m,
+  Gradient,
+  pred = predY,
+  measure = &quot;Y&quot;,
+  index = 1,
+  las = 1,
+  showData = TRUE,
+  main = &#39;Focal species occurrence (measure=&quot;Y&quot;)&#39;
+)</code></pre>
+<pre><code>## [1] 0.0695</code></pre>
+<pre class="r"><code>plotGradient(
+  m,
+  Gradient,
+  pred = predY,
+  measure = &quot;T&quot;,
+  index = 4,
+  las = 1,
+  showData = TRUE,
+  main = &#39;Mean trait value (measure=&quot;T&quot;)&#39;
+)</code></pre>
+<pre><code>## [1] 0.576</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<pre class="r"><code>Gradient = constructGradient(m,
+                             focalVariable = &quot;AprMay&quot;,
+                             non.focalVariables = list(Habitat = 1))
+predY = predict(
+  m,
+  XData = Gradient$XDataNew,
+  studyDesign = Gradient$studyDesignNew,
+  ranLevels = Gradient$rLNew,
+  expected = TRUE
+)</code></pre>
+<pre class="r"><code>par(mfrow=c(2,2))
+plotGradient(
+  m,
+  Gradient,
+  pred = predY,
+  measure = &quot;S&quot;,
+  las = 1,
+  showData = TRUE,
+  main = &#39;Species richness (measure=&quot;S&quot;)&#39;
+)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>plotGradient(
+  m,
+  Gradient,
+  pred = predY,
+  measure = &quot;Y&quot;,
+  index = 1,
+  las = 1,
+  showData = TRUE,
+  main = &#39;Focal species occurrence (measure=&quot;Y&quot;)&#39;
+)</code></pre>
+<pre><code>## [1] 0.0695</code></pre>
+<pre class="r"><code>plotGradient(
+  m,
+  Gradient,
+  pred = predY,
+  measure = &quot;T&quot;,
+  index = 4,
+  las = 1,
+  showData = TRUE,
+  main = &#39;Mean trait value (measure=&quot;T&quot;)&#39;
+)</code></pre>
+<pre><code>## [1] 0.4595</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+<pre class="r"><code>Gradient = constructGradient(m,
+                             focalVariable = &quot;AprMay&quot;,
+                             non.focalVariables = list(Habitat = 2))
+predY = predict(
+  m,
+  XData = Gradient$XDataNew,
+  studyDesign = Gradient$studyDesignNew,
+  ranLevels = Gradient$rLNew,
+  expected = TRUE
+)</code></pre>
+<pre><code>## # weights:  15 (8 variable)
+## initial  value 1471.026252 
+## iter  10 value 1111.970675
+## final  value 1107.592367 
+## converged</code></pre>
+<pre class="r"><code>par(mfrow=c(2,2))
+plotGradient(
+  m,
+  Gradient,
+  pred = predY,
+  measure = &quot;S&quot;,
+  las = 1,
+  showData = TRUE,
+  main = &#39;Species richness (measure=&quot;S&quot;)&#39;
+)</code></pre>
+<pre><code>## [1] 0.001</code></pre>
+<pre class="r"><code>plotGradient(
+  m,
+  Gradient,
+  pred = predY,
+  measure = &quot;Y&quot;,
+  index = 1,
+  las = 1,
+  showData = TRUE,
+  main = &#39;Focal species occurrence (measure=&quot;Y&quot;)&#39;
+)</code></pre>
+<pre><code>## [1] 0.001</code></pre>
+<pre class="r"><code>plotGradient(
+  m,
+  Gradient,
+  pred = predY,
+  measure = &quot;T&quot;,
+  index = 4,
+  las = 1,
+  showData = TRUE,
+  main = &#39;Mean trait value (measure=&quot;T&quot;)&#39;
+)</code></pre>
+<pre><code>## [1] 0.82275</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references">
+<div id="ref-ovaskainen2020joint">
+<p>Ovaskainen, Otso, and Nerea Abrego. 2020. <em>Joint Species Distribution Modelling: With Applications in R</em>. Cambridge University Press.</p>
+</div>
+<div id="ref-ovaskainen2017make">
+<p>Ovaskainen, Otso, Gleb Tikhonov, Anna Norberg, F Guillaume Blanchet, Leo Duan, David Dunson, Tomas Roslin, and Nerea Abrego. 2017. “How to Make More Out of Community Data? A Conceptual Framework and Its Implementation as Models and Software.” <em>Ecology Letters</em> 20 (5): 561–76.</p>
+</div>
+<div id="ref-tikhonov2020joint">
+<p>Tikhonov, Gleb, Øystein H Opedal, Nerea Abrego, Aleksi Lehikoinen, Melinda MJ de Jonge, Jari Oksanen, and Otso Ovaskainen. 2020. “Joint Species Distribution Modelling with the R-Package Hmsc.” <em>Methods in Ecology and Evolution</em> 11 (3): 442–47.</p>
+</div>
+</div>
+</div>

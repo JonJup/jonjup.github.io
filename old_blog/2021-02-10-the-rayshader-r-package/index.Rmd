@@ -1,0 +1,125 @@
+---
+title: 'The rayshader R package '
+author: 'Jonathan Jupke '
+date: '2021-02-10'
+slug: the-rayshader-r-package
+categories:
+  - GIS
+tags:
+  - GIS
+  - R
+  - R package
+  - rayshader
+  - raster
+comments: no
+images: ~
+---
+
+In this entry we will go through the basics of **rayshader**. 
+Rayshader is one of those packages that you see again and again when you follow people from the R-spatial community on twitter. 
+Especially the package's creator Tyler Morgan-Wall (see [here](https://www.tylermw.com/) for his website and [here](https://twitter.com/tylermorganwall) for his Twitter) posts videos and images of things he did with it on an almost daily basis. 
+And he has all the reasons to do so.
+I don't know any other package that enables you to create such stunning 3D graphics with R. 
+If you have never seen this package before I am quite sure you are going to be surprised by what is possible. 
+
+# Setup
+
+First things first, we need to install and load the **rayshader** package, as well as some other packages we will need along the way. 
+
+```{r eval=F}
+install.packages("rayshader")
+library(rayshader)
+library(raster)
+library(dplyr)
+```
+```{r echo=F}
+library(rayshader)
+library(raster)
+library(dplyr)
+```
+
+We will use an example raster file from Tyler Morgan-Walls website. 
+We can  download the files with the following code: 
+
+```{r eval=F}
+loadzip = tempfile()
+download.file("https://tylermw.com/data/dem_01.tif.zip", loadzip)
+localtif = raster(unzip(loadzip, "dem_01.tif"))
+unlink(loadzip)
+```
+```{r echo=F}
+localtif = raster("~/04_Blog/blog/data/rayshader/dem_01.tif")
+```
+
+Before we do anything fancy let's have look at our new raster. 
+It is a DEM with 505 rows and 550 columns and each cell has size of 33.3m * 33.3m.
+There are strong differences in height here, from 0 to 971m. 
+```{r}
+localtif
+plot(localtif)
+```
+
+To work with *rayshader** we will need to transform this to a matrix with the `raster_to_matrix()` function. 
+Then we can start with add a specific [texture]{style="color:CornflowerBlue"} as well as shadows.  
+```{r}
+elmat = raster_to_matrix(localtif)
+elmat %>%
+  sphere_shade(texture = "desert") %>%
+  plot_map()
+```
+The shadows are computed for a default sun angle, but we can change that angle if we like. 
+```{r}
+elmat %>%
+  sphere_shade(sunangle = 45, texture = "desert") %>%
+  plot_map()
+```
+
+Now you might have noticed that the areas in the valley look suspiciously flat. 
+That's because they are water surfaces. 
+With the two functions `detect_water()` and `add_water()` we can add water to our map. 
+`detect_water()` returns a binary matrix with the same dimensions as `elmat`. 
+A one indicates that the corresponding cell in `elmat` contains water and a zero that the cell does not. 
+With the [cutoff]{style="color:CornflowerBlue"} argument you can specify how high the water should be, i.e. which cells are classified as carrying water. 
+High values mean lower water level. 
+
+```{r}
+elmat %>%
+  sphere_shade(texture = "desert") %>%
+  add_water(detect_water(elmat, cutoff = 0.9), color = "desert") %>%
+  plot_map()
+```
+
+Now we don't have any shadows on the water yet. 
+But that can be done with `add_shadow()`.
+
+
+```{r}
+elmat %>%
+  sphere_shade(texture = "desert") %>%
+  add_water(detect_water(elmat), color = "desert") %>%
+  add_shadow(ray_shade(elmat), 0.5) %>%
+  plot_map()
+```
+
+In addition to rayshade we can also ad ambient shade, to make it look even better. 
+
+```{r}
+elmat %>%
+  sphere_shade(texture = "desert") %>%
+  add_water(detect_water(elmat), color = "desert") %>%
+  add_shadow(ray_shade(elmat), 0.5) %>%
+  add_shadow(ambient_shade(elmat), 0) %>%
+  plot_map()
+```
+
+All this was only the preparation though for the 3D capabilities of **rayshader**.
+
+```{r}
+elmat %>%
+  sphere_shade(texture = "desert") %>%
+  add_water(detect_water(elmat), color = "desert") %>%
+  add_shadow(ray_shade(elmat, zscale = 3), 0.5) %>%
+  add_shadow(ambient_shade(elmat), 0) %>%
+  plot_3d(elmat, zscale = 10, fov = 0, theta = 135, zoom = 0.75, phi = 45, windowsize = c(1000, 800))
+Sys.sleep(0.2)
+render_snapshot()

@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 6 Graph Analysis | Spatial Data Science in R</title>
+  <meta name="description" content="Lessons and tasks from GIS courses by Jonathan Jupke" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 6 Graph Analysis | Spatial Data Science in R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Lessons and tasks from GIS courses by Jonathan Jupke" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 6 Graph Analysis | Spatial Data Science in R" />
+  
+  <meta name="twitter:description" content="Lessons and tasks from GIS courses by Jonathan Jupke" />
+  
+
+<meta name="author" content="Jonathan Jupke" />
+
+
+<meta name="date" content="2024-11-18" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="machine-learning.html"/>
+<link rel="next" href="creating-maps-in-r.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="libs/proj4-2.6.2/proj4.min.js"></script>
+<script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding-2.2.2/leaflet.js"></script>
+<script src="libs/leaflet-providers-2.0.0/leaflet-providers_2.0.0.js"></script>
+<script src="libs/leaflet-providers-plugin-2.2.2/leaflet-providers-plugin.js"></script>
+<link href="libs/HomeButton-0.0.1/home-button.css" rel="stylesheet" />
+<script src="libs/HomeButton-0.0.1/home-button.js"></script>
+<script src="libs/HomeButton-0.0.1/easy-button-src.min.js"></script>
+<script src="libs/clipboard-0.0.1/setClipboardText.js"></script>
+<link href="libs/mapviewCSS-0.0.1/mapview-popup.css" rel="stylesheet" />
+<link href="libs/mapviewCSS-0.0.1/mapview.css" rel="stylesheet" />
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Spatial Data Science in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html"><i class="fa fa-check"></i><b>1</b> Introduction to the sf package</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#loading-spatial-data-into-r"><i class="fa fa-check"></i><b>1.1</b> Loading spatial data into R</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#creating-spatial-data-yourself"><i class="fa fa-check"></i><b>1.2</b> Creating spatial data yourself</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#basic-operations"><i class="fa fa-check"></i><b>1.3</b> Basic operations</a></li>
+<li class="chapter" data-level="1.4" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#useful-functions"><i class="fa fa-check"></i><b>1.4</b> Useful functions</a>
+<ul>
+<li class="chapter" data-level="1.4.1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_area"><i class="fa fa-check"></i><b>1.4.1</b> <code>st_area</code></a></li>
+<li class="chapter" data-level="1.4.2" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_bbox"><i class="fa fa-check"></i><b>1.4.2</b> <code>st_bbox()</code></a></li>
+<li class="chapter" data-level="1.4.3" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_buffer"><i class="fa fa-check"></i><b>1.4.3</b> <code>st_buffer()</code></a></li>
+<li class="chapter" data-level="1.4.4" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_coordinates"><i class="fa fa-check"></i><b>1.4.4</b> <code>st_coordinates()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#geometric-set-operations"><i class="fa fa-check"></i><b>1.5</b> Geometric set operations</a>
+<ul>
+<li class="chapter" data-level="1.5.1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_distance"><i class="fa fa-check"></i><b>1.5.1</b> <code>st_distance</code></a></li>
+<li class="chapter" data-level="1.5.2" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_nearest_feature"><i class="fa fa-check"></i><b>1.5.2</b> <code>st_nearest_feature</code></a></li>
+<li class="chapter" data-level="1.5.3" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#spatial-subsetting"><i class="fa fa-check"></i><b>1.5.3</b> spatial subsetting</a></li>
+<li class="chapter" data-level="1.5.4" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#spatial-joins"><i class="fa fa-check"></i><b>1.5.4</b> spatial joins</a></li>
+<li class="chapter" data-level="1.5.5" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#spatial-sggregation"><i class="fa fa-check"></i><b>1.5.5</b> spatial sggregation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html"><i class="fa fa-check"></i><b>2</b> Rasters in R: The terra package</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#basic-idea"><i class="fa fa-check"></i><b>2.1</b> Basic idea</a></li>
+<li class="chapter" data-level="2.2" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#creating-a-new-raster"><i class="fa fa-check"></i><b>2.2</b> Creating a new Raster</a></li>
+<li class="chapter" data-level="2.3" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#going-beyond-the-hull"><i class="fa fa-check"></i><b>2.3</b> Going beyond the hull</a></li>
+<li class="chapter" data-level="2.4" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#multiple-layers-in-one-spatraster"><i class="fa fa-check"></i><b>2.4</b> Multiple layers in one SpatRaster</a></li>
+<li class="chapter" data-level="2.5" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#raster-algebra"><i class="fa fa-check"></i><b>2.5</b> Raster algebra</a></li>
+<li class="chapter" data-level="2.6" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#high-level-functions"><i class="fa fa-check"></i><b>2.6</b> High-level functions</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#extracting-raster-values-with-vectors"><i class="fa fa-check"></i><b>2.6.1</b> Extracting raster values with vectors</a></li>
+<li class="chapter" data-level="2.6.2" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#masking"><i class="fa fa-check"></i><b>2.6.2</b> Masking</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#cell-level-functions"><i class="fa fa-check"></i><b>2.7</b> Cell-level functions</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html"><i class="fa fa-check"></i><b>3</b> Point Pattern Analysis</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#the-ppp-class"><i class="fa fa-check"></i><b>3.1</b> the ppp class</a></li>
+<li class="chapter" data-level="3.2" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#first-order-processes"><i class="fa fa-check"></i><b>3.2</b> First order processes</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#kernel-density"><i class="fa fa-check"></i><b>3.2.1</b> Kernel density</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#second-order-processes"><i class="fa fa-check"></i><b>3.3</b> Second order processes</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#average-nearest-neighbor"><i class="fa fa-check"></i><b>3.3.1</b> Average nearest neighbor</a></li>
+<li class="chapter" data-level="3.3.2" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#the-k-funktion"><i class="fa fa-check"></i><b>3.3.2</b> The K-Funktion</a></li>
+<li class="chapter" data-level="3.3.3" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#morans-i"><i class="fa fa-check"></i><b>3.3.3</b> Morans I</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="interpolation.html"><a href="interpolation.html"><i class="fa fa-check"></i><b>4</b> Interpolation</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="interpolation.html"><a href="interpolation.html#the-data"><i class="fa fa-check"></i><b>4.1</b> The data</a></li>
+<li class="chapter" data-level="4.2" data-path="interpolation.html"><a href="interpolation.html#proximity-polygons"><i class="fa fa-check"></i><b>4.2</b> Proximity Polygons</a></li>
+<li class="chapter" data-level="4.3" data-path="interpolation.html"><a href="interpolation.html#trend-surface-analysis"><i class="fa fa-check"></i><b>4.3</b> Trend Surface Analysis</a></li>
+<li class="chapter" data-level="4.4" data-path="interpolation.html"><a href="interpolation.html#splines"><i class="fa fa-check"></i><b>4.4</b> Splines</a></li>
+<li class="chapter" data-level="4.5" data-path="interpolation.html"><a href="interpolation.html#weighted-averaging"><i class="fa fa-check"></i><b>4.5</b> Weighted averaging</a></li>
+<li class="chapter" data-level="4.6" data-path="interpolation.html"><a href="interpolation.html#kriging"><i class="fa fa-check"></i><b>4.6</b> Kriging</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="machine-learning.html"><a href="machine-learning.html"><i class="fa fa-check"></i><b>5</b> Machine Learning</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="machine-learning.html"><a href="machine-learning.html#terrain-analysis-with-terra"><i class="fa fa-check"></i><b>5.1</b> Terrain analysis with terra</a></li>
+<li class="chapter" data-level="5.2" data-path="machine-learning.html"><a href="machine-learning.html#ploting-the-data"><i class="fa fa-check"></i><b>5.2</b> Ploting the data</a></li>
+<li class="chapter" data-level="5.3" data-path="machine-learning.html"><a href="machine-learning.html#logistic-regression"><i class="fa fa-check"></i><b>5.3</b> Logistic regression</a></li>
+<li class="chapter" data-level="5.4" data-path="machine-learning.html"><a href="machine-learning.html#mlr3"><i class="fa fa-check"></i><b>5.4</b> mlr3</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="machine-learning.html"><a href="machine-learning.html#creating-a-task"><i class="fa fa-check"></i><b>5.4.1</b> Creating a <em>task</em></a></li>
+<li class="chapter" data-level="5.4.2" data-path="machine-learning.html"><a href="machine-learning.html#the-learner"><i class="fa fa-check"></i><b>5.4.2</b> The <em>learner</em></a></li>
+<li class="chapter" data-level="5.4.3" data-path="machine-learning.html"><a href="machine-learning.html#hyperparameter-tuning"><i class="fa fa-check"></i><b>5.4.3</b> Hyperparameter Tuning</a></li>
+<li class="chapter" data-level="5.4.4" data-path="machine-learning.html"><a href="machine-learning.html#predictions"><i class="fa fa-check"></i><b>5.4.4</b> Predictions</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="graph-analysis.html"><a href="graph-analysis.html"><i class="fa fa-check"></i><b>6</b> Graph Analysis</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="graph-analysis.html"><a href="graph-analysis.html#the-igraph-package"><i class="fa fa-check"></i><b>6.1</b> The igraph package</a></li>
+<li class="chapter" data-level="6.2" data-path="graph-analysis.html"><a href="graph-analysis.html#from-data-to-graph"><i class="fa fa-check"></i><b>6.2</b> From data to graph</a></li>
+<li class="chapter" data-level="6.3" data-path="graph-analysis.html"><a href="graph-analysis.html#centrality-measures"><i class="fa fa-check"></i><b>6.3</b> Centrality measures</a></li>
+<li class="chapter" data-level="6.4" data-path="graph-analysis.html"><a href="graph-analysis.html#visualization"><i class="fa fa-check"></i><b>6.4</b> Visualization</a></li>
+<li class="chapter" data-level="6.5" data-path="graph-analysis.html"><a href="graph-analysis.html#network-models"><i class="fa fa-check"></i><b>6.5</b> Network Models</a></li>
+<li class="chapter" data-level="6.6" data-path="graph-analysis.html"><a href="graph-analysis.html#optimal-channel-networks"><i class="fa fa-check"></i><b>6.6</b> Optimal Channel Networks</a></li>
+<li class="chapter" data-level="6.7" data-path="graph-analysis.html"><a href="graph-analysis.html#sfnetworks"><i class="fa fa-check"></i><b>6.7</b> sfnetworks</a>
+<ul>
+<li class="chapter" data-level="6.7.1" data-path="graph-analysis.html"><a href="graph-analysis.html#finding-paths-in-the-network"><i class="fa fa-check"></i><b>6.7.1</b> Finding paths in the network</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html"><i class="fa fa-check"></i><b>7</b> Creating Maps in R</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#tmap"><i class="fa fa-check"></i><b>7.1</b> tmap</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#basic-tmaps"><i class="fa fa-check"></i><b>7.1.1</b> Basic tmaps</a></li>
+<li class="chapter" data-level="7.1.2" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#adjusting-visual-elements-and-multiple-groups"><i class="fa fa-check"></i><b>7.1.2</b> Adjusting visual elements and multiple groups</a></li>
+<li class="chapter" data-level="7.1.3" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#map-extend"><i class="fa fa-check"></i><b>7.1.3</b> Map extend</a></li>
+<li class="chapter" data-level="7.1.4" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#further-map-elements"><i class="fa fa-check"></i><b>7.1.4</b> Further map elements</a></li>
+<li class="chapter" data-level="7.1.5" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#making-the-map-prettier"><i class="fa fa-check"></i><b>7.1.5</b> Making the map prettier</a></li>
+<li class="chapter" data-level="7.1.6" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#save-to-maps-to-file"><i class="fa fa-check"></i><b>7.1.6</b> Save to maps to file</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#rastervis"><i class="fa fa-check"></i><b>7.2</b> rasterVis</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#beyond-the-usual"><i class="fa fa-check"></i><b>7.2.1</b> Beyond the usual</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#cartographer"><i class="fa fa-check"></i><b>7.3</b> Cartographer</a></li>
+<li class="chapter" data-level="7.4" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#rayshader"><i class="fa fa-check"></i><b>7.4</b> Rayshader</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#setup"><i class="fa fa-check"></i><b>7.4.1</b> Setup</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html"><i class="fa fa-check"></i><b>8</b> Where do I get data❓</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#websites"><i class="fa fa-check"></i><b>8.1</b> Websites</a></li>
+<li class="chapter" data-level="8.2" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#packages"><i class="fa fa-check"></i><b>8.2</b> Packages</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#geodata"><i class="fa fa-check"></i><b>8.2.1</b> geodata</a></li>
+<li class="chapter" data-level="8.2.2" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#osmdata"><i class="fa fa-check"></i><b>8.2.2</b> osmdata</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="usefull-packages.html"><a href="usefull-packages.html"><i class="fa fa-check"></i><b>9</b> Usefull packages</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="usefull-packages.html"><a href="usefull-packages.html#coordinatecleaner"><i class="fa fa-check"></i><b>9.1</b> ‘CoordinateCleaner’</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>10</b> References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Spatial Data Science in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="graph-analysis" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">Chapter 6</span> Graph Analysis<a href="graph-analysis.html#graph-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>In this script, we will work with network data in R.
+To this end will, we will use different packages: <code>igraph</code>, <code>tidygraph</code>, and <code>network</code> for representing networks in R through specific object classes.
+<code>OCN</code> for the creation of optimal channel networks, and <code>sfnetworks</code> for spatial networks.</p>
+<div id="the-igraph-package" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> The igraph package<a href="graph-analysis.html#the-igraph-package" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We will start with the <code>igraph</code>package <span class="citation">(<a href="#ref-Csardi2006">Csardi and Nepusz 2006</a>)</span>.
+It is a very popular implementation of networks in R, which is also available for Python and C++.</p>
+<div class="sourceCode" id="cb401"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb401-1"><a href="graph-analysis.html#cb401-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb401-2"><a href="graph-analysis.html#cb401-2" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb401-3"><a href="graph-analysis.html#cb401-3" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
+<span id="cb401-4"><a href="graph-analysis.html#cb401-4" tabindex="-1"></a><span class="fu">library</span>(igraph)</span></code></pre></div>
+<p>First, we create a simple graph with three nodes (<code>n</code>).
+Thee first node is connected to the second node, the second to the third, and the third to the first.
+This specified in the <code>edges</code> argument, which takes a vector.
+Each pair of entries in the vector gives the number or name of the originating and the terminating node.
+For the network I described above this works out to <code>c(1,2,2,3,3,1)</code>.</p>
+<div class="sourceCode" id="cb402"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb402-1"><a href="graph-analysis.html#cb402-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph</span>(<span class="at">edges =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>), <span class="at">n =</span> <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>## Warning: `graph()` was deprecated in igraph 2.1.0.
+## ℹ Please use `make_graph()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb404-1"><a href="graph-analysis.html#cb404-1" tabindex="-1"></a><span class="fu">plot</span>(g)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-258-1.png" width="672" />
+<br/></p>
+<p>The base plot function returns an image where nodes are represented by orange circles with their names inscribed.
+The edges are arrows, so we know that the default option of the <code>graph()</code> function is to create directed graphs.</p>
+<p><br/></p>
+<div class="blackbox">
+<div class="center">
+<p><strong>Exercise</strong></p>
+</div>
+<p>Create a directed graph</p>
+</div>
+<p><br/></p>
+<p>We can create a non-directed network by setting <code>directed=FALSE</code>.</p>
+<div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb405-1"><a href="graph-analysis.html#cb405-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph</span>(<span class="at">edges =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>), <span class="at">n =</span> <span class="dv">3</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb405-2"><a href="graph-analysis.html#cb405-2" tabindex="-1"></a><span class="fu">plot</span>(g)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-259-1.png" width="672" />
+<br/></p>
+<p>If we have more nodes in the network than are indicated in the edge list, the additional nodes are unconnected.</p>
+<div class="sourceCode" id="cb406"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb406-1"><a href="graph-analysis.html#cb406-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph</span>(<span class="at">edges =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>), <span class="at">n =</span> <span class="dv">6</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb406-2"><a href="graph-analysis.html#cb406-2" tabindex="-1"></a><span class="fu">plot</span>(g)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-260-1.png" width="672" />
+<br/></p>
+<p>We can also create complete, undirected graphs that form predefined geometries like tetrahedrons.
+See the help file of <code>make_graph</code> for more geometries.</p>
+<div class="sourceCode" id="cb407"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb407-1"><a href="graph-analysis.html#cb407-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">make_graph</span>(<span class="st">&quot;Tetrahedron&quot;</span>)</span>
+<span id="cb407-2"><a href="graph-analysis.html#cb407-2" tabindex="-1"></a><span class="fu">plot</span>(g)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-261-1.png" width="672" />
+<br/></p>
+<p>A further alternative is to use a <em>literal</em> description of the graph, where named nodes are connected via <code>-</code>.</p>
+<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb408-1"><a href="graph-analysis.html#cb408-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph_from_literal</span>(Fred<span class="sc">-</span>Daphne, Velma<span class="sc">-</span>Shaggy, Shaggy<span class="sc">-</span>Fred)</span>
+<span id="cb408-2"><a href="graph-analysis.html#cb408-2" tabindex="-1"></a><span class="fu">plot</span>(g)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-262-1.png" width="672" />
+<br/></p>
+<p>We can see that <code>-</code> is an undirected edge.
+You can use as many <code>-</code> as you like, which might improve legibility in some cases.</p>
+<div class="sourceCode" id="cb409"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb409-1"><a href="graph-analysis.html#cb409-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph_from_literal</span>(Fred<span class="sc">--</span>Daphne, Velma<span class="sc">----</span>Shaggy, Shaggy<span class="sc">----</span>Fred)</span>
+<span id="cb409-2"><a href="graph-analysis.html#cb409-2" tabindex="-1"></a><span class="fu">plot</span>(g)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-263-1.png" width="672" />
+<br/></p>
+<p>The <code>:</code> colon operator links vertex sets, so that all vertices from both sets are connected.</p>
+<div class="sourceCode" id="cb410"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb410-1"><a href="graph-analysis.html#cb410-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph_from_literal</span>(Fred<span class="sc">-</span>Daphne<span class="sc">:</span>Velma<span class="sc">-</span>Shaggy, Fred<span class="sc">-</span>Shaggy<span class="sc">-</span>Scooby)</span>
+<span id="cb410-2"><a href="graph-analysis.html#cb410-2" tabindex="-1"></a><span class="fu">plot</span>(g)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-264-1.png" width="672" />
+<br/></p>
+<p>In directed graphs, you can indicate the direction with <code>-+</code> where the + marks the head of the arrow.</p>
+<div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb411-1"><a href="graph-analysis.html#cb411-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph_from_literal</span>(Fred<span class="sc">-+</span>Daphne<span class="sc">:</span>Velma<span class="sc">+-</span>Shaggy, Fred<span class="sc">+-</span>Shaggy<span class="sc">+-+</span>Scooby)</span>
+<span id="cb411-2"><a href="graph-analysis.html#cb411-2" tabindex="-1"></a><span class="fu">plot</span>(g)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-265-1.png" width="672" />
+<br/></p>
+<div class="blackbox">
+<div class="center">
+<p><strong>Exercise</strong></p>
+</div>
+<p>Create a directed graph with the <code>graph_from_literal()</code> function</p>
+</div>
+<p><br/></p>
+<p>Now lets have a look at how the graph is represented non-graphically to us:</p>
+<div class="sourceCode" id="cb412"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb412-1"><a href="graph-analysis.html#cb412-1" tabindex="-1"></a>g</span></code></pre></div>
+<pre><code>## IGRAPH b5cddc0 DN-- 5 7 -- 
+## + attr: name (v/c)
+## + edges from b5cddc0 (vertex names):
+## [1] Fred  -&gt;Daphne Fred  -&gt;Velma  Shaggy-&gt;Fred   Shaggy-&gt;Daphne Shaggy-&gt;Velma  Shaggy-&gt;Scooby Scooby-&gt;Shaggy</code></pre>
+<p>The output always starts with IGRAPH, telling us the we have an igraph object.
+Next, is a seven character string.
+For me, while I write this, it is <code>c98a3fb</code>.
+For you it will be different.
+It will even be different when you read this, because the number changes every time I compile this document.
+This character string is the ID of the graph.
+After the ID follow four letters:<br />
+1. D or U for directed or undirected<br />
+2.
+N or - for named or unnamed vertices<br />
+3.
+W or - for weighted or unweighted edges<br />
+4.
+B or - for bipartite and unipartite networks.D—</p>
+<p>After the four letter code, we get the number of nodes (5) and the number of edges (7, the edge between Shaggy and Scooby is counted double).
+If the whole graph has a name that is printed after the the numbers.
+All of these properties can also be queried independently.</p>
+<div class="sourceCode" id="cb414"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb414-1"><a href="graph-analysis.html#cb414-1" tabindex="-1"></a><span class="co"># number of nodes</span></span>
+<span id="cb414-2"><a href="graph-analysis.html#cb414-2" tabindex="-1"></a><span class="fu">vcount</span>(g)</span>
+<span id="cb414-3"><a href="graph-analysis.html#cb414-3" tabindex="-1"></a><span class="co"># number of edges</span></span>
+<span id="cb414-4"><a href="graph-analysis.html#cb414-4" tabindex="-1"></a><span class="fu">ecount</span>(g)</span>
+<span id="cb414-5"><a href="graph-analysis.html#cb414-5" tabindex="-1"></a><span class="co"># is the graph directed? </span></span>
+<span id="cb414-6"><a href="graph-analysis.html#cb414-6" tabindex="-1"></a>igraph<span class="sc">::</span><span class="fu">is.directed</span>(g)</span>
+<span id="cb414-7"><a href="graph-analysis.html#cb414-7" tabindex="-1"></a><span class="co"># is the graph bipartite</span></span>
+<span id="cb414-8"><a href="graph-analysis.html#cb414-8" tabindex="-1"></a>igraph<span class="sc">::</span><span class="fu">is.bipartite</span>(g)</span>
+<span id="cb414-9"><a href="graph-analysis.html#cb414-9" tabindex="-1"></a><span class="co"># is the graph weighted</span></span>
+<span id="cb414-10"><a href="graph-analysis.html#cb414-10" tabindex="-1"></a><span class="fu">is.weighted</span>(g)</span>
+<span id="cb414-11"><a href="graph-analysis.html#cb414-11" tabindex="-1"></a><span class="co"># is the graph named</span></span>
+<span id="cb414-12"><a href="graph-analysis.html#cb414-12" tabindex="-1"></a><span class="fu">is.named</span>(g)</span></code></pre></div>
+<p>Below that the attributes are given under <code>+attr :</code>.
+For our graph, we get one attribute: <code>name(v/c)</code>.
+The code after the attribute name (in our case the name is <code>name</code>), tells us whether the attribute is of a node (v), edge (e), or whole graph (g) and whether the attribute is a character (c), numeric (n), logical (l), or other (x).
+So our attribute <code>names</code> concerns nodes and is a character.
+Lastly, the edges are listed.</p>
+<p>We can change the attributes of nodes by accessing the nodes of the graph with <code>V()</code>.
+Then we can change and add attributes in the following way:</p>
+<div class="sourceCode" id="cb415"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb415-1"><a href="graph-analysis.html#cb415-1" tabindex="-1"></a><span class="co"># name the nodes Bill, Joe, Josy, Laura, and Tyler</span></span>
+<span id="cb415-2"><a href="graph-analysis.html#cb415-2" tabindex="-1"></a><span class="fu">V</span>(g)<span class="sc">$</span>name <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Bill&quot;</span>, <span class="st">&quot;Joe&quot;</span>, <span class="st">&quot;Josy&quot;</span>, <span class="st">&quot;Laura&quot;</span>, <span class="st">&quot;Tyler&quot;</span>)</span></code></pre></div>
+<div class="blackbox">
+<div class="center">
+<p><strong>Exercise</strong></p>
+</div>
+<ol style="list-style-type: decimal">
+<li>Rename the nodes in your network<br />
+</li>
+<li>What would the code for the first graph we created be? <a href="https://seafile.rlp.net/f/5e8ca9f1d73b4863bb18/">Solution</a></li>
+</ol>
+</div>
+<p><br/></p>
+<p>We can see the change in the summary and the plot.</p>
+<div class="sourceCode" id="cb416"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb416-1"><a href="graph-analysis.html#cb416-1" tabindex="-1"></a>g</span></code></pre></div>
+<pre><code>## IGRAPH b5cddc0 DN-- 5 7 -- 
+## + attr: name (v/c)
+## + edges from b5cddc0 (vertex names):
+## [1] Bill -&gt;Joe   Bill -&gt;Josy  Laura-&gt;Bill  Laura-&gt;Joe   Laura-&gt;Josy  Laura-&gt;Tyler Tyler-&gt;Laura</code></pre>
+<div class="sourceCode" id="cb418"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb418-1"><a href="graph-analysis.html#cb418-1" tabindex="-1"></a><span class="fu">plot</span>(g)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-269-1.png" width="672" />
+<br/></p>
+<p>We can also add a new attribute called <code>math grade</code>.</p>
+<div class="sourceCode" id="cb419"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb419-1"><a href="graph-analysis.html#cb419-1" tabindex="-1"></a><span class="fu">V</span>(g)<span class="sc">$</span>math_grade <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">1</span>)</span>
+<span id="cb419-2"><a href="graph-analysis.html#cb419-2" tabindex="-1"></a>g</span></code></pre></div>
+<pre><code>## IGRAPH b5cddc0 DN-- 5 7 -- 
+## + attr: name (v/c), math_grade (v/n)
+## + edges from b5cddc0 (vertex names):
+## [1] Bill -&gt;Joe   Bill -&gt;Josy  Laura-&gt;Bill  Laura-&gt;Joe   Laura-&gt;Josy  Laura-&gt;Tyler Tyler-&gt;Laura</code></pre>
+<div class="sourceCode" id="cb421"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb421-1"><a href="graph-analysis.html#cb421-1" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;blue&quot;</span>,<span class="st">&quot;red&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;magenta&quot;</span>)</span>
+<span id="cb421-2"><a href="graph-analysis.html#cb421-2" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">vertex.color =</span> cols[<span class="fu">V</span>(g)<span class="sc">$</span>math_grade])</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-271-1.png" width="672" />
+<br/></p>
+<div class="blackbox">
+<div class="center">
+<p><strong>Exercise</strong></p>
+</div>
+<p>Assign values to your nodes and plot them. Color the nodes by the assigned value.</p>
+</div>
+<p><br/></p>
+<p>We can access the edges in the same way.</p>
+<div class="sourceCode" id="cb422"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb422-1"><a href="graph-analysis.html#cb422-1" tabindex="-1"></a><span class="fu">E</span>(g)</span></code></pre></div>
+<pre><code>## + 7/7 edges from b5cddc0 (vertex names):
+## [1] Bill -&gt;Joe   Bill -&gt;Josy  Laura-&gt;Bill  Laura-&gt;Joe   Laura-&gt;Josy  Laura-&gt;Tyler Tyler-&gt;Laura</code></pre>
+<div class="sourceCode" id="cb424"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb424-1"><a href="graph-analysis.html#cb424-1" tabindex="-1"></a><span class="fu">E</span>(g)<span class="sc">$</span>likes <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="fu">ecount</span>(g), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb424-2"><a href="graph-analysis.html#cb424-2" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">edge.color =</span> cols[<span class="fu">E</span>(g)<span class="sc">$</span>likes])</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-272-1.png" width="672" /></p>
+<p><br/></p>
+</div>
+<div id="from-data-to-graph" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> From data to graph<a href="graph-analysis.html#from-data-to-graph" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>You often start with an adjacency matrix or an edge list which you want to turn into a graph.
+To illustrate how this works, I will simulate an example for each data type.</p>
+<p>First, we create an adjacency matrix.
+Remember, an adjacency matrix is a matrix filled with zeros and ones.
+A one in the j<span class="math inline">\(^{th}\)</span> column of the i<span class="math inline">\(^{th}\)</span> row implies that the j<span class="math inline">\(^{th}\)</span> node is connected to the i<span class="math inline">\(^{th}\)</span> node, while a zero would imply that they are not connected.
+Here, we simulate a 20x20 matrix that is randomly populated with zeros and ones.
+For this, we use random draws from the binomial distribution <code>rbinom()</code> .
+The binomial distribution is what you might use to simulate a coin toss or any other event that can lead to two different outcomes in each trial.
+In this case, we draw 400 numbers (<code>20^2</code>), and each draw only consists of one trial and a likelihood of success (i.e. a 1) of 0.1.</p>
+<div class="sourceCode" id="cb425"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb425-1"><a href="graph-analysis.html#cb425-1" tabindex="-1"></a>adjacency <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rbinom</span>(<span class="dv">20</span><span class="sc">^</span><span class="dv">2</span>, <span class="dv">1</span>, .<span class="dv">1</span>), <span class="at">ncol =</span> <span class="dv">20</span>)</span>
+<span id="cb425-2"><a href="graph-analysis.html#cb425-2" tabindex="-1"></a><span class="co"># turn all values on the diagonal to zero as a node is not connected to itself. </span></span>
+<span id="cb425-3"><a href="graph-analysis.html#cb425-3" tabindex="-1"></a><span class="fu">diag</span>(adjacency) <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb425-4"><a href="graph-analysis.html#cb425-4" tabindex="-1"></a>ga <span class="ot">&lt;-</span> <span class="fu">graph_from_adjacency_matrix</span>(adjacency, <span class="at">mode =</span> <span class="st">&quot;undirected&quot;</span>)</span></code></pre></div>
+<pre><code>## Warning: The `adjmatrix` argument of `graph_from_adjacency_matrix()` must be symmetric with mode = &quot;undirected&quot; as of igraph 1.6.0.
+## ℹ Use mode = &quot;max&quot; to achieve the original behavior.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<div class="sourceCode" id="cb427"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb427-1"><a href="graph-analysis.html#cb427-1" tabindex="-1"></a><span class="fu">plot</span>(ga)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-273-1.png" width="672" />
+<br/></p>
+<p>We can also go the other way around and turn a graph into an adjacency matrix.</p>
+<div class="sourceCode" id="cb428"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb428-1"><a href="graph-analysis.html#cb428-1" tabindex="-1"></a><span class="fu">as_adjacency_matrix</span>(ga)</span></code></pre></div>
+<pre><code>## 20 x 20 sparse Matrix of class &quot;dgCMatrix&quot;
+##                                              
+##  [1,] . . . . . . . . . 1 1 . . . . . . . . .
+##  [2,] . . 1 . . . . . . . . . . 1 . . . . . 1
+##  [3,] . 1 . . . . 1 . . 1 . . . 1 . 1 . . . .
+##  [4,] . . . . . . . . . . . . . . . . . . 1 1
+##  [5,] . . . . . . . . . . . . . . . . . . . .
+##  [6,] . . . . . . . 1 . 1 . 1 . 1 . . . . . .
+##  [7,] . . 1 . . . . 1 1 . 1 . . . . 1 . 1 . 1
+##  [8,] . . . . . 1 1 . . . . . 1 . . . . 1 . .
+##  [9,] . . . . . . 1 . . 1 . . 1 . . . . . . 1
+## [10,] 1 . 1 . . 1 . . 1 . . . . . . . . . . 1
+## [11,] 1 . . . . . 1 . . . . . . . . . . . . .
+## [12,] . . . . . 1 . . . . . . 1 . . . . . . .
+## [13,] . . . . . . . 1 1 . . 1 . . . . . . . .
+## [14,] . 1 1 . . 1 . . . . . . . . . . . . . .
+## [15,] . . . . . . . . . . . . . . . . . . . .
+## [16,] . . 1 . . . 1 . . . . . . . . . 1 . . .
+## [17,] . . . . . . . . . . . . . . . 1 . 1 . .
+## [18,] . . . . . . 1 1 . . . . . . . . 1 . . .
+## [19,] . . . 1 . . . . . . . . . . . . . . . .
+## [20,] . 1 . 1 . . 1 . 1 1 . . . . . . . . . .</code></pre>
+<p>You see that the format is unusual for matrices in R.
+As it says above the output, the output is a sparse matrix.
+A sparse matrix is a matrix where most of the entries are zeros. Instead of storing all the zeros, which would waste a lot of space, sparse matrix formats only store the non-zero values and their row and column positions. This saves memory and allows computations to skip over the zeros, making operations much faster.</p>
+<div class="blackbox">
+<div class="center">
+<p><strong>Exercise</strong></p>
+</div>
+<ul>
+<li>Create an adjacency matrix with a link probability of 0.25<br />
+</li>
+<li>Create a graph from the adjacency matrix and plot it</li>
+</ul>
+</div>
+<p><br/></p>
+<p>Next, we will create an edge list and derive a graph from it.
+<code>letters</code> is a vector that contains all the letters of the alphabet. We take a random sample of 20 letters with <code>sample()</code>.
+The <code>replace = TRUE</code> argument enables us to sample the same letter multiple time.
+After we have two vectors with randomly drawn letters (<code>letters1</code> and <code>letters2</code>) we use them as columns in a matrix with the <code>cbind()</code> function.</p>
+<p>This matrix is the edge list we can use to create a graph with the <code>graph_from_edgelist()</code> function.</p>
+<div class="sourceCode" id="cb430"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb430-1"><a href="graph-analysis.html#cb430-1" tabindex="-1"></a>letters1 <span class="ot">&lt;-</span> <span class="fu">sample</span>(letters, <span class="dv">20</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb430-2"><a href="graph-analysis.html#cb430-2" tabindex="-1"></a>letters2 <span class="ot">&lt;-</span> <span class="fu">sample</span>(letters, <span class="dv">20</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb430-3"><a href="graph-analysis.html#cb430-3" tabindex="-1"></a>el <span class="ot">&lt;-</span> <span class="fu">cbind</span>(letters1, letters2)</span>
+<span id="cb430-4"><a href="graph-analysis.html#cb430-4" tabindex="-1"></a>el</span></code></pre></div>
+<pre><code>##       letters1 letters2
+##  [1,] &quot;f&quot;      &quot;o&quot;     
+##  [2,] &quot;x&quot;      &quot;m&quot;     
+##  [3,] &quot;u&quot;      &quot;r&quot;     
+##  [4,] &quot;s&quot;      &quot;v&quot;     
+##  [5,] &quot;m&quot;      &quot;s&quot;     
+##  [6,] &quot;m&quot;      &quot;d&quot;     
+##  [7,] &quot;f&quot;      &quot;h&quot;     
+##  [8,] &quot;i&quot;      &quot;l&quot;     
+##  [9,] &quot;e&quot;      &quot;w&quot;     
+## [10,] &quot;j&quot;      &quot;b&quot;     
+## [11,] &quot;v&quot;      &quot;k&quot;     
+## [12,] &quot;x&quot;      &quot;f&quot;     
+## [13,] &quot;v&quot;      &quot;t&quot;     
+## [14,] &quot;b&quot;      &quot;s&quot;     
+## [15,] &quot;x&quot;      &quot;n&quot;     
+## [16,] &quot;t&quot;      &quot;b&quot;     
+## [17,] &quot;s&quot;      &quot;f&quot;     
+## [18,] &quot;f&quot;      &quot;v&quot;     
+## [19,] &quot;g&quot;      &quot;s&quot;     
+## [20,] &quot;n&quot;      &quot;n&quot;</code></pre>
+<div class="sourceCode" id="cb432"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb432-1"><a href="graph-analysis.html#cb432-1" tabindex="-1"></a>ge <span class="ot">&lt;-</span> <span class="fu">graph_from_edgelist</span>(el, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb432-2"><a href="graph-analysis.html#cb432-2" tabindex="-1"></a><span class="fu">plot</span>(ge)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-275-1.png" width="672" /></p>
+<p><br/></p>
+<p>Until now, all networks we have created have been unipartite.
+There has been one set of nodes and each node could be connected to every other node.
+In bipartite networks, there are two distinct sets of nodes.
+Each node is only connected to nodes from the other set.
+Below, I create an example of a bipartite network.
+Six students (S1-S6) can register for four courses (C1-C4).
+The <em>affiliation matrix</em> has one column per class and one row per student.
+If a student is part of a class, the respective cell in the adjacency matrix holds a one.
+If a student does not visit a class, it is a zero.
+Both classes and students are nodes but neither students nor classes are connected among each other.
+When we print the graph to the console, we can see that the graph is bipartite by looking at the four-letter code: <code>UN-B</code></p>
+<div class="sourceCode" id="cb433"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb433-1"><a href="graph-analysis.html#cb433-1" tabindex="-1"></a>C1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>) </span>
+<span id="cb433-2"><a href="graph-analysis.html#cb433-2" tabindex="-1"></a>C2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>) </span>
+<span id="cb433-3"><a href="graph-analysis.html#cb433-3" tabindex="-1"></a>C3 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>) </span>
+<span id="cb433-4"><a href="graph-analysis.html#cb433-4" tabindex="-1"></a>C4 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>) </span>
+<span id="cb433-5"><a href="graph-analysis.html#cb433-5" tabindex="-1"></a>aff.df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(C1,C2,C3,C4) </span>
+<span id="cb433-6"><a href="graph-analysis.html#cb433-6" tabindex="-1"></a><span class="fu">row.names</span>(aff.df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;S1&quot;</span>,<span class="st">&quot;S2&quot;</span>,<span class="st">&quot;S3&quot;</span>,<span class="st">&quot;S4&quot;</span>,<span class="st">&quot;S5&quot;</span>,<span class="st">&quot;S6&quot;</span>)</span>
+<span id="cb433-7"><a href="graph-analysis.html#cb433-7" tabindex="-1"></a>bn <span class="ot">&lt;-</span> <span class="fu">graph.incidence</span>(aff.df)</span></code></pre></div>
+<pre><code>## Warning: `graph.incidence()` was deprecated in igraph 2.0.0.
+## ℹ Please use `graph_from_biadjacency_matrix()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<div class="sourceCode" id="cb435"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb435-1"><a href="graph-analysis.html#cb435-1" tabindex="-1"></a>bn</span></code></pre></div>
+<pre><code>## IGRAPH b657a47 UN-B 10 11 -- 
+## + attr: type (v/l), name (v/c)
+## + edges from b657a47 (vertex names):
+##  [1] S1--C1 S2--C1 S2--C2 S3--C1 S3--C2 S3--C3 S4--C2 S4--C3 S5--C3 S5--C4 S6--C4</code></pre>
+<div class="sourceCode" id="cb437"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb437-1"><a href="graph-analysis.html#cb437-1" tabindex="-1"></a>plt.x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">2</span>, <span class="dv">6</span>), <span class="fu">rep</span>(<span class="dv">4</span>, <span class="dv">4</span>))</span>
+<span id="cb437-2"><a href="graph-analysis.html#cb437-2" tabindex="-1"></a>plt.y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">7</span><span class="sc">:</span><span class="dv">2</span>, <span class="dv">6</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<span id="cb437-3"><a href="graph-analysis.html#cb437-3" tabindex="-1"></a>lay <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">cbind</span>(plt.x, plt.y))</span>
+<span id="cb437-4"><a href="graph-analysis.html#cb437-4" tabindex="-1"></a>shapes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;circle&quot;</span>, <span class="st">&quot;square&quot;</span>)</span>
+<span id="cb437-5"><a href="graph-analysis.html#cb437-5" tabindex="-1"></a>colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;blue&quot;</span>, <span class="st">&quot;red&quot;</span>)</span>
+<span id="cb437-6"><a href="graph-analysis.html#cb437-6" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb437-7"><a href="graph-analysis.html#cb437-7" tabindex="-1"></a>        bn,</span>
+<span id="cb437-8"><a href="graph-analysis.html#cb437-8" tabindex="-1"></a>        <span class="at">vertex.color =</span> colors[<span class="fu">V</span>(bn)<span class="sc">$</span>type <span class="sc">+</span> <span class="dv">1</span>],</span>
+<span id="cb437-9"><a href="graph-analysis.html#cb437-9" tabindex="-1"></a>        <span class="at">vertex.shape =</span> shapes[<span class="fu">V</span>(bn)<span class="sc">$</span>type <span class="sc">+</span> <span class="dv">1</span>],</span>
+<span id="cb437-10"><a href="graph-analysis.html#cb437-10" tabindex="-1"></a>        <span class="at">vertex.size =</span> <span class="dv">10</span>,</span>
+<span id="cb437-11"><a href="graph-analysis.html#cb437-11" tabindex="-1"></a>        <span class="at">vertex.label.degree =</span> <span class="sc">-</span>pi <span class="sc">/</span> <span class="dv">2</span>,</span>
+<span id="cb437-12"><a href="graph-analysis.html#cb437-12" tabindex="-1"></a>        <span class="at">vertex.label.dist =</span> <span class="fl">1.2</span>,</span>
+<span id="cb437-13"><a href="graph-analysis.html#cb437-13" tabindex="-1"></a>        <span class="at">vertex.label.cex =</span> <span class="fl">0.9</span>,</span>
+<span id="cb437-14"><a href="graph-analysis.html#cb437-14" tabindex="-1"></a>        <span class="at">layout =</span> lay</span>
+<span id="cb437-15"><a href="graph-analysis.html#cb437-15" tabindex="-1"></a>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-277-1.png" width="672" /></p>
+<p><br/></p>
+</div>
+<div id="centrality-measures" class="section level2 hasAnchor" number="6.3">
+<h2><span class="header-section-number">6.3</span> Centrality measures<a href="graph-analysis.html#centrality-measures" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Next, we will turn to the centrality measures we discussed in the lecture.
+The most basic measure is the degree centrality which is just the degree of a node.
+We can get the degree with the function <code>degree()</code>.</p>
+<div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb438-1"><a href="graph-analysis.html#cb438-1" tabindex="-1"></a>igraph<span class="sc">::</span><span class="fu">degree</span>(ga)</span></code></pre></div>
+<pre><code>##  [1] 2 3 5 2 0 4 7 4 4 5 2 2 3 3 0 3 2 3 1 5</code></pre>
+<p>We can assign each node its degree as an attribute and plot the network with accordingly colored nodes.
+For this we need two new packages: <code>ggraph</code> <span class="citation">(<a href="#ref-Pedersen2022">Pedersen 2022a</a>)</span> and tidygraph <span class="citation">(<a href="#ref-Pedersen2022a">Pedersen 2022b</a>)</span>.</p>
+<p>We will look at both packages a little more in depth later in this tutorial.</p>
+<div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb440-1"><a href="graph-analysis.html#cb440-1" tabindex="-1"></a><span class="fu">library</span>(tidygraph)</span></code></pre></div>
+<pre><code>## 
+## Attache Paket: &#39;tidygraph&#39;</code></pre>
+<pre><code>## Das folgende Objekt ist maskiert &#39;package:igraph&#39;:
+## 
+##     groups</code></pre>
+<pre><code>## Das folgende Objekt ist maskiert &#39;package:raster&#39;:
+## 
+##     select</code></pre>
+<pre><code>## Das folgende Objekt ist maskiert &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<div class="sourceCode" id="cb445"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb445-1"><a href="graph-analysis.html#cb445-1" tabindex="-1"></a><span class="fu">library</span>(ggraph)</span></code></pre></div>
+<pre><code>## 
+## Attache Paket: &#39;ggraph&#39;</code></pre>
+<pre><code>## Das folgende Objekt ist maskiert &#39;package:sp&#39;:
+## 
+##     geometry</code></pre>
+<pre><code>## Das folgende Objekt ist maskiert &#39;package:spatstat.geom&#39;:
+## 
+##     square</code></pre>
+<div class="sourceCode" id="cb449"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb449-1"><a href="graph-analysis.html#cb449-1" tabindex="-1"></a><span class="fu">V</span>(ga)<span class="sc">$</span>degree <span class="ot">&lt;-</span> igraph<span class="sc">::</span><span class="fu">degree</span>(ga)</span>
+<span id="cb449-2"><a href="graph-analysis.html#cb449-2" tabindex="-1"></a>ga</span></code></pre></div>
+<pre><code>## IGRAPH b62455b U--- 20 30 -- 
+## + attr: degree (v/n)
+## + edges from b62455b:
+##  [1]  1--10  1--11  2-- 3  2--14  2--20  3-- 7  3--10  3--14  3--16  4--19  4--20  6-- 8  6--10  6--12  6--14  7-- 8  7-- 9  7--11  7--16  7--18  7--20  8--13  8--18  9--10  9--13
+## [26]  9--20 10--20 12--13 16--17 17--18</code></pre>
+<div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb451-1"><a href="graph-analysis.html#cb451-1" tabindex="-1"></a>ga2 <span class="ot">&lt;-</span> <span class="fu">as_tbl_graph</span>(ga)</span>
+<span id="cb451-2"><a href="graph-analysis.html#cb451-2" tabindex="-1"></a><span class="fu">ggraph</span>(ga2) <span class="sc">+</span> </span>
+<span id="cb451-3"><a href="graph-analysis.html#cb451-3" tabindex="-1"></a>        <span class="fu">geom_edge_link</span>(<span class="at">lwd =</span> <span class="fl">0.4</span>) <span class="sc">+</span> </span>
+<span id="cb451-4"><a href="graph-analysis.html#cb451-4" tabindex="-1"></a>        <span class="fu">geom_node_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> degree), <span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>## Using &quot;stress&quot; as default layout</code></pre>
+<pre><code>## Warning in geom_edge_link(lwd = 0.4): Ignoring unknown parameters: `linewidth`</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-280-1.png" width="672" /></p>
+<p><br/></p>
+<p>Other centrality metrics can also be computed with the epinomous functions from the <code>igraph</code> package.</p>
+<div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb454-1"><a href="graph-analysis.html#cb454-1" tabindex="-1"></a><span class="fu">V</span>(ga)<span class="sc">$</span>closeness  <span class="ot">&lt;-</span>  igraph<span class="sc">::</span><span class="fu">closeness</span>(ga)</span>
+<span id="cb454-2"><a href="graph-analysis.html#cb454-2" tabindex="-1"></a><span class="fu">V</span>(ga)<span class="sc">$</span>betweenness <span class="ot">&lt;-</span> igraph<span class="sc">::</span><span class="fu">betweenness</span>(ga)</span></code></pre></div>
+<p>Another nice way to display these data is through radial plots.
+However, for this we again need two additional packages: <code>sna</code> <span class="citation">(<a href="#ref-Butts2022">Butts 2022</a>)</span> and <code>network</code> <span class="citation">(<a href="#ref-Butts2008">Butts 2008</a>)</span> .
+<code>sna</code> makes the plots and <code>network</code> provides the object class that <code>sna</code> uses.</p>
+<div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb455-1"><a href="graph-analysis.html#cb455-1" tabindex="-1"></a><span class="fu">library</span>(network)</span>
+<span id="cb455-2"><a href="graph-analysis.html#cb455-2" tabindex="-1"></a><span class="fu">library</span>(sna)</span></code></pre></div>
+<p>In the following plots, nodes that are closer to the center have higher centrality.</p>
+<div class="sourceCode" id="cb456"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb456-1"><a href="graph-analysis.html#cb456-1" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">as_adjacency_matrix</span>(ga, <span class="at">sparse=</span><span class="cn">FALSE</span>)</span>
+<span id="cb456-2"><a href="graph-analysis.html#cb456-2" tabindex="-1"></a>ga3 <span class="ot">&lt;-</span> <span class="fu">as.network.matrix</span>(A)</span>
+<span id="cb456-3"><a href="graph-analysis.html#cb456-3" tabindex="-1"></a><span class="fu">gplot.target</span>(</span>
+<span id="cb456-4"><a href="graph-analysis.html#cb456-4" tabindex="-1"></a>        ga3,</span>
+<span id="cb456-5"><a href="graph-analysis.html#cb456-5" tabindex="-1"></a>        <span class="fu">degree</span>(ga3, <span class="at">gmode =</span> <span class="st">&quot;graph&quot;</span>),</span>
+<span id="cb456-6"><a href="graph-analysis.html#cb456-6" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">&quot;Degree&quot;</span>,</span>
+<span id="cb456-7"><a href="graph-analysis.html#cb456-7" tabindex="-1"></a>        <span class="at">circ.lab =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb456-8"><a href="graph-analysis.html#cb456-8" tabindex="-1"></a>        <span class="at">circ.col =</span> <span class="st">&quot;skyblue&quot;</span>,</span>
+<span id="cb456-9"><a href="graph-analysis.html#cb456-9" tabindex="-1"></a>        <span class="at">usearrows =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb456-10"><a href="graph-analysis.html#cb456-10" tabindex="-1"></a>        <span class="at">edge.col =</span> <span class="st">&quot;darkgray&quot;</span></span>
+<span id="cb456-11"><a href="graph-analysis.html#cb456-11" tabindex="-1"></a>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-283-1.png" width="672" /></p>
+<div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb457-1"><a href="graph-analysis.html#cb457-1" tabindex="-1"></a><span class="fu">gplot.target</span>(</span>
+<span id="cb457-2"><a href="graph-analysis.html#cb457-2" tabindex="-1"></a>        ga3,</span>
+<span id="cb457-3"><a href="graph-analysis.html#cb457-3" tabindex="-1"></a>        <span class="fu">closeness</span>(ga3, <span class="at">gmode =</span> <span class="st">&quot;graph&quot;</span>),</span>
+<span id="cb457-4"><a href="graph-analysis.html#cb457-4" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">&quot;Closeness&quot;</span>,</span>
+<span id="cb457-5"><a href="graph-analysis.html#cb457-5" tabindex="-1"></a>        <span class="at">circ.lab =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb457-6"><a href="graph-analysis.html#cb457-6" tabindex="-1"></a>        <span class="at">circ.col =</span> <span class="st">&quot;skyblue&quot;</span>,</span>
+<span id="cb457-7"><a href="graph-analysis.html#cb457-7" tabindex="-1"></a>        <span class="at">usearrows =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb457-8"><a href="graph-analysis.html#cb457-8" tabindex="-1"></a>        <span class="at">edge.col =</span> <span class="st">&quot;darkgray&quot;</span></span>
+<span id="cb457-9"><a href="graph-analysis.html#cb457-9" tabindex="-1"></a>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-283-2.png" width="672" /></p>
+<div class="sourceCode" id="cb458"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb458-1"><a href="graph-analysis.html#cb458-1" tabindex="-1"></a><span class="fu">gplot.target</span>(</span>
+<span id="cb458-2"><a href="graph-analysis.html#cb458-2" tabindex="-1"></a>        ga3,</span>
+<span id="cb458-3"><a href="graph-analysis.html#cb458-3" tabindex="-1"></a>        <span class="fu">betweenness</span>(ga3, <span class="at">gmode =</span> <span class="st">&quot;graph&quot;</span>),</span>
+<span id="cb458-4"><a href="graph-analysis.html#cb458-4" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">&quot;Betweenness&quot;</span>,</span>
+<span id="cb458-5"><a href="graph-analysis.html#cb458-5" tabindex="-1"></a>        <span class="at">circ.lab =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb458-6"><a href="graph-analysis.html#cb458-6" tabindex="-1"></a>        <span class="at">circ.col =</span> <span class="st">&quot;skyblue&quot;</span>,</span>
+<span id="cb458-7"><a href="graph-analysis.html#cb458-7" tabindex="-1"></a>        <span class="at">usearrows =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb458-8"><a href="graph-analysis.html#cb458-8" tabindex="-1"></a>        <span class="at">edge.col =</span> <span class="st">&quot;darkgray&quot;</span></span>
+<span id="cb458-9"><a href="graph-analysis.html#cb458-9" tabindex="-1"></a>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-283-3.png" width="672" /></p>
+<p><br/></p>
+</div>
+<div id="visualization" class="section level2 hasAnchor" number="6.4">
+<h2><span class="header-section-number">6.4</span> Visualization<a href="graph-analysis.html#visualization" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>For non-spatial networks, there is not a single correct position for any one node.
+They can be freely arranged in space.
+However, certain arrangements will make it easier to understand the network while others will simply be confusing.
+Visualization is as much art as science but there are some common sense rules that usually result in a less confusing figure:</p>
+<ul>
+<li><p>Minimize edge crossings</p></li>
+<li><p>Maximize the symmetry of the layout of nodes</p></li>
+<li><p>Minimize the variability of the edge lengths</p></li>
+<li><p>Maximize the angle between edges when they cross or join nodes</p></li>
+<li><p>Minimize the total space used for the network display</p>
+<p>These were taken from <span class="citation">Luke (<a href="#ref-Luke_2015">2015</a>)</span></p></li>
+</ul>
+<p>We will quickly go through some options that <code>igraph</code> gives you and then cover the basics of the <code>ggraph</code> package.</p>
+<p>As a baseline, we start with the default plot from an <code>igraph</code> object.</p>
+<div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb459-1"><a href="graph-analysis.html#cb459-1" tabindex="-1"></a><span class="fu">plot</span>(ga)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-284-1.png" width="672" /></p>
+<p><br/></p>
+<p>We can change the color of the nodes with <code>vertex.color</code> and the color of edges with <code>edge.color</code>.</p>
+<div class="sourceCode" id="cb460"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb460-1"><a href="graph-analysis.html#cb460-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb460-2"><a href="graph-analysis.html#cb460-2" tabindex="-1"></a><span class="fu">plot</span>(ga, <span class="at">vertex.color=</span><span class="st">&quot;cyan&quot;</span>)</span>
+<span id="cb460-3"><a href="graph-analysis.html#cb460-3" tabindex="-1"></a><span class="fu">plot</span>(ga, <span class="at">edge.color=</span><span class="st">&quot;cyan&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-285-1.png" width="672" /></p>
+<p><br/></p>
+<p>We can add a title with</p>
+<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb461-1"><a href="graph-analysis.html#cb461-1" tabindex="-1"></a><span class="fu">plot</span>(ga, <span class="at">main=</span><span class="st">&quot;Random layout&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-286-1.png" width="672" /></p>
+<p><br/></p>
+<p>Next, we can change the graph layout, which means the rules, and the algorithm, which are used to optimize the position of the nodes.</p>
+<div class="sourceCode" id="cb462"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb462-1"><a href="graph-analysis.html#cb462-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))</span>
+<span id="cb462-2"><a href="graph-analysis.html#cb462-2" tabindex="-1"></a><span class="fu">plot</span>(ga, <span class="at">layout=</span>layout.circle, <span class="at">main =</span> <span class="st">&quot;circle&quot;</span>)</span>
+<span id="cb462-3"><a href="graph-analysis.html#cb462-3" tabindex="-1"></a><span class="fu">plot</span>(ga, <span class="at">layout=</span>layout.fruchterman.reingold, <span class="at">main =</span> <span class="st">&quot;fruchterman&quot;</span>)</span>
+<span id="cb462-4"><a href="graph-analysis.html#cb462-4" tabindex="-1"></a><span class="fu">plot</span>(ga, <span class="at">layout=</span>layout.random, <span class="at">main =</span> <span class="st">&quot;random&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-287-1.png" width="672" /></p>
+<p><br/></p>
+<p>We also have the option to create an interactive 2D and 3D graph with <code>tkplot()</code> and <code>rglplot()</code>.
+It is not possible to embed the result in the .html file but you are currently reading. You can use the code here to try it out yourself.</p>
+<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb463-1"><a href="graph-analysis.html#cb463-1" tabindex="-1"></a><span class="fu">tkplot</span>(ga)</span></code></pre></div>
+<div class="sourceCode" id="cb464"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb464-1"><a href="graph-analysis.html#cb464-1" tabindex="-1"></a><span class="fu">rglplot</span>(ga)</span></code></pre></div>
+<p>With that we come to <code>ggraph</code>, an effort to place network visualization inside the ggplot framework. As seen above, we need a <code>tidygraph</code> object to use <code>ggraph</code>. Here, we can use the same object we used above (<code>ga2</code>). Each <code>ggraph</code> plot starts with the same function: <code>ggraph()</code>. The only argument in this function is the object we wish to display. As in <code>ggplot2</code>, this object is not a working plot yet.</p>
+<div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb465-1"><a href="graph-analysis.html#cb465-1" tabindex="-1"></a>ga2 <span class="sc">%&gt;%</span> </span>
+<span id="cb465-2"><a href="graph-analysis.html#cb465-2" tabindex="-1"></a>        <span class="fu">ggraph</span>()</span></code></pre></div>
+<pre><code>## Using &quot;stress&quot; as default layout</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-290-1.png" width="672" /></p>
+<p><br/></p>
+<p>All we see is a gray background. To visualize the data, we need to add geoms. First, we will add the edges. There are multiple options here and I will show some of them.</p>
+<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb467-1"><a href="graph-analysis.html#cb467-1" tabindex="-1"></a>ga2 <span class="sc">%&gt;%</span> <span class="fu">ggraph</span>() <span class="sc">+</span> <span class="fu">geom_edge_link</span>()</span></code></pre></div>
+<pre><code>## Using &quot;stress&quot; as default layout</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-291-1.png" width="672" /></p>
+<div class="sourceCode" id="cb469"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb469-1"><a href="graph-analysis.html#cb469-1" tabindex="-1"></a>ga2 <span class="sc">%&gt;%</span> <span class="fu">ggraph</span>() <span class="sc">+</span> <span class="fu">geom_edge_bend</span>()</span></code></pre></div>
+<pre><code>## Using &quot;stress&quot; as default layout</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-291-2.png" width="672" /></p>
+<div class="sourceCode" id="cb471"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb471-1"><a href="graph-analysis.html#cb471-1" tabindex="-1"></a>ga2 <span class="sc">%&gt;%</span> <span class="fu">ggraph</span>() <span class="sc">+</span> <span class="fu">geom_edge_arc</span>()</span></code></pre></div>
+<pre><code>## Using &quot;stress&quot; as default layout</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-291-3.png" width="672" /></p>
+<p><br/></p>
+<p>Next, we have a look at the nodes.</p>
+<div class="sourceCode" id="cb473"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb473-1"><a href="graph-analysis.html#cb473-1" tabindex="-1"></a>ga2 <span class="sc">%&gt;%</span> <span class="fu">ggraph</span>() <span class="sc">+</span> <span class="fu">geom_node_point</span>()</span></code></pre></div>
+<pre><code>## Using &quot;stress&quot; as default layout</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-292-1.png" width="672" /></p>
+<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb475-1"><a href="graph-analysis.html#cb475-1" tabindex="-1"></a>ga2 <span class="sc">%&gt;%</span> <span class="fu">ggraph</span>() <span class="sc">+</span> <span class="fu">geom_node_label</span>(<span class="fu">aes</span>(<span class="at">label =</span> degree))</span></code></pre></div>
+<pre><code>## Using &quot;stress&quot; as default layout</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-292-2.png" width="672" /></p>
+<div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb477-1"><a href="graph-analysis.html#cb477-1" tabindex="-1"></a>ga2 <span class="sc">%&gt;%</span> <span class="fu">ggraph</span>() <span class="sc">+</span> <span class="fu">geom_node_tile</span>(<span class="at">width =</span> <span class="dv">1</span>, <span class="at">height =</span> <span class="dv">1</span>)</span></code></pre></div>
+<pre><code>## Using &quot;stress&quot; as default layout</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-292-3.png" width="672" /></p>
+<p><br/></p>
+<p>Of course, we can also show both in one plot.</p>
+<div class="sourceCode" id="cb479"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb479-1"><a href="graph-analysis.html#cb479-1" tabindex="-1"></a>ga2 <span class="sc">|&gt;</span> <span class="fu">ggraph</span>() <span class="sc">+</span> <span class="fu">geom_edge_link</span>() <span class="sc">+</span> <span class="fu">geom_node_point</span>()</span></code></pre></div>
+<pre><code>## Using &quot;stress&quot; as default layout</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-293-1.png" width="672" /></p>
+<div class="sourceCode" id="cb481"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb481-1"><a href="graph-analysis.html#cb481-1" tabindex="-1"></a>ga2 <span class="sc">|&gt;</span> <span class="fu">ggraph</span>() <span class="sc">+</span> </span>
+<span id="cb481-2"><a href="graph-analysis.html#cb481-2" tabindex="-1"></a>        <span class="fu">geom_edge_arc</span>() <span class="sc">+</span> </span>
+<span id="cb481-3"><a href="graph-analysis.html#cb481-3" tabindex="-1"></a>        <span class="fu">geom_node_tile</span>(</span>
+<span id="cb481-4"><a href="graph-analysis.html#cb481-4" tabindex="-1"></a>                <span class="at">width =</span> .<span class="dv">1</span>,</span>
+<span id="cb481-5"><a href="graph-analysis.html#cb481-5" tabindex="-1"></a>                <span class="at">height =</span> .<span class="dv">1</span>, </span>
+<span id="cb481-6"><a href="graph-analysis.html#cb481-6" tabindex="-1"></a>                <span class="fu">aes</span>(<span class="at">fill =</span> degree)</span>
+<span id="cb481-7"><a href="graph-analysis.html#cb481-7" tabindex="-1"></a>                )</span></code></pre></div>
+<pre><code>## Using &quot;stress&quot; as default layout</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-293-2.png" width="672" /></p>
+<p><br/></p>
+</div>
+<div id="network-models" class="section level2 hasAnchor" number="6.5">
+<h2><span class="header-section-number">6.5</span> Network Models<a href="graph-analysis.html#network-models" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We can simulate network models with <code>igraph</code>.
+A Poisson random graph is simulated with <code>erdos.renyi.game()</code> where <code>n</code> is the number of nodes, <code>m</code> is the number of edges, <code>p</code> is the probability of two nodes sharing an edge, and the type is either <code>gnm</code> or <code>gnp</code>, depending on whether you supply the number of edges or the probability of adjacency.</p>
+<div class="sourceCode" id="cb483"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb483-1"><a href="graph-analysis.html#cb483-1" tabindex="-1"></a>prg1 <span class="ot">&lt;-</span> <span class="fu">erdos.renyi.game</span>(<span class="at">n=</span><span class="dv">12</span>,<span class="dv">10</span>,<span class="at">type=</span><span class="st">&#39;gnm&#39;</span>)</span></code></pre></div>
+<pre><code>## Warning: `erdos.renyi.game()` was deprecated in igraph 0.8.0.
+## ℹ Please use `sample_gnm()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<div class="sourceCode" id="cb485"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb485-1"><a href="graph-analysis.html#cb485-1" tabindex="-1"></a>prg2 <span class="ot">&lt;-</span> <span class="fu">erdos.renyi.game</span>(<span class="at">n=</span><span class="dv">12</span>,<span class="fl">0.1</span>,<span class="at">type=</span><span class="st">&#39;gnp&#39;</span>)</span></code></pre></div>
+<pre><code>## Warning: `erdos.renyi.game()` was deprecated in igraph 0.8.0.
+## ℹ Please use `sample_gnp()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<div class="sourceCode" id="cb487"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb487-1"><a href="graph-analysis.html#cb487-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb487-2"><a href="graph-analysis.html#cb487-2" tabindex="-1"></a><span class="fu">plot</span>(prg1) </span>
+<span id="cb487-3"><a href="graph-analysis.html#cb487-3" tabindex="-1"></a><span class="fu">plot</span>(prg2)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-294-1.png" width="672" /></p>
+<p><br/></p>
+<div class="blackbox">
+<div class="center">
+<p><strong>Exercise</strong></p>
+</div>
+<ul>
+<li>Create a Poisson random graph model with 30 nodes and a link probability of 0.15<br />
+</li>
+<li>Compute the betweenness centrality of the network</li>
+</ul>
+</div>
+<p><br/></p>
+<p>A small world network is created with <code>watts.strogatz.game()</code>, where <code>dim</code> is the dimension of the starting lattice, <code>size</code> is the size of the lattice along each dimension, <code>nei</code> is the neighborhood of the lattice in which nodes are connected, and <code>p</code> the rewiring probability.</p>
+<div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb488-1"><a href="graph-analysis.html#cb488-1" tabindex="-1"></a><span class="fu">watts.strogatz.game</span>(<span class="at">dim=</span><span class="dv">1</span>,<span class="at">size=</span><span class="dv">100</span>,<span class="at">nei=</span><span class="dv">2</span>,<span class="at">p=</span><span class="fl">0.5</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb488-2"><a href="graph-analysis.html#cb488-2" tabindex="-1"></a>        <span class="fu">as_tbl_graph</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb488-3"><a href="graph-analysis.html#cb488-3" tabindex="-1"></a>        <span class="fu">ggraph</span>() <span class="sc">+</span> </span>
+<span id="cb488-4"><a href="graph-analysis.html#cb488-4" tabindex="-1"></a>        <span class="fu">geom_edge_link</span>() <span class="sc">+</span> </span>
+<span id="cb488-5"><a href="graph-analysis.html#cb488-5" tabindex="-1"></a>        <span class="fu">geom_node_point</span>()</span></code></pre></div>
+<pre><code>## Warning: `watts.strogatz.game()` was deprecated in igraph 2.0.0.
+## ℹ Please use `sample_smallworld()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<pre><code>## Using &quot;stress&quot; as default layout</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-295-1.png" width="672" /></p>
+<p><br/></p>
+<p>Preferential attachment models are created with <code>barabasi.game()</code>, where <code>n</code> is the number of nodes, <code>m</code> is the number of nodes added in each round, and <code>zero.appeal</code> is a factor that raises the likelihood of binding to a node that has no edges so far above zero.</p>
+<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb491-1"><a href="graph-analysis.html#cb491-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">barabasi.game</span>(<span class="at">n =</span> <span class="dv">100</span>, <span class="at">m =</span> <span class="dv">1</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>, <span class="at">zero.appeal =</span> .<span class="dv">5</span>)</span></code></pre></div>
+<pre><code>## Warning: `barabasi.game()` was deprecated in igraph 2.0.0.
+## ℹ Please use `sample_pa()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb493-1"><a href="graph-analysis.html#cb493-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">as_tbl_graph</span>(g)</span>
+<span id="cb493-2"><a href="graph-analysis.html#cb493-2" tabindex="-1"></a><span class="fu">ggraph</span>(g, <span class="at">layout =</span> <span class="st">&quot;igraph&quot;</span>, <span class="at">algorithm =</span> <span class="st">&quot;kk&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb493-3"><a href="graph-analysis.html#cb493-3" tabindex="-1"></a>        <span class="fu">geom_edge_link</span>() <span class="sc">+</span> </span>
+<span id="cb493-4"><a href="graph-analysis.html#cb493-4" tabindex="-1"></a>        <span class="fu">geom_node_point</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-297-1.png" width="672" /></p>
+<p><br/></p>
+</div>
+<div id="optimal-channel-networks" class="section level2 hasAnchor" number="6.6">
+<h2><span class="header-section-number">6.6</span> Optimal Channel Networks<a href="graph-analysis.html#optimal-channel-networks" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Next, we will look at optimal channel networks and their R implementation in the <code>OCNet</code> Package <span class="citation">(<a href="#ref-carraroGenerationApplicationRiver2020">Carraro et al. 2020</a>)</span>.
+As always, we first load the package.</p>
+<div class="sourceCode" id="cb494"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb494-1"><a href="graph-analysis.html#cb494-1" tabindex="-1"></a><span class="fu">library</span>(OCNet)</span></code></pre></div>
+<pre><code>## Registered S3 methods overwritten by &#39;adegraphics&#39;:
+##   method         from
+##   biplot.dudi    ade4
+##   kplot.foucart  ade4
+##   kplot.mcoa     ade4
+##   kplot.mfa      ade4
+##   kplot.pta      ade4
+##   kplot.sepan    ade4
+##   kplot.statis   ade4
+##   scatter.coa    ade4
+##   scatter.dudi   ade4
+##   scatter.nipals ade4
+##   scatter.pco    ade4
+##   score.acm      ade4
+##   score.mix      ade4
+##   score.pca      ade4
+##   screeplot.dudi ade4</code></pre>
+<pre><code>## Registered S3 method overwritten by &#39;ape&#39;:
+##   method   from 
+##   plot.mst spdep</code></pre>
+<pre><code>## Registered S3 methods overwritten by &#39;adespatial&#39;:
+##   method             from       
+##   plot.multispati    adegraphics
+##   print.multispati   ade4       
+##   summary.multispati ade4</code></pre>
+<p>Creating a OCN starts with a call to <code>create_OCN()</code>.
+This function establishes a lattice with <code>dimX</code> points in the x direction and dimY points in the y direction.
+In this grid it also establishes the flow direction of each point.
+The function has many more arguments but usually we do not have to worry about them and can keep the default settings.
+Here, we create an OCN in a 20x20 grid.</p>
+<div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb498-1"><a href="graph-analysis.html#cb498-1" tabindex="-1"></a>OCN <span class="ot">&lt;-</span> <span class="fu">create_OCN</span>(<span class="at">dimX =</span> <span class="dv">20</span>, <span class="at">dimY =</span> <span class="dv">20</span>)</span></code></pre></div>
+<p>The function produces a list with <code>A</code> a vector of drainage area values (i.e., how many cells does this cell drain)</p>
+<div class="sourceCode" id="cb499"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb499-1"><a href="graph-analysis.html#cb499-1" tabindex="-1"></a>OCN<span class="sc">$</span>FD<span class="sc">$</span>A</span></code></pre></div>
+<pre><code>##   [1]   1   1   1   1   1   1   1   1   1   1   1   1   3   1   1   1   1   1   1   1   1   4   1   1   6   1   1   5   1   1   2   8   1   1   1   4   1   9   4   1   1   7   1  10   1
+##  [46]   1   1   1   7   1  13   1   1   1   1  23  16   1   2   1   1   1  21   1   1   1   1   4   1  22   1   1   1   1  27   1   1   4   1   1   1  24   1   1   3   1   1   1 117  88
+##  [91]   1   1  70  28   1   1   1   1   1   1   1  27   1   1   5   1   1 122   1   1  85  79   1  38  34   2   2   1   4   1 400 369 366   1 335   1 125   1   1   2   1   1   7   1   1
+## [136]  30   1   6   1   1   1   1   1 363   1 327   1   1   1   1   1   1   4   1   1   1  24   1   1   1   1   1  24   1   1   1 199   2   3   1   1   1   1   1   1   4   1  11   2   1
+## [181]   1  17   1   4   1   1   1 193   1   2   1   1   1   1   1   1   1   1   5   1   1  12   1   1   1   1  58   1 129   1   3   2   2   1   1   1   1   1   1   1   1   9   1   1   1
+## [226]   1  55   1   1 123   1   7   2   3   1   1   2   7   3   1   1   6   1   1   5  53   1   1   3   1 115   1   5   1   1   1  13   2   1   1   3   1   1   2   2  41   2   1   1   4
+## [271]   1 100   1   1   1  17   1   1   1   1   1   1   1   1   1  38   1   1   1   2   1   1  91   1  51   1   2   1   2   1   1   3   1   1   1  33   3   1   1   1   1  21   1  66   1
+## [316]  31   1   8   4   1   1   1   6   1  30   1   1   1   1   1  18   1   1  11   1   1  26   1   1   1   1   1   1  19   1   7   1   1   1  13   1   1   7   2   1   1   6   9   1   1
+## [361]   1   4   9   1   1   4   1   1   6   1   3   1   1   4   1   1   3   1   6   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1</code></pre>
+<p>and <code>W</code> a sparse adjacency matrix.</p>
+<div class="sourceCode" id="cb501"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb501-1"><a href="graph-analysis.html#cb501-1" tabindex="-1"></a>OCN<span class="sc">$</span>FD<span class="sc">$</span>W</span></code></pre></div>
+<pre><code>##   [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+##  [91] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [181] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [271] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## [361] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## Class &#39;spam&#39; (32-bit)</code></pre>
+<p>The following functions all take the OCN object as their argument.
+Instead of creating a new object, they attach new levels to the list.
+<code>create_OCN()</code> created the list at the flow direction level (FD).</p>
+<p><code>landscape_OCN()</code> creates the DEM of the river network and adds the catchment level (CM) to the list.
+The DEM is stored in <code>OCN$FD$Z</code>.</p>
+<div class="sourceCode" id="cb503"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb503-1"><a href="graph-analysis.html#cb503-1" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb503-2"><a href="graph-analysis.html#cb503-2" tabindex="-1"></a>OCN <span class="ot">&lt;-</span> <span class="fu">landscape_OCN</span>(OCN)</span>
+<span id="cb503-3"><a href="graph-analysis.html#cb503-3" tabindex="-1"></a>OCN<span class="sc">$</span>FD<span class="sc">$</span>Z <span class="sc">|&gt;</span> </span>
+<span id="cb503-4"><a href="graph-analysis.html#cb503-4" tabindex="-1"></a>        <span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">20</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb503-5"><a href="graph-analysis.html#cb503-5" tabindex="-1"></a>        <span class="fu">rast</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb503-6"><a href="graph-analysis.html#cb503-6" tabindex="-1"></a>        <span class="fu">plot</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-302-1.png" width="672" /></p>
+<p><br/></p>
+<!-- Starts at flow direction level (FD) single nodes. Impose minimum area river network RN, second level. Then aggregated level (AG),nodes correspond to sources, confluences and outlet(s) of the river network identified at the RN level. The whole lattice is then partitioned into areas that directly drain into the nodes at the AG level, or the edges departing from them, thereby constituting the fourth, subcatchment level (SC). -->
+<p>Now we need to aggregate the flow network.
+We set a threshold of how many cells need to flow into one cell for this cell to become a river.
+This is done with <code>aggregate_OCN()</code>.
+This function builds the network at the river network (RN), aggregated (AG), subcatchment (SC), and catchment levels.
+We use the default threshold here, so the only argument we need is <code>OCN</code>.</p>
+<div class="sourceCode" id="cb504"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb504-1"><a href="graph-analysis.html#cb504-1" tabindex="-1"></a>OCN <span class="ot">&lt;-</span> <span class="fu">aggregate_OCN</span>(OCN)</span></code></pre></div>
+<div class="sourceCode" id="cb505"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb505-1"><a href="graph-analysis.html#cb505-1" tabindex="-1"></a><span class="fu">draw_contour_OCN</span>(OCN)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-304-1.png" width="672" /></p>
+<div class="sourceCode" id="cb506"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb506-1"><a href="graph-analysis.html#cb506-1" tabindex="-1"></a><span class="fu">draw_elev2D_OCN</span>(OCN)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-304-2.png" width="672" /></p>
+<div class="sourceCode" id="cb507"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb507-1"><a href="graph-analysis.html#cb507-1" tabindex="-1"></a><span class="fu">draw_elev3D_OCN</span>(OCN)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-304-3.png" width="672" /></p>
+<p><br/></p>
+<p>We can also take the OCN and transform it into an <code>igraph</code> object.</p>
+<div class="sourceCode" id="cb508"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb508-1"><a href="graph-analysis.html#cb508-1" tabindex="-1"></a>river_graph <span class="ot">&lt;-</span> <span class="fu">OCN_to_igraph</span>(OCN, <span class="at">level =</span> <span class="st">&quot;AG&quot;</span>)</span>
+<span id="cb508-2"><a href="graph-analysis.html#cb508-2" tabindex="-1"></a></span>
+<span id="cb508-3"><a href="graph-analysis.html#cb508-3" tabindex="-1"></a>river_graph <span class="sc">|&gt;</span> </span>
+<span id="cb508-4"><a href="graph-analysis.html#cb508-4" tabindex="-1"></a>        <span class="fu">as_tbl_graph</span>() <span class="sc">|&gt;</span></span>
+<span id="cb508-5"><a href="graph-analysis.html#cb508-5" tabindex="-1"></a>        <span class="fu">ggraph</span>(<span class="at">layout =</span> <span class="st">&quot;igraph&quot;</span>, <span class="at">algorithm =</span> <span class="st">&quot;kk&quot;</span>) <span class="sc">+</span></span>
+<span id="cb508-6"><a href="graph-analysis.html#cb508-6" tabindex="-1"></a>        <span class="fu">geom_edge_link</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>) <span class="sc">+</span></span>
+<span id="cb508-7"><a href="graph-analysis.html#cb508-7" tabindex="-1"></a>        <span class="fu">geom_node_point</span>(<span class="at">size =</span> <span class="dv">0</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-305-1.png" width="672" /></p>
+<p><br/></p>
+<div class="blackbox">
+<div class="center">
+<p><strong>Exercise</strong></p>
+</div>
+<ul>
+<li>Simulate a 15x20 optimal channel network<br />
+</li>
+<li>Turn the OCN into an igraph object<br />
+</li>
+<li>Compute the degree centrality of the nodes<br />
+</li>
+</ul>
+</div>
+<p><br/></p>
+</div>
+<div id="sfnetworks" class="section level2 hasAnchor" number="6.7">
+<h2><span class="header-section-number">6.7</span> sfnetworks<a href="graph-analysis.html#sfnetworks" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Lastly, we will turn towards the <code>sfnetworks</code> package <span class="citation">(<a href="#ref-vanderMeer2024">van der Meer et al. 2024</a>)</span>.
+This R package enables us to turn spatial <code>sf</code> objects into networks.
+<code>sfnetworks</code> uses the <code>tidygraph</code> package instead of <code>igraph</code>.
+However, <code>tidygraph</code> is intimately linked to <code>igraph</code>.
+It takes most of the functions from <code>igraph</code> and changes them so they adhere to the <a href="https://r4ds.had.co.nz/tidy-data.html">tidy principles</a>.
+There is an implementation of spatial networks in R which works directly with <code>igraph</code>, <code>spNetworks</code><span class="citation">(<a href="#ref-Gelb2021">Gelb 2021</a>)</span> but we will not cover this package here.</p>
+<p>Since <code>tidygraph</code> adheres to the tidy principles, we can use <code>dplyr</code> verbs and piping.
+So, before we work with <code>sfnetworks</code>, let’s have a look at <code>tidygraph</code>.</p>
+<p>To represent networks while following tidy principles (i.e., one row = one observation), <code>tidygraph</code> uses two tables for each graph.
+One table represents the nodes and the other table represents the edges.
+As an example, we will use the OCN we just created.</p>
+<div class="sourceCode" id="cb509"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb509-1"><a href="graph-analysis.html#cb509-1" tabindex="-1"></a>river_tidy <span class="ot">&lt;-</span> <span class="fu">as_tbl_graph</span>(river_graph)</span>
+<span id="cb509-2"><a href="graph-analysis.html#cb509-2" tabindex="-1"></a>river_tidy</span></code></pre></div>
+<pre><code>## # A tbl_graph: 379 nodes and 378 edges
+## #
+## # A rooted tree
+## #
+## # Node Data: 379 × 0 (active)
+## #
+## # Edge Data: 378 × 2
+##    from    to
+##   &lt;int&gt; &lt;int&gt;
+## 1    14    13
+## 2    33    13
+## 3     1    22
+## # ℹ 375 more rows</code></pre>
+<p><code>river_tidy</code> has the class <code>tbl_graph</code>.
+We also see the number of nodes and edges and two tibbles: <code>Node Data</code> without columns, because the nodes do not have attributes yet and <code>Edge Data</code> which is an edge list.</p>
+<div class="sourceCode" id="cb511"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb511-1"><a href="graph-analysis.html#cb511-1" tabindex="-1"></a><span class="fu">plot</span>(river_tidy)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-307-1.png" width="672" /></p>
+<p><br/></p>
+<p>Plotting returns the same default output as for an <code>igraph</code> object and a look at class of <code>river_tidy</code> reveals that it has inherited the <code>igraph</code> class from <code>river_graph</code>.</p>
+<div class="sourceCode" id="cb512"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb512-1"><a href="graph-analysis.html#cb512-1" tabindex="-1"></a><span class="fu">class</span>(river_tidy)</span></code></pre></div>
+<pre><code>## [1] &quot;tbl_graph&quot; &quot;igraph&quot;</code></pre>
+<p>If we want to work with either one of the tables, we use the <code>activate()</code> function.
+In the following example, I add an attribute, <code>letter</code>, to the nodes.</p>
+<div class="sourceCode" id="cb514"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb514-1"><a href="graph-analysis.html#cb514-1" tabindex="-1"></a>river_tidy <span class="sc">%&gt;%</span></span>
+<span id="cb514-2"><a href="graph-analysis.html#cb514-2" tabindex="-1"></a>        <span class="fu">activate</span>(nodes) <span class="sc">%&gt;%</span></span>
+<span id="cb514-3"><a href="graph-analysis.html#cb514-3" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">letter =</span> <span class="fu">sample</span>(<span class="at">x =</span> letters, <span class="at">size =</span> <span class="fu">vcount</span>(river_graph), <span class="at">replace =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<pre><code>## # A tbl_graph: 379 nodes and 378 edges
+## #
+## # A rooted tree
+## #
+## # Node Data: 379 × 1 (active)
+##    letter
+##    &lt;chr&gt; 
+##  1 t     
+##  2 u     
+##  3 r     
+##  4 e     
+##  5 n     
+##  6 j     
+##  7 e     
+##  8 b     
+##  9 a     
+## 10 o     
+## # ℹ 369 more rows
+## #
+## # Edge Data: 378 × 2
+##    from    to
+##   &lt;int&gt; &lt;int&gt;
+## 1    14    13
+## 2    33    13
+## 3     1    22
+## # ℹ 375 more rows</code></pre>
+<p>We can activate the edges in the same way and we can activate edges and nodes in a single pipe.</p>
+<div class="sourceCode" id="cb516"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb516-1"><a href="graph-analysis.html#cb516-1" tabindex="-1"></a>river_tidy <span class="sc">%&lt;&gt;%</span> </span>
+<span id="cb516-2"><a href="graph-analysis.html#cb516-2" tabindex="-1"></a>  <span class="fu">activate</span>(nodes) <span class="sc">%&gt;%</span> </span>
+<span id="cb516-3"><a href="graph-analysis.html#cb516-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">degree =</span> <span class="fu">centrality_degree</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb516-4"><a href="graph-analysis.html#cb516-4" tabindex="-1"></a>  <span class="fu">activate</span>(edges) <span class="sc">%&gt;%</span> </span>
+<span id="cb516-5"><a href="graph-analysis.html#cb516-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">centrality =</span> <span class="fu">centrality_edge_betweenness</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb516-6"><a href="graph-analysis.html#cb516-6" tabindex="-1"></a>  <span class="fu">arrange</span>(centrality)</span></code></pre></div>
+<p>This will be enough <code>tidygraph</code> for now.
+The package has almost 300 functions, so we will not be able to cover the package extensively.
+Another short introduction by the package’s author is available <a href="https://tidygraph.data-imaginist.com/">here</a>.</p>
+<p>Now we turn back to <code>sfnetworks</code>.</p>
+<div class="sourceCode" id="cb517"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb517-1"><a href="graph-analysis.html#cb517-1" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb517-2"><a href="graph-analysis.html#cb517-2" tabindex="-1"></a><span class="fu">library</span>(sfnetworks)</span>
+<span id="cb517-3"><a href="graph-analysis.html#cb517-3" tabindex="-1"></a><span class="fu">library</span>(mapview)</span></code></pre></div>
+<p>To demonstrate the functionality, we use a demo data set that is included in the Package.
+The <code>roxel</code> data contain the road network (including bike lanes and footpaths) of the Roxel neighborhood in the German city of Münster.</p>
+<div class="sourceCode" id="cb518"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb518-1"><a href="graph-analysis.html#cb518-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;roxel&quot;</span>)</span>
+<span id="cb518-2"><a href="graph-analysis.html#cb518-2" tabindex="-1"></a><span class="fu">tm_shape</span>(roxel) <span class="sc">+</span> <span class="fu">tm_lines</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-312-1.png" width="672" /></p>
+<p><br/></p>
+<p>There are three options of creating a network from <code>sf</code> data with <code>sfnetwork</code>.<br />
+1. You provide a point data set as nodes and a line data set as edges<br />
+2. You provide a line data set and the nodes are automatically created at the ends of the lines.<br />
+3. You provide a point data set the the edges are drawn as straight lines between the nodes.</p>
+<p>We will try out the <em>just linestrings</em> and <em>just points</em> versions here.<br />
+</p>
+<p>We will start with the <em>just linestrings</em> option.</p>
+<div class="sourceCode" id="cb519"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb519-1"><a href="graph-analysis.html#cb519-1" tabindex="-1"></a>roxel_nw1 <span class="ot">&lt;-</span> <span class="fu">as_sfnetwork</span>(roxel, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>The object looks similar to the <code>tidygraph</code> object we saw before.
+New are the coordinate reference system and the coordinates of the nodes and edges.</p>
+<div class="sourceCode" id="cb520"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb520-1"><a href="graph-analysis.html#cb520-1" tabindex="-1"></a>roxel_nw1</span></code></pre></div>
+<pre><code>## # A sfnetwork with 701 nodes and 851 edges
+## #
+## # CRS:  EPSG:4326 
+## #
+## # An undirected multigraph with 14 components with spatially explicit edges
+## #
+## # A tibble: 701 × 1
+##              geometry
+##           &lt;POINT [°]&gt;
+## 1 (7.533722 51.95556)
+## 2 (7.533461 51.95576)
+## 3 (7.532442 51.95422)
+## 4  (7.53209 51.95328)
+## 5 (7.532709 51.95209)
+## 6 (7.532869 51.95257)
+## # ℹ 695 more rows
+## #
+## # A tibble: 851 × 5
+##    from    to name                  type                                                         geometry
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;                 &lt;fct&gt;                                                &lt;LINESTRING [°]&gt;
+## 1     1     2 Havixbecker Strasse   residential                    (7.533722 51.95556, 7.533461 51.95576)
+## 2     3     4 Pienersallee          secondary     (7.532442 51.95422, 7.53236 51.95377, 7.53209 51.95328)
+## 3     5     6 Schulte-Bernd-Strasse residential (7.532709 51.95209, 7.532823 51.95239, 7.532869 51.95257)
+## # ℹ 848 more rows</code></pre>
+<div class="sourceCode" id="cb522"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb522-1"><a href="graph-analysis.html#cb522-1" tabindex="-1"></a><span class="fu">plot</span>(roxel_nw1)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-315-1.png" width="672" /></p>
+<p><br/></p>
+<p>Now we can extract our new nodes as <code>sf</code> point object.</p>
+<div class="sourceCode" id="cb523"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb523-1"><a href="graph-analysis.html#cb523-1" tabindex="-1"></a>roxel_point <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(<span class="fu">activate</span>(roxel_nw1, nodes), <span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb523-2"><a href="graph-analysis.html#cb523-2" tabindex="-1"></a>roxel_nw2 <span class="ot">&lt;-</span> roxel_point <span class="sc">|&gt;</span> <span class="fu">as_sfnetwork</span>()</span>
+<span id="cb523-3"><a href="graph-analysis.html#cb523-3" tabindex="-1"></a><span class="fu">plot</span>(roxel_nw2)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-316-1.png" width="672" /></p>
+<p>Working with the spatial network works the same as the non-spatial <code>tidygraph</code> networks.</p>
+<div class="sourceCode" id="cb524"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb524-1"><a href="graph-analysis.html#cb524-1" tabindex="-1"></a>roxel_nw1 <span class="sc">%&gt;%</span></span>
+<span id="cb524-2"><a href="graph-analysis.html#cb524-2" tabindex="-1"></a>  <span class="fu">activate</span>(<span class="st">&quot;edges&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb524-3"><a href="graph-analysis.html#cb524-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">weight =</span> <span class="fu">edge_length</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb524-4"><a href="graph-analysis.html#cb524-4" tabindex="-1"></a>  <span class="fu">activate</span>(<span class="st">&quot;nodes&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb524-5"><a href="graph-analysis.html#cb524-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bc =</span> <span class="fu">centrality_betweenness</span>(<span class="at">weights =</span> weight, <span class="at">directed =</span> <span class="cn">FALSE</span>))</span></code></pre></div>
+<pre><code>## # A sfnetwork with 701 nodes and 851 edges
+## #
+## # CRS:  EPSG:4326 
+## #
+## # An undirected multigraph with 14 components with spatially explicit edges
+## #
+## # A tibble: 701 × 2
+##              geometry    bc
+##           &lt;POINT [°]&gt; &lt;dbl&gt;
+## 1 (7.533722 51.95556) 13808
+## 2 (7.533461 51.95576)  9777
+## 3 (7.532442 51.95422) 35240
+## 4  (7.53209 51.95328) 31745
+## 5 (7.532709 51.95209)  7174
+## 6 (7.532869 51.95257)  9081
+## # ℹ 695 more rows
+## #
+## # A tibble: 851 × 6
+##    from    to name                  type                                                         geometry weight
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;                 &lt;fct&gt;                                                &lt;LINESTRING [°]&gt;    [m]
+## 1     1     2 Havixbecker Strasse   residential                    (7.533722 51.95556, 7.533461 51.95576)   28.8
+## 2     3     4 Pienersallee          secondary     (7.532442 51.95422, 7.53236 51.95377, 7.53209 51.95328)  108. 
+## 3     5     6 Schulte-Bernd-Strasse residential (7.532709 51.95209, 7.532823 51.95239, 7.532869 51.95257)   54.3
+## # ℹ 848 more rows</code></pre>
+<p>We can also use spatial operations like spatial filtering on the network.</p>
+<div class="sourceCode" id="cb526"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb526-1"><a href="graph-analysis.html#cb526-1" tabindex="-1"></a>bbox <span class="ot">&lt;-</span> <span class="fu">st_bbox</span>(roxel)</span>
+<span id="cb526-2"><a href="graph-analysis.html#cb526-2" tabindex="-1"></a>bbox <span class="sc">|&gt;</span> </span>
+<span id="cb526-3"><a href="graph-analysis.html#cb526-3" tabindex="-1"></a>        <span class="fu">st_as_sfc</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb526-4"><a href="graph-analysis.html#cb526-4" tabindex="-1"></a>        <span class="fu">st_as_sf</span>(<span class="at">crs=</span><span class="dv">4326</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb526-5"><a href="graph-analysis.html#cb526-5" tabindex="-1"></a>        <span class="fu">st_transform</span>(<span class="dv">3035</span>) <span class="ot">-&gt;</span> </span>
+<span id="cb526-6"><a href="graph-analysis.html#cb526-6" tabindex="-1"></a>        bbox</span>
+<span id="cb526-7"><a href="graph-analysis.html#cb526-7" tabindex="-1"></a>bbox <span class="ot">&lt;-</span> <span class="fu">st_buffer</span>(<span class="at">x =</span> bbox, <span class="at">dist =</span> <span class="sc">-</span><span class="dv">700</span>, <span class="at">joinStyle  =</span> <span class="st">&quot;MITRE&quot;</span>, <span class="at">mitreLimit =</span> <span class="dv">2</span>)</span>
+<span id="cb526-8"><a href="graph-analysis.html#cb526-8" tabindex="-1"></a>bbox <span class="sc">%&lt;&gt;%</span> <span class="fu">st_transform</span>(<span class="dv">4326</span>)</span>
+<span id="cb526-9"><a href="graph-analysis.html#cb526-9" tabindex="-1"></a><span class="fu">plot</span>(roxel_nw1, <span class="at">col =</span> <span class="st">&quot;grey&quot;</span>)</span>
+<span id="cb526-10"><a href="graph-analysis.html#cb526-10" tabindex="-1"></a><span class="fu">plot</span>(bbox, <span class="at">border =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lty =</span> <span class="dv">4</span>, <span class="at">lwd =</span> <span class="dv">4</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-318-1.png" width="672" /></p>
+<p><br/></p>
+<div class="sourceCode" id="cb527"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb527-1"><a href="graph-analysis.html#cb527-1" tabindex="-1"></a>filtered <span class="ot">=</span> roxel_nw1 <span class="sc">%&gt;%</span></span>
+<span id="cb527-2"><a href="graph-analysis.html#cb527-2" tabindex="-1"></a>  <span class="fu">activate</span>(<span class="st">&quot;edges&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb527-3"><a href="graph-analysis.html#cb527-3" tabindex="-1"></a>  <span class="fu">st_filter</span>(bbox) <span class="sc">%&gt;%</span></span>
+<span id="cb527-4"><a href="graph-analysis.html#cb527-4" tabindex="-1"></a>        <span class="fu">activate</span>(<span class="st">&quot;nodes&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb527-5"><a href="graph-analysis.html#cb527-5" tabindex="-1"></a>        <span class="fu">st_filter</span>(bbox)</span>
+<span id="cb527-6"><a href="graph-analysis.html#cb527-6" tabindex="-1"></a><span class="fu">plot</span>(roxel_nw1, <span class="at">col =</span> <span class="st">&quot;grey&quot;</span>)</span>
+<span id="cb527-7"><a href="graph-analysis.html#cb527-7" tabindex="-1"></a><span class="fu">plot</span>(filtered, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-319-1.png" width="672" /></p>
+<p><br/></p>
+<p>We can also filter to observations around a specified point.</p>
+<div class="sourceCode" id="cb528"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb528-1"><a href="graph-analysis.html#cb528-1" tabindex="-1"></a>point <span class="ot">=</span> <span class="fu">st_centroid</span>(<span class="fu">st_combine</span>(roxel_nw1))</span>
+<span id="cb528-2"><a href="graph-analysis.html#cb528-2" tabindex="-1"></a></span>
+<span id="cb528-3"><a href="graph-analysis.html#cb528-3" tabindex="-1"></a>filtered <span class="ot">=</span> roxel_nw1 <span class="sc">%&gt;%</span></span>
+<span id="cb528-4"><a href="graph-analysis.html#cb528-4" tabindex="-1"></a>  <span class="fu">activate</span>(<span class="st">&quot;nodes&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb528-5"><a href="graph-analysis.html#cb528-5" tabindex="-1"></a>  <span class="fu">st_filter</span>(point, <span class="at">.predicate =</span> st_is_within_distance, <span class="at">dist =</span> <span class="dv">500</span>)</span>
+<span id="cb528-6"><a href="graph-analysis.html#cb528-6" tabindex="-1"></a><span class="fu">plot</span>(roxel_nw1, <span class="at">col =</span> <span class="st">&quot;grey&quot;</span>)</span>
+<span id="cb528-7"><a href="graph-analysis.html#cb528-7" tabindex="-1"></a><span class="fu">plot</span>(filtered, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb528-8"><a href="graph-analysis.html#cb528-8" tabindex="-1"></a><span class="fu">plot</span>(point, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-320-1.png" width="672" /></p>
+<p><br/></p>
+<div id="finding-paths-in-the-network" class="section level3 hasAnchor" number="6.7.1">
+<h3><span class="header-section-number">6.7.1</span> Finding paths in the network<a href="graph-analysis.html#finding-paths-in-the-network" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Within our network we can find the shortest way to get from point A to point B with the function <code>st_network_paths()</code>.
+The function uses the most common routing algorithm (i.e., algorithm to find the shortest path): the Dijkstra algorithm.
+Before we call it, we prepare the data:</p>
+<ol style="list-style-type: decimal">
+<li>We transform it into a projected coordinate system. Now the unit of edge lengths are meters and not fractions of degrees.<br />
+</li>
+<li>Add the edge length as an attribute to the edges. In a spatial context, the length of edges has a natural interpretation as the spatial distance between points.</li>
+</ol>
+<div class="sourceCode" id="cb529"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb529-1"><a href="graph-analysis.html#cb529-1" tabindex="-1"></a>net <span class="ot">&lt;-</span></span>
+<span id="cb529-2"><a href="graph-analysis.html#cb529-2" tabindex="-1"></a>        roxel_nw1 <span class="sc">%&gt;%</span></span>
+<span id="cb529-3"><a href="graph-analysis.html#cb529-3" tabindex="-1"></a>        <span class="co"># transform so that distances are in meters</span></span>
+<span id="cb529-4"><a href="graph-analysis.html#cb529-4" tabindex="-1"></a>        <span class="fu">st_transform</span>(<span class="dv">3035</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb529-5"><a href="graph-analysis.html#cb529-5" tabindex="-1"></a>        <span class="fu">activate</span>(<span class="st">&quot;edges&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb529-6"><a href="graph-analysis.html#cb529-6" tabindex="-1"></a>        dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">weight =</span> <span class="fu">edge_length</span>())</span></code></pre></div>
+<p>We compute the shortest paths from the 38<span class="math inline">\(^{th}\)</span> to the 200<span class="math inline">\(^{th}\)</span> and the 517<span class="math inline">\(^{th}\)</span> node.
+The length of the paths is weighted by the <code>weight</code> variable which we computed in the code block above.</p>
+<div class="sourceCode" id="cb530"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb530-1"><a href="graph-analysis.html#cb530-1" tabindex="-1"></a>paths <span class="ot">=</span> <span class="fu">st_network_paths</span>(net, <span class="at">from =</span> <span class="dv">38</span>, <span class="at">to =</span> <span class="fu">c</span>(<span class="dv">200</span>, <span class="dv">517</span>), <span class="at">weights =</span> <span class="st">&quot;weight&quot;</span>)</span></code></pre></div>
+<p>Now what is the output of this function?</p>
+<div class="sourceCode" id="cb531"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb531-1"><a href="graph-analysis.html#cb531-1" tabindex="-1"></a>paths</span></code></pre></div>
+<pre><code>## # A tibble: 2 × 2
+##   node_paths edge_paths
+##   &lt;list&gt;     &lt;list&gt;    
+## 1 &lt;int [25]&gt; &lt;int [24]&gt;
+## 2 &lt;int [22]&gt; &lt;int [21]&gt;</code></pre>
+<p>A tibble with two list columns, two rows long.
+Each row is one path, i.e., the first row is the path from 38 to 200 and the second row is the path from 38 to 517.
+In the first column we get the node ids on the respective path and in the second column we get the edge ids.
+To visualize this we will write a small function that plots each node in the node paths (i.e., column 1).</p>
+<div class="sourceCode" id="cb533"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb533-1"><a href="graph-analysis.html#cb533-1" tabindex="-1"></a>plot_path <span class="ot">=</span> <span class="cf">function</span>(node_path) {</span>
+<span id="cb533-2"><a href="graph-analysis.html#cb533-2" tabindex="-1"></a>  net <span class="sc">%&gt;%</span></span>
+<span id="cb533-3"><a href="graph-analysis.html#cb533-3" tabindex="-1"></a>    <span class="fu">activate</span>(<span class="st">&quot;nodes&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb533-4"><a href="graph-analysis.html#cb533-4" tabindex="-1"></a>    <span class="fu">slice</span>(node_path) <span class="sc">%&gt;%</span></span>
+<span id="cb533-5"><a href="graph-analysis.html#cb533-5" tabindex="-1"></a>    <span class="fu">plot</span>(<span class="at">cex =</span> <span class="fl">1.5</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb533-6"><a href="graph-analysis.html#cb533-6" tabindex="-1"></a>}</span></code></pre></div>
+<p><br/></p>
+<p>Now we apply this function to all paths and also add symbols to the start and ending points of our paths.</p>
+<div class="sourceCode" id="cb534"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb534-1"><a href="graph-analysis.html#cb534-1" tabindex="-1"></a>colors <span class="ot">=</span> <span class="fu">sf.colors</span>(<span class="dv">3</span>, <span class="at">categorical =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb534-2"><a href="graph-analysis.html#cb534-2" tabindex="-1"></a><span class="fu">plot</span>(net, <span class="at">col =</span> <span class="st">&quot;grey&quot;</span>)</span>
+<span id="cb534-3"><a href="graph-analysis.html#cb534-3" tabindex="-1"></a>paths <span class="sc">%&gt;%</span></span>
+<span id="cb534-4"><a href="graph-analysis.html#cb534-4" tabindex="-1"></a>  <span class="fu">pull</span>(node_paths) <span class="sc">%&gt;%</span></span>
+<span id="cb534-5"><a href="graph-analysis.html#cb534-5" tabindex="-1"></a>  <span class="fu">walk</span>(plot_path)</span>
+<span id="cb534-6"><a href="graph-analysis.html#cb534-6" tabindex="-1"></a>net <span class="sc">%&gt;%</span></span>
+<span id="cb534-7"><a href="graph-analysis.html#cb534-7" tabindex="-1"></a>  <span class="fu">activate</span>(<span class="st">&quot;nodes&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb534-8"><a href="graph-analysis.html#cb534-8" tabindex="-1"></a>  <span class="fu">st_as_sf</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb534-9"><a href="graph-analysis.html#cb534-9" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="fu">c</span>(<span class="dv">38</span>, <span class="dv">200</span>, <span class="dv">517</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb534-10"><a href="graph-analysis.html#cb534-10" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="at">col =</span> colors, <span class="at">pch =</span> <span class="dv">8</span>, <span class="at">cex =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-325-1.png" width="672" /></p>
+<p><br/></p>
+<p>If you need an overview of the distances between all nodes use <code>st_network_cost()</code>.</p>
+<div class="sourceCode" id="cb535"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb535-1"><a href="graph-analysis.html#cb535-1" tabindex="-1"></a>cost <span class="ot">&lt;-</span> <span class="fu">st_network_cost</span>(net)</span>
+<span id="cb535-2"><a href="graph-analysis.html#cb535-2" tabindex="-1"></a><span class="fu">hist</span>(cost)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-326-1.png" width="672" /></p>
+
+</div>
+</div>
+</div>
+<h3> References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-Butts2008" class="csl-entry">
+Butts, Carter T. 2008. <span>“Network: A Package for Managing Relational Data in r.”</span> <em>Journal of Statistical Software</em> 24 (2). <a href="https://www.jstatsoft.org/htaccess.php?volume=24&amp;type=i&amp;issue=02&amp;filename=paper">https://www.jstatsoft.org/htaccess.php?volume=24&amp;type=i&amp;issue=02&amp;filename=paper</a>.
+</div>
+<div id="ref-Butts2022" class="csl-entry">
+———. 2022. <em>Sna: Tools for Social Network Analysis</em>. <a href="https://CRAN.R-project.org/package=sna">https://CRAN.R-project.org/package=sna</a>.
+</div>
+<div id="ref-carraroGenerationApplicationRiver2020" class="csl-entry">
+Carraro, Luca, Enrico Bertuzzo, Emanuel A. Fronhofer, Reinhard Furrer, Isabelle Gounand, Andrea Rinaldo, and Florian Altermatt. 2020. <span>“Generation and Application of River Network Analogues for Use in Ecology and Evolution.”</span> Preprint. <span>Ecology</span>. <a href="https://doi.org/10.1101/2020.02.17.948851">https://doi.org/10.1101/2020.02.17.948851</a>.
+</div>
+<div id="ref-Csardi2006" class="csl-entry">
+Csardi, Gabor, and Tamas Nepusz. 2006. <span>“The Igraph Software Package for Complex Network Research.”</span> <em>InterJournal</em> Complex Systems: 1695. <a href="https://igraph.org">https://igraph.org</a>.
+</div>
+<div id="ref-Gelb2021" class="csl-entry">
+Gelb, Jérémy. 2021. <em>spNetwork: Spatial Analysis on Network</em>. <a href="https://jeremygelb.github.io/spNetwork/">https://jeremygelb.github.io/spNetwork/</a>.
+</div>
+<div id="ref-Luke_2015" class="csl-entry">
+Luke, Douglas. 2015. <em>A User’s Guide to Network Analysis in r</em>. Use r! Cham: Springer International Publishing. <a href="https://doi.org/10.1007/978-3-319-23883-8">https://doi.org/10.1007/978-3-319-23883-8</a>.
+</div>
+<div id="ref-Pedersen2022" class="csl-entry">
+Pedersen, Thomas Lin. 2022a. <em>Ggraph: An Implementation of Grammar of Graphics for Graphs and Networks</em>. <a href="https://CRAN.R-project.org/package=ggraph">https://CRAN.R-project.org/package=ggraph</a>.
+</div>
+<div id="ref-Pedersen2022a" class="csl-entry">
+———. 2022b. <em>Tidygraph: A Tidy API for Graph Manipulation</em>. <a href="https://CRAN.R-project.org/package=tidygraph">https://CRAN.R-project.org/package=tidygraph</a>.
+</div>
+<div id="ref-vanderMeer2024" class="csl-entry">
+van der Meer, Lucas, Lorena Abad, Andrea Gilardi, and Robin Lovelace. 2024. <em>Sfnetworks: Tidy Geospatial Networks</em>. <a href="https://CRAN.R-project.org/package=sfnetworks">https://CRAN.R-project.org/package=sfnetworks</a>.
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="machine-learning.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="creating-maps-in-r.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/06-networks.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

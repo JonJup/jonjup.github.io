@@ -1,0 +1,105 @@
+---
+title: 'R package of the week: xray '
+author: Jonathan Jupke
+date: '2021-01-25'
+slug: r-package-of-the-week-xray
+categories: []
+tags:
+  - R package
+  - xray
+  - antTraits
+comments: no
+images: ~
+---
+
+For this first post in the series, we will look at small but nice packge called x-ray.
+Just like a doctor can use x-rays whether something is wrong with your funky looking arm, we can use the x-ray package to see if there is anything wrong with our data set. 
+
+As an example data set we will use the antTraits data set from the mvabund package which used before in other analyses and later in the post we will also simulate some data to highlight some features of xray.  
+```{r eval=F}
+pacman::p_load(mvabund, xray, data.table)
+data("antTraits")
+data1 = antTraits$abund
+data2 = antTraits$env
+```
+```{r echo = F}
+suppressPackageStartupMessages(library(mvabund))
+suppressPackageStartupMessages(library(xray))
+suppressPackageStartupMessages(library(data.table))
+suppressPackageStartupMessages(library(kableExtra))
+suppressPackageStartupMessages(library(dplyr))
+
+data("antTraits")
+data1 = antTraits$abund
+data2 = antTraits$env
+```
+
+
+The first function,`anomalies()`, is great to get an initial impression of your data. 
+You only have to provide one argument (a data set) and it returns two objects:   
+1. *<span style="color:CornflowerBlue">variables</span>*  
+2. *<span style="color:CornflowerBlue">problem_variables</span>*  
+The function evaluates the following properties: number of NAs, number of zeros, number of blank or empty cells, number of infinite entries, the number of distinct values, the variable class and finally the number of cells that are considered **anomalous**. 
+The variables to two prefixes: q (quantity) and p (percent). 
+We can supply the function with two additional arguments; 
+*<span style="color:CornflowerBlue">anomaly_threshold</span>* and *<span style="color:CornflowerBlue">distinct_threshold</span>* which determine the maximum number of anomalous observations a variables can have and the minimum number of distinct values it needs to have, before it is considered problematic. 
+```{r warning=FALSE, eval=F}
+data1_anom = anomalies(data1)
+data1_anom$variables[1:3,]
+```
+```{r warning=FALSE, echo=F}
+data1_anom = anomalies(data1)
+data1_anom$variables[1:3, ] %>%
+        tibble::tibble() %>% 
+        knitr::kable(format = "html") %>%
+        kable_minimal()
+        
+```
+
+In our case, we don't have any blanks or NAs but lots of zeros which is common for abundance data. 
+The next function,`distributions()`, comes in handy to determine the distributions you variables follow. 
+
+```{r eval=F}
+distributions(data1[,1:3])
+distributions(data2)
+```
+```{r echo=F}
+test = distributions(data1[,1:3])
+test = distributions(data2)
+```
+
+The last function,`timebased()`, can be used to evaluate changes in time series. 
+Since the antTrait data are no time series, we will have to use another data set for this. 
+Instead of looking for another one I will simulate some data.
+In this simulated data set we sampled three variables of a population at seven different dates. 
+Each sample consists of 30 observations 
+The variables are simulated to increase (x), decrease(z), change non-linearly(w) or fluctuate randomly (y). 
+The first plot "Evolution of variable y" makes no sense in this context.
+All other plots show boxplots of x, the year, z, w, the day and the month of sampling relative to the year of sampling. 
+For some reason the titles read histogram, but that is definitly no what we are seeing here. 
+```{r}
+n_dates = 7
+
+simdat = data.table(
+        day = round(runif(
+                n = n_dates*30, min = 1, max = 28
+        ), 0),
+        month = round(runif(
+                n = n_dates*30, min = 1, max = 12
+        ), 0),
+        year = rep(round(runif(
+                n = n_dates, min = 1980, max = 2020
+        ), 0),30)
+)
+
+simdat[,date := paste(day, month,year)]
+simdat[,date := lubridate::dmy(date)]
+setorderv(simdat, "date")
+simdat[, x := 2 + year/100 * 3 + rnorm(1,0, sd = 1.6)]
+simdat[, y := rnorm(1, mean = 0, sd = 20)]
+simdat[, z := 300 + year/100 * -3 + rnorm(1,mean =0, sd = 1.6)]
+simdat[, w := 20 + 1.24*year/1000 + -.31*(year/1000)^2]
+```
+```{r}
+timebased(simdat, date_variable = "date")
+```

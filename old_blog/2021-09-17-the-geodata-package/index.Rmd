@@ -1,0 +1,245 @@
+---
+title: 'the geodata package '
+author: 'Jonathan Jupke '
+date: '2021-09-17'
+slug: the-geodata-package
+categories:
+  - GIS
+tags:
+  - GIS
+  - R package
+comments: no
+images: ~
+---
+
+The `geodata` package is written and maintained by Rob Hijmans who also wrote the `raster` and `terra` packages. 
+The purpose of the package is to provide an easy-to-use interface to download different handy spatial data sets directly from R. 
+In this script, I will go through most of the functions that this package provides, show you how to use them and what their outputs look like. 
+
+```{r eval=FALSE}
+library(geodata)
+library(terra)
+library(tmap)
+library(magrittr)
+library(mapview)
+```
+
+```{r echo=FALSE}
+suppressPackageStartupMessages(library(geodata))  
+suppressPackageStartupMessages(library(terra))  
+suppressPackageStartupMessages(library(tmap))  
+suppressPackageStartupMessages(library(magrittr))  
+suppressPackageStartupMessages(library(mapview))  
+```
+
+
+# cmip6
+
+With this function, you can download climate projections from the Coupled Model Intercomparison Project 6 (CIMP6, see [here](https://www.wcrp-climate.org/wgcm-cmip) for more information). 
+Shortly, CMIP is an multi-group project that compares the projection of different climate models and also combined them in so called ensemble models to project future climates. 
+The function has six arguments `cmip6_world(model, ssp, time, var, res, path)`. 
+`model` determines which of the CIMP6 models you want to get the results from. 
+You can select between: "BCC-CSM2-MR", "CNRMCM6-1", "CNRM-ESM2-1", "CanESM5", "GFDL-ESM4", "IPSL-CM6A-LR", "MIROC-ES2L", "MIROC6" and "MRI-ESM2-0". 
+Each model represents the efforts of one working group namely: the Bejing Climate Center (BCC-CSM), the Centre National de Recherches Météorologiques (CNRMCM and CNRM-ESM); the Canadian Centre for Climate Modelling (CanESM);  the Geophysical Fluid Dynamics Laboratory (GFDL-ESM4), the Institute Pierre Simon Laplace (IPSL), the Japan Agency for Marine-Earth Science and Technology (MIROC-ES2L and MIROC6) and lastly, the Meterological Research Insitute (MRI-ESM2-0).
+`ssp` is the code for a "Shared Socio-economic Pathway" (see [here](https://www.sciencedirect.com/science/article/pii/S0959378016300681) and [here](https://www.carbonbrief.org/explainer-how-shared-socioeconomic-pathways-explore-future-climate-change)). Possible codes are "126", "245", "370" and "585".  The first number here gives the general narrative which start at very sustainable (SSP1) and grow more and more fossil fuel dependend (SSP5).
+`time` refers to the time period that you would like to have the results for? Possible intervals are: "2021-2040", "2041-2060", or "2061-2080".
+`var` determines which variable is returned? The climate models above return: minimum temperature ("tmin"), maximum temperature ("tmax"), average temperature ("tavg"),  precipitation ("prec") and biolcimatic variables ("bioc", see [here](https://www.worldclim.org/data/bioclim.html) for an explanation). 
+`res` is the resolution of the raster that is returned. Valid values are 2.5, 5 and 10 (minutes of a degree).
+Lastly, `path` refers to the folder you want to save the data in? 
+Enter the path to the designated folder here. 
+
+To demonstrate the functions capabilities, we will download the global monthly minum temperatures from the Chinese model, for the foreseeable future on a sustainable socioeconomic pathway, in a resolution of 10 minutes of a degree (i.e. 1/6th of a degree). 
+```{r eval=FALSE}
+bcc.10.tmin <- geodata::cmip6_world(model = "BCC-CSM2-MR",
+                           ssp = "126", 
+                           time = "2021-2040", 
+                           var = "tmin", 
+                           res = 10, 
+                           path = "geodata/")
+```
+```{r echo=FALSE}
+bcc.10.tmin <- terra::rast("../../../data/geodata/wc2.1_10m/wc2.1_10m_tmin_BCC-CSM2-MR_ssp126_2021-2040.tif")
+```
+
+
+Lets have a look at the object. 
+
+```{r}
+bcc.10.tmin
+```
+
+From a quick look we can see that it is a SpatRaster with 12 layers (months of the year). 
+It is in longitude and latitude. 
+The code below uses the `tmap` package to save the 12 rasters as a animation in gif format, which is displayed underneath. 
+
+```{r eval = FALSE}
+anim <- tm_shape(bcc.10.tmin) + tm_raster() + tm_facets(nrow = 1, ncol = 1)
+tmap::tmap_animation(anim, "anim_file.gif")
+```
+
+![](../../../data/anim_file.gif)
+      
+# country_codes
+
+The `country_codes()` function is different from most other functions included in this package. 
+It does not download spatial data but instead provide a table with different codes and IDs for countries. 
+Below you can see the first few lines. 
+
+```{r}
+geodata::country_codes() |> dplyr::select(1:4) |> head()
+```
+
+# elevation
+
+The are three different elevation functions. 
+Each loads a digital elevation model (DEM, in this case from the Shuttle Radar Topography Mission, see [here](https://srtm.csi.cgiar.org/)).
+The three functions are `elevation_3s()`, `elevation_30s()` and `elevation_global()`.     
+`elevation_30s()` has a `country` argument which you can supply the name or ISO3 code (see function `country_code`) and it will download the respective DEM. 
+As I am writing this, the `elevation_3s()` function does not seem to work, there is a problem with the server. 
+The `elevation_global()` function dowloads a dem for the entires globe for in a specified resolution. 
+```{r eval=F}
+dem_andorra <- elevation_30s(country = "Andorra", path = "geodata/")
+dem_global  <- elevation_global(res = 10, path = "geodata/")
+```
+Just as example, and because its relatively small, I downloaded the DEM for Andrroa. 
+You can explore it in the interactive map below. 
+
+```{r echo = FALSE}
+dem_andorra <- rast("../../../data/geodata/AND_elv_msk.tif")
+dem_global <- rast("../../../data/geodata/wc2.1_10m/wc2.1_10m_elev.tif")
+tmap_mode("view")
+```
+
+
+```{r}
+
+tm_shape(dem_andorra) + tm_raster()
+```
+
+The DEM for the whole world is to large to display interactively, so we will just plot it staticly. 
+```{r}
+plot(dem_global)
+```
+
+
+# gadm
+The function `gadm()` returns a `SpatVector` (the terra vector class) of administrative boundaries. It has 3 arguments. `country` is the country name or ISO3 code (see function `country_code()`).
+`level` is the the administrative subdivision, the higher the level the more detail the map has.
+For higher levels this is quite extensive. 
+To find Landau as an object in the data set, for example, you only need to go to level 3
+Here we only look at level 0 (all of Germany) and level 1 (federal states).
+
+```{r eval=FALSE}
+ger0 <- gadm(country = "DEU", level = 0, path = "geodata")
+ger1 <- gadm(country = "DEU", level = 1, path = "geodata")
+```
+
+```{r echo = FALSE}
+ger0 <- readRDS("../../../data/geodata/gadm36_DEU_0_pk.rds")
+ger1 <- readRDS("../../../data/geodata/gadm36_DEU_1_pk.rds")
+```
+
+
+```{r }
+ger0 %<>% vect %>% st_as_sf()
+ger1 %<>% vect %>% st_as_sf()
+```
+
+
+```{r}
+ger0 |>  tm_shape() + tm_polygons()
+ger1 |>  tm_shape() + tm_polygons()
+```
+
+Alternatively, we can query the whole world with `world()`
+
+```{r eval = FALSE}
+world <- world(resolution = 5, level = 0, path = "geodata/")
+```
+```{r echo = FALSE}
+world <- world(resolution = 5, level = 0, path = "index_files")
+```
+
+
+```{r eval = FALSE}
+
+world |> st_as_sf() |> st_make_valid() |>  tm_shape() + tm_polygons()
+```
+On this map we see that the polygons were created on a plane. Geometries that cross the antimeridian (180° longitude) are stretched across the whole globe. 
+This is also the reason that we need to use `st_make_valid()` which makes to display the data. 
+This problem occurs because the `sf` package assumes spherical geometries. 
+We can explicitly tell it to not do so and avoid the ugly smears on the map. 
+
+```{r}
+sf::sf_use_s2(FALSE)
+world |> st_as_sf() |> st_make_valid() |>  tm_shape() + tm_polygons()
+```
+
+# sp_occurrence
+
+The `sp_occurrence()` function can be used to download data from the global biodiversity information facility ([GBIF](https://www.gbif.org/)). 
+We provide the function with genus and species names we want to dowload observations for. 
+Here **Bubo bubo**, the Eagle Owl.  
+
+```{r eval = FALSE}
+occ.bb <- geodata::sp_occurrence(genus = "Bubo", species = "bubo")
+```
+
+This data set has may columns and lots of observations. 
+To simplify things, we remove all columns except longitude and latitude (`dplyr::select()`) and only keep observations that have data in these columns (`dplyr::filter()`) and transform it into a simple feature geometry object.  
+
+```{r eval=FALSE}
+occ.bb <- 
+        occ.bb |> 
+        dplyr::select(lon, lat) |> 
+        dplyr::filter(!is.na(lon) & !is.na(lat)) |> 
+        sf::st_as_sf(coords = c("lon", "lat"), 
+                          crs = 4326)
+```
+
+Further, we omit all observations outside of Germany with an intersection. 
+```{r eval = FALSE}
+occ.bb <- sf::st_intersection(x = occ.bb,
+                              y = ger0)
+```
+
+
+```{r echo = FALSE}
+occ.bb <- readRDS("../../../data/geodata/occ_bb2.rds")
+```
+
+
+```{r}
+mapview::mapview(occ.bb)
+```
+
+
+As a last step to simplify this map, we will lay a grid of hexagons (hexgrid) over Germany and count the number of observations in each cell. 
+First, we need to create the grid, with the `st_make_grid()` function. 
+```{r}
+#- create hexagonal grid over Germany 
+ger.grid <- sf::st_make_grid(x = occ.bb, 
+                             square = FALSE,
+                             cellsize = .5)
+```
+
+This grid is still a square of hexagons.
+```{r}
+mapview::mapview(ger.grid)
+```
+To reduce it to the actual area of Germany we intersect it we the administrative boundaries from `ger0`. 
+The result of the intersection a simple feature collection (sfc) and we need to transform it to sf to aggregate the observations. 
+
+```{r}
+ger.grid %<>% sf::st_intersection(ger0) %>% sf::st_as_sf()
+mapview::mapview(ger.grid) + mapview::mapview(occ.bb)
+```
+
+We use the `sf::st_contains()` function to count the number of observations (points in occ.bb) per polygon in ger.grid. 
+```{r}
+ger.grid$density <- 
+        st_contains(x = ger.grid, y = occ.bb) |> 
+        lengths()
+tm_shape(ger.grid) + tm_polygons(col = "density", palette = "viridis")
+
+```

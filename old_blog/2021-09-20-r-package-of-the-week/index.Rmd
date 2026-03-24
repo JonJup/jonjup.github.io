@@ -1,0 +1,105 @@
+---
+title: 'R package of the week: corrr'
+author: Jonathan Jupke
+date: '2021-09-20'
+slug: r-package-of-the-week
+categories:
+  - R package of the week
+tags:
+  - R package
+comments: no
+images: ~
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo = FALSE}
+pacman::p_load(corrr, vegan, tidyverse)
+```
+
+This week we will have a look at the `corrr` package. 
+It includes some nice possibilities to visualize correlations between mutliple variables. 
+I will provide some examples using the varechem data set from the `vegan` package. 
+
+First, load the data and have a look at them. 
+```{r}
+data(varechem)
+head(varechem) 
+```
+As you can see, the data set contains different soil parameters like Nitrogen, Phosphorus or depth of the humus layer. 
+The basic function of the `corrr` package is `correlate()`, which works similar to base R's `cor()`. 
+
+```{r}
+corrr_table <- correlate(varechem, quiet = TRUE)
+```
+
+The main difference between `cor()` and `correlate()` is that the latter returns a tibble while the former returns a matrix. 
+In the call above, I set the **quiet** argument to `TRUE`. 
+This prevents the function from returning information on the correlation metric and the method of dealing with missing values. 
+Both options can be set explicitly with the **method** and **use** arguments. 
+Here, I used their default values (pearson correlation and only using pairwise complete observations).
+
+The package uses a tibble instead of a matrix so the we can make use of all the tidyverse functions, like 
+only showing terms with a correlation above 0.7 with zinc ... 
+```{r}
+corrr_table |> filter(Zn >  0.7) |> pull(term)
+```
+... or only showing correlations of nirogen and sulphur ... 
+```{r}
+corrr_table |> select(N, S)
+```
+... or asking what the mean correlation of nitrogen and sulfur to all other variables is. 
+```{r}
+corrr_table |> 
+  select(N,S) |> 
+  map_dbl(~mean(., na.rm = T))
+```
+There are also some new data wrangling functions that `corrr` introduces.
+`shave()` sets the lower or upper triangle to NA. 
+```{r}
+shave(corrr_table, upper = TRUE)
+```
+We can rearrange the columns so that highly correlated columns are next to one another with `rearrange()`, which I will show below when we come to plots, because this is only relevant for plotting.  
+The `focus()` function is very similar to `select()`. The only difference is that the the **term** column is automatically selected in the `focus()` functions. 
+```{r}
+focus(corrr_table, N) |> 
+  head()
+```
+
+The last in the bunch is `fashion()` which can be used to create a nice looking version of the table: no leading zeros, NAs are replace by empty cells 
+```{r}
+fashion(corrr_table) 
+```
+
+While all these things are nice the really cool thing about `corrr` is the plots: 
+
+```{r}
+corrr_table |> 
+  rearrange() |> 
+  rplot()
+```
+
+and 
+
+```{r}
+corrr_table |> 
+  network_plot()
+```
+
+In the network plot highly correlated variables appear closer together and are joined by stronger (darker) paths. 
+The function includes an argument to exclude correlations below some threshold (`min_cor`), to change the color scale (`colours`), and lastly and a argument for whether arrows should be straight or curved (`curved`). 
+So we could modify the above plot to this: 
+
+```{r}
+corrr_table |> 
+  network_plot(
+          min_cor = 0.5,
+          colours = c("green", "black", "blue"),
+          curved = FALSE
+  )
+```
+
+Yes, the first one was prettier but now you know what you can do with this. 
+

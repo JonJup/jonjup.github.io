@@ -1,0 +1,48 @@
+---
+title: 'Lecture: Advanced methods for multivariate analysis'
+author: Jonathan Jupke
+date: '2021-01-07'
+slug: lecutre-advanced-methods-for-multivariate-analysis
+categories: []
+tags:
+  - MOD3
+comments: no
+images: ~
+---
+This post is the penultimate lecture in MOD3: Advanced data analysis given at the University of Koblenz-Landau in the winter semester 20/21. 
+Due to its size it is split into multiple presentations. 
+Each is embedded in this post and you can enter full-screen view by clicking the link above.  
+
+[Introduction](https://jonjup.netlify.app/slides/mod3/mod3-1-intro.html)  
+```{r echo = F }
+knitr::include_url('https://jonjup.netlify.app/slides/mod3/mod3-1-intro.html')
+```
+   
+[mvabund](https://jonjup.netlify.app/slides/mod3/mod3-2-mvglm.html#1)  
+```{r echo = F}
+knitr::include_url('https://jonjup.netlify.app/slides/mod3/mod3-2-mvglm.html#1')
+```
+
+  
+[cqo](https://jonjup.netlify.app/slides/mod3/mod3-3-cqo.html#1)  
+```{r echo = F}
+knitr::include_url('https://jonjup.netlify.app/slides/mod3/mod3-3-cqo.html#1')
+```
+  
+
+[gllvm](https://jonjup.netlify.app/slides/mod3/mod3-4-gllvm.html#1)  
+```{r echo = F}
+knitr::include_url('https://jonjup.netlify.app/slides/mod3/mod3-4-gllvm.html#1')
+```
+  
+
+[hmsc](https://jonjup.netlify.app/slides/mod3/mod3-5-hmsc.html#1)   
+```{r echo = F}
+knitr::include_url('https://jonjup.netlify.app/slides/mod3/mod3-5-hmsc.html#1')
+```
+
+  
+[copula](https://jonjup.netlify.app/slides/mod3/mod3-6-copula.html#1)   
+```{r echo = F}
+knitr::include_url('https://jonjup.netlify.app/slides/mod3/mod3-6-copula.html#1')
+```

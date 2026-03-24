@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 7 Creating Maps in R | Spatial Data Science in R</title>
+  <meta name="description" content="Lessons and tasks from GIS courses by Jonathan Jupke" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 7 Creating Maps in R | Spatial Data Science in R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Lessons and tasks from GIS courses by Jonathan Jupke" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 7 Creating Maps in R | Spatial Data Science in R" />
+  
+  <meta name="twitter:description" content="Lessons and tasks from GIS courses by Jonathan Jupke" />
+  
+
+<meta name="author" content="Jonathan Jupke" />
+
+
+<meta name="date" content="2024-11-18" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="graph-analysis.html"/>
+<link rel="next" href="where-do-i-get-data.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="libs/proj4-2.6.2/proj4.min.js"></script>
+<script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding-2.2.2/leaflet.js"></script>
+<script src="libs/leaflet-providers-2.0.0/leaflet-providers_2.0.0.js"></script>
+<script src="libs/leaflet-providers-plugin-2.2.2/leaflet-providers-plugin.js"></script>
+<link href="libs/HomeButton-0.0.1/home-button.css" rel="stylesheet" />
+<script src="libs/HomeButton-0.0.1/home-button.js"></script>
+<script src="libs/HomeButton-0.0.1/easy-button-src.min.js"></script>
+<script src="libs/clipboard-0.0.1/setClipboardText.js"></script>
+<link href="libs/mapviewCSS-0.0.1/mapview-popup.css" rel="stylesheet" />
+<link href="libs/mapviewCSS-0.0.1/mapview.css" rel="stylesheet" />
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Spatial Data Science in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html"><i class="fa fa-check"></i><b>1</b> Introduction to the sf package</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#loading-spatial-data-into-r"><i class="fa fa-check"></i><b>1.1</b> Loading spatial data into R</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#creating-spatial-data-yourself"><i class="fa fa-check"></i><b>1.2</b> Creating spatial data yourself</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#basic-operations"><i class="fa fa-check"></i><b>1.3</b> Basic operations</a></li>
+<li class="chapter" data-level="1.4" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#useful-functions"><i class="fa fa-check"></i><b>1.4</b> Useful functions</a>
+<ul>
+<li class="chapter" data-level="1.4.1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_area"><i class="fa fa-check"></i><b>1.4.1</b> <code>st_area</code></a></li>
+<li class="chapter" data-level="1.4.2" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_bbox"><i class="fa fa-check"></i><b>1.4.2</b> <code>st_bbox()</code></a></li>
+<li class="chapter" data-level="1.4.3" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_buffer"><i class="fa fa-check"></i><b>1.4.3</b> <code>st_buffer()</code></a></li>
+<li class="chapter" data-level="1.4.4" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_coordinates"><i class="fa fa-check"></i><b>1.4.4</b> <code>st_coordinates()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#geometric-set-operations"><i class="fa fa-check"></i><b>1.5</b> Geometric set operations</a>
+<ul>
+<li class="chapter" data-level="1.5.1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_distance"><i class="fa fa-check"></i><b>1.5.1</b> <code>st_distance</code></a></li>
+<li class="chapter" data-level="1.5.2" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_nearest_feature"><i class="fa fa-check"></i><b>1.5.2</b> <code>st_nearest_feature</code></a></li>
+<li class="chapter" data-level="1.5.3" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#spatial-subsetting"><i class="fa fa-check"></i><b>1.5.3</b> spatial subsetting</a></li>
+<li class="chapter" data-level="1.5.4" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#spatial-joins"><i class="fa fa-check"></i><b>1.5.4</b> spatial joins</a></li>
+<li class="chapter" data-level="1.5.5" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#spatial-sggregation"><i class="fa fa-check"></i><b>1.5.5</b> spatial sggregation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html"><i class="fa fa-check"></i><b>2</b> Rasters in R: The terra package</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#basic-idea"><i class="fa fa-check"></i><b>2.1</b> Basic idea</a></li>
+<li class="chapter" data-level="2.2" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#creating-a-new-raster"><i class="fa fa-check"></i><b>2.2</b> Creating a new Raster</a></li>
+<li class="chapter" data-level="2.3" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#going-beyond-the-hull"><i class="fa fa-check"></i><b>2.3</b> Going beyond the hull</a></li>
+<li class="chapter" data-level="2.4" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#multiple-layers-in-one-spatraster"><i class="fa fa-check"></i><b>2.4</b> Multiple layers in one SpatRaster</a></li>
+<li class="chapter" data-level="2.5" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#raster-algebra"><i class="fa fa-check"></i><b>2.5</b> Raster algebra</a></li>
+<li class="chapter" data-level="2.6" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#high-level-functions"><i class="fa fa-check"></i><b>2.6</b> High-level functions</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#extracting-raster-values-with-vectors"><i class="fa fa-check"></i><b>2.6.1</b> Extracting raster values with vectors</a></li>
+<li class="chapter" data-level="2.6.2" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#masking"><i class="fa fa-check"></i><b>2.6.2</b> Masking</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#cell-level-functions"><i class="fa fa-check"></i><b>2.7</b> Cell-level functions</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html"><i class="fa fa-check"></i><b>3</b> Point Pattern Analysis</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#the-ppp-class"><i class="fa fa-check"></i><b>3.1</b> the ppp class</a></li>
+<li class="chapter" data-level="3.2" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#first-order-processes"><i class="fa fa-check"></i><b>3.2</b> First order processes</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#kernel-density"><i class="fa fa-check"></i><b>3.2.1</b> Kernel density</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#second-order-processes"><i class="fa fa-check"></i><b>3.3</b> Second order processes</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#average-nearest-neighbor"><i class="fa fa-check"></i><b>3.3.1</b> Average nearest neighbor</a></li>
+<li class="chapter" data-level="3.3.2" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#the-k-funktion"><i class="fa fa-check"></i><b>3.3.2</b> The K-Funktion</a></li>
+<li class="chapter" data-level="3.3.3" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#morans-i"><i class="fa fa-check"></i><b>3.3.3</b> Morans I</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="interpolation.html"><a href="interpolation.html"><i class="fa fa-check"></i><b>4</b> Interpolation</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="interpolation.html"><a href="interpolation.html#the-data"><i class="fa fa-check"></i><b>4.1</b> The data</a></li>
+<li class="chapter" data-level="4.2" data-path="interpolation.html"><a href="interpolation.html#proximity-polygons"><i class="fa fa-check"></i><b>4.2</b> Proximity Polygons</a></li>
+<li class="chapter" data-level="4.3" data-path="interpolation.html"><a href="interpolation.html#trend-surface-analysis"><i class="fa fa-check"></i><b>4.3</b> Trend Surface Analysis</a></li>
+<li class="chapter" data-level="4.4" data-path="interpolation.html"><a href="interpolation.html#splines"><i class="fa fa-check"></i><b>4.4</b> Splines</a></li>
+<li class="chapter" data-level="4.5" data-path="interpolation.html"><a href="interpolation.html#weighted-averaging"><i class="fa fa-check"></i><b>4.5</b> Weighted averaging</a></li>
+<li class="chapter" data-level="4.6" data-path="interpolation.html"><a href="interpolation.html#kriging"><i class="fa fa-check"></i><b>4.6</b> Kriging</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="machine-learning.html"><a href="machine-learning.html"><i class="fa fa-check"></i><b>5</b> Machine Learning</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="machine-learning.html"><a href="machine-learning.html#terrain-analysis-with-terra"><i class="fa fa-check"></i><b>5.1</b> Terrain analysis with terra</a></li>
+<li class="chapter" data-level="5.2" data-path="machine-learning.html"><a href="machine-learning.html#ploting-the-data"><i class="fa fa-check"></i><b>5.2</b> Ploting the data</a></li>
+<li class="chapter" data-level="5.3" data-path="machine-learning.html"><a href="machine-learning.html#logistic-regression"><i class="fa fa-check"></i><b>5.3</b> Logistic regression</a></li>
+<li class="chapter" data-level="5.4" data-path="machine-learning.html"><a href="machine-learning.html#mlr3"><i class="fa fa-check"></i><b>5.4</b> mlr3</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="machine-learning.html"><a href="machine-learning.html#creating-a-task"><i class="fa fa-check"></i><b>5.4.1</b> Creating a <em>task</em></a></li>
+<li class="chapter" data-level="5.4.2" data-path="machine-learning.html"><a href="machine-learning.html#the-learner"><i class="fa fa-check"></i><b>5.4.2</b> The <em>learner</em></a></li>
+<li class="chapter" data-level="5.4.3" data-path="machine-learning.html"><a href="machine-learning.html#hyperparameter-tuning"><i class="fa fa-check"></i><b>5.4.3</b> Hyperparameter Tuning</a></li>
+<li class="chapter" data-level="5.4.4" data-path="machine-learning.html"><a href="machine-learning.html#predictions"><i class="fa fa-check"></i><b>5.4.4</b> Predictions</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="graph-analysis.html"><a href="graph-analysis.html"><i class="fa fa-check"></i><b>6</b> Graph Analysis</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="graph-analysis.html"><a href="graph-analysis.html#the-igraph-package"><i class="fa fa-check"></i><b>6.1</b> The igraph package</a></li>
+<li class="chapter" data-level="6.2" data-path="graph-analysis.html"><a href="graph-analysis.html#from-data-to-graph"><i class="fa fa-check"></i><b>6.2</b> From data to graph</a></li>
+<li class="chapter" data-level="6.3" data-path="graph-analysis.html"><a href="graph-analysis.html#centrality-measures"><i class="fa fa-check"></i><b>6.3</b> Centrality measures</a></li>
+<li class="chapter" data-level="6.4" data-path="graph-analysis.html"><a href="graph-analysis.html#visualization"><i class="fa fa-check"></i><b>6.4</b> Visualization</a></li>
+<li class="chapter" data-level="6.5" data-path="graph-analysis.html"><a href="graph-analysis.html#network-models"><i class="fa fa-check"></i><b>6.5</b> Network Models</a></li>
+<li class="chapter" data-level="6.6" data-path="graph-analysis.html"><a href="graph-analysis.html#optimal-channel-networks"><i class="fa fa-check"></i><b>6.6</b> Optimal Channel Networks</a></li>
+<li class="chapter" data-level="6.7" data-path="graph-analysis.html"><a href="graph-analysis.html#sfnetworks"><i class="fa fa-check"></i><b>6.7</b> sfnetworks</a>
+<ul>
+<li class="chapter" data-level="6.7.1" data-path="graph-analysis.html"><a href="graph-analysis.html#finding-paths-in-the-network"><i class="fa fa-check"></i><b>6.7.1</b> Finding paths in the network</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html"><i class="fa fa-check"></i><b>7</b> Creating Maps in R</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#tmap"><i class="fa fa-check"></i><b>7.1</b> tmap</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#basic-tmaps"><i class="fa fa-check"></i><b>7.1.1</b> Basic tmaps</a></li>
+<li class="chapter" data-level="7.1.2" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#adjusting-visual-elements-and-multiple-groups"><i class="fa fa-check"></i><b>7.1.2</b> Adjusting visual elements and multiple groups</a></li>
+<li class="chapter" data-level="7.1.3" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#map-extend"><i class="fa fa-check"></i><b>7.1.3</b> Map extend</a></li>
+<li class="chapter" data-level="7.1.4" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#further-map-elements"><i class="fa fa-check"></i><b>7.1.4</b> Further map elements</a></li>
+<li class="chapter" data-level="7.1.5" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#making-the-map-prettier"><i class="fa fa-check"></i><b>7.1.5</b> Making the map prettier</a></li>
+<li class="chapter" data-level="7.1.6" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#save-to-maps-to-file"><i class="fa fa-check"></i><b>7.1.6</b> Save to maps to file</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#rastervis"><i class="fa fa-check"></i><b>7.2</b> rasterVis</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#beyond-the-usual"><i class="fa fa-check"></i><b>7.2.1</b> Beyond the usual</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#cartographer"><i class="fa fa-check"></i><b>7.3</b> Cartographer</a></li>
+<li class="chapter" data-level="7.4" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#rayshader"><i class="fa fa-check"></i><b>7.4</b> Rayshader</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#setup"><i class="fa fa-check"></i><b>7.4.1</b> Setup</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html"><i class="fa fa-check"></i><b>8</b> Where do I get data❓</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#websites"><i class="fa fa-check"></i><b>8.1</b> Websites</a></li>
+<li class="chapter" data-level="8.2" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#packages"><i class="fa fa-check"></i><b>8.2</b> Packages</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#geodata"><i class="fa fa-check"></i><b>8.2.1</b> geodata</a></li>
+<li class="chapter" data-level="8.2.2" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#osmdata"><i class="fa fa-check"></i><b>8.2.2</b> osmdata</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="usefull-packages.html"><a href="usefull-packages.html"><i class="fa fa-check"></i><b>9</b> Usefull packages</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="usefull-packages.html"><a href="usefull-packages.html#coordinatecleaner"><i class="fa fa-check"></i><b>9.1</b> ‘CoordinateCleaner’</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>10</b> References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Spatial Data Science in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="creating-maps-in-r" class="section level1 hasAnchor" number="7">
+<h1><span class="header-section-number">Chapter 7</span> Creating Maps in R<a href="creating-maps-in-r.html#creating-maps-in-r" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>This chapter gives you an introduction into basic map creation with R.
+We will use a range of packages (<em>currently only tmap implemented</em>) to create both interactive (<em>not yet</em>) and static maps.
+Interactive maps are great to explore your data or for interactive documents like html documents and websites. Static maps require more effort but are necessary for static documents, i.e., .pdf, docx., or pptx.
+First, we load all the <code>sf</code> package which we need to represent spatial data in R.
+We will also load some data to plot.</p>
+<div class="sourceCode" id="cb536"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb536-1"><a href="creating-maps-in-r.html#cb536-1" tabindex="-1"></a><span class="co"># loading the required packages </span></span>
+<span id="cb536-2"><a href="creating-maps-in-r.html#cb536-2" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb536-3"><a href="creating-maps-in-r.html#cb536-3" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb536-4"><a href="creating-maps-in-r.html#cb536-4" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb536-5"><a href="creating-maps-in-r.html#cb536-5" tabindex="-1"></a><span class="fu">library</span>(ncdf4)</span></code></pre></div>
+<div class="sourceCode" id="cb537"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb537-1"><a href="creating-maps-in-r.html#cb537-1" tabindex="-1"></a>lucas   <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;data/lucas_saxony.rds&quot;</span>)</span>
+<span id="cb537-2"><a href="creating-maps-in-r.html#cb537-2" tabindex="-1"></a>germany <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">&quot;data/gadm36_DEU_3_pk.gpkg&quot;</span>)</span>
+<span id="cb537-3"><a href="creating-maps-in-r.html#cb537-3" tabindex="-1"></a>rivers  <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">&quot;data/rivers_sachsen.gpkg&quot;</span>)</span></code></pre></div>
+<p>We will also download a DEM for Saxony with the <code>geodata</code> package <span class="citation">(<a href="#ref-Hijmans2022b">Hijmans, Ghosh, and Mandel 2022</a>)</span>.
+The function <code>elevation_30s()</code> downloads a DEM for Germany with a resolution of 30 arc seconds (i.e. one degree divided by 3600). For more details on the <code>geodata</code> package see <a href="https://jonjup.netlify.app/post/the-geodata-package/">here</a>.
+The data are downloaded to a folder specified in the <code>path</code> argument.
+Afterward, we load the data with the <code>terra</code> package.</p>
+<div class="sourceCode" id="cb538"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb538-1"><a href="creating-maps-in-r.html#cb538-1" tabindex="-1"></a><span class="fu">library</span>(geodata)</span>
+<span id="cb538-2"><a href="creating-maps-in-r.html#cb538-2" tabindex="-1"></a><span class="fu">elevation_30s</span>(<span class="at">country =</span> <span class="st">&quot;DEU&quot;</span>, <span class="at">path =</span> <span class="st">&quot;data/elevation&quot;</span>)</span>
+<span id="cb538-3"><a href="creating-maps-in-r.html#cb538-3" tabindex="-1"></a>dem <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">&quot;data/elevation/DEU_elv_msk.tif&quot;</span>)</span></code></pre></div>
+<p>All the maps I create as examples here are for Saxony.
+So we will extract Saxony from the <code>germany</code> data set and the raster.</p>
+<div class="sourceCode" id="cb539"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb539-1"><a href="creating-maps-in-r.html#cb539-1" tabindex="-1"></a>saxony <span class="ot">&lt;-</span> <span class="fu">filter</span>(germany, NAME_1 <span class="sc">==</span> <span class="st">&quot;Sachsen&quot;</span>)</span>
+<span id="cb539-2"><a href="creating-maps-in-r.html#cb539-2" tabindex="-1"></a>saxony_dem <span class="ot">&lt;-</span> <span class="fu">mask</span>(dem, saxony)</span>
+<span id="cb539-3"><a href="creating-maps-in-r.html#cb539-3" tabindex="-1"></a>saxony_dem <span class="ot">&lt;-</span> <span class="fu">crop</span>(saxony_dem, saxony)</span></code></pre></div>
+<p>For most object classes, we can use the base <code>plot()</code> function to create a very basic static map.
+For <code>sf</code> objects, we get one plot per variable.</p>
+<div class="sourceCode" id="cb540"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb540-1"><a href="creating-maps-in-r.html#cb540-1" tabindex="-1"></a><span class="fu">plot</span>(lucas)</span></code></pre></div>
+<pre><code>## Warning: plotting the first 9 out of 22 attributes; use max.plot = 22 to plot all</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-334-1.png" width="672" /></p>
+<p>These maps are not very informative and should not be used for reports or presentations.
+The defaul plot for rasters is already a lot better.</p>
+<div class="sourceCode" id="cb542"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb542-1"><a href="creating-maps-in-r.html#cb542-1" tabindex="-1"></a><span class="fu">plot</span>(dem)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-335-1.png" width="672" /></p>
+<p>There are several good options to create maps with both rasters and vectors in R.
+Some package can create both static and interactive maps and others are specifically designed for one of the two. We will go through several packages in order of decreasing importance.
+From my experience you will rarely need other packages than <code>tmap</code> <span class="citation">(<a href="#ref-Tennekes2018">Tennekes 2018</a>)</span> to create good maps.
+This is why we start with this package.
+However, some packages provide functions that are not available in <code>tmap</code> and so will also cover several other further down.</p>
+<div id="tmap" class="section level2 hasAnchor" number="7.1">
+<h2><span class="header-section-number">7.1</span> tmap<a href="creating-maps-in-r.html#tmap" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><code>tmap</code> is a large package with lots of functions.
+We will only scratch the surface here.
+For a more in-depth introduction see <a href="https://r-tmap.github.io/tmap-book/">here</a> (at the time of writing the book is still under construction).</p>
+<div class="sourceCode" id="cb543"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb543-1"><a href="creating-maps-in-r.html#cb543-1" tabindex="-1"></a><span class="fu">library</span>(tmap)</span></code></pre></div>
+<p>Besides the regular maps, tmap can create quickmaps with the <code>qtm()</code> function that can be handy for data exploration.</p>
+<div class="sourceCode" id="cb544"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb544-1"><a href="creating-maps-in-r.html#cb544-1" tabindex="-1"></a><span class="fu">qtm</span>(lucas)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-337-1.png" width="672" /></p>
+<p>These maps are similar to those created by the base <code>plot()</code> function.
+The main difference is that we only get one map.
+While the beauty of the <code>qtm()</code> function is that we do not need to add any information besides the data set, if we want, we can add more variables.</p>
+<div class="sourceCode" id="cb545"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb545-1"><a href="creating-maps-in-r.html#cb545-1" tabindex="-1"></a><span class="fu">qtm</span>(lucas, <span class="at">symbols.shape =</span> <span class="dv">24</span>, <span class="at">symbols.size =</span> <span class="st">&quot;EC&quot;</span>, <span class="at">title =</span> <span class="st">&quot;Electrical conductivity&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-338-1.png" width="672" /></p>
+<div id="basic-tmaps" class="section level3 hasAnchor" number="7.1.1">
+<h3><span class="header-section-number">7.1.1</span> Basic tmaps<a href="creating-maps-in-r.html#basic-tmaps" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Usually however, you will be using the regular map approach.</p>
+<div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb546-1"><a href="creating-maps-in-r.html#cb546-1" tabindex="-1"></a><span class="fu">tm_shape</span>(lucas) <span class="sc">+</span> </span>
+<span id="cb546-2"><a href="creating-maps-in-r.html#cb546-2" tabindex="-1"></a>        <span class="fu">tm_symbols</span>(<span class="at">shape =</span> <span class="dv">24</span>, <span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-339-1.png" width="672" /></p>
+<p>Here, we first provide the data set we want to plot to the <code>tm_shape()</code> function and then specify how we want to display the data.
+Here, we used <code>tm_symbols()</code> but there are many different visual elements we can add to a map.
+Some are just shape-explicit versions of <code>tm_symbols</code>.
+For example, <code>tm_dots()</code>, <code>tm_squares()</code>, <code>tm_markers()</code>, or <code>tm_bubbles()</code>.</p>
+<div class="sourceCode" id="cb547"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb547-1"><a href="creating-maps-in-r.html#cb547-1" tabindex="-1"></a><span class="fu">tm_shape</span>(lucas) <span class="sc">+</span> <span class="fu">tm_dots</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-340-1.png" width="672" /></p>
+<div class="sourceCode" id="cb548"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb548-1"><a href="creating-maps-in-r.html#cb548-1" tabindex="-1"></a><span class="fu">tm_shape</span>(lucas) <span class="sc">+</span> <span class="fu">tm_bubbles</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-340-2.png" width="672" /></p>
+<div class="sourceCode" id="cb549"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb549-1"><a href="creating-maps-in-r.html#cb549-1" tabindex="-1"></a><span class="fu">tm_shape</span>(lucas) <span class="sc">+</span> <span class="fu">tm_squares</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-340-3.png" width="672" /></p>
+<p>All of these visual elements are applicable to point data.</p>
+<p>For polygons and lines we need other elements.
+For lines, we use <code>tm_lines()</code>.</p>
+<div class="sourceCode" id="cb550"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb550-1"><a href="creating-maps-in-r.html#cb550-1" tabindex="-1"></a><span class="fu">tm_shape</span>(rivers) <span class="sc">+</span> <span class="fu">tm_lines</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-341-1.png" width="672" /></p>
+<p>For polygons, we can use <code>tm_polygons()</code>, <code>tm_borders()</code>, or <code>tm_fill()</code>.</p>
+<div class="sourceCode" id="cb551"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb551-1"><a href="creating-maps-in-r.html#cb551-1" tabindex="-1"></a><span class="fu">tm_shape</span>(saxony) <span class="sc">+</span> <span class="fu">tm_polygons</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-342-1.png" width="672" /></p>
+<div class="sourceCode" id="cb552"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb552-1"><a href="creating-maps-in-r.html#cb552-1" tabindex="-1"></a><span class="fu">tm_shape</span>(saxony) <span class="sc">+</span> <span class="fu">tm_borders</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-342-2.png" width="672" /></p>
+<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb553-1"><a href="creating-maps-in-r.html#cb553-1" tabindex="-1"></a><span class="fu">tm_shape</span>(saxony) <span class="sc">+</span> <span class="fu">tm_fill</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-342-3.png" width="672" /></p>
+<p>For raster, we use the <code>tm_raster()</code> function.</p>
+<div class="sourceCode" id="cb554"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb554-1"><a href="creating-maps-in-r.html#cb554-1" tabindex="-1"></a><span class="fu">tm_shape</span>(saxony_dem) <span class="sc">+</span> <span class="fu">tm_raster</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-343-1.png" width="672" /></p>
+<p>So far, we have only used the most basic functionality of <code>tmap</code>.
+We have specified a single data set and used one visual element to populate the map.
+Most visual elements have properties that we can adjust.
+We have already seen this with <code>tm_symbols()</code>, where we specified the size and shape of symbols.
+Those specifications are made within the brackets following the call to the visual element.
+For example, if we want to set the size of our bubbles we use:</p>
+</div>
+<div id="adjusting-visual-elements-and-multiple-groups" class="section level3 hasAnchor" number="7.1.2">
+<h3><span class="header-section-number">7.1.2</span> Adjusting visual elements and multiple groups<a href="creating-maps-in-r.html#adjusting-visual-elements-and-multiple-groups" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb555"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb555-1"><a href="creating-maps-in-r.html#cb555-1" tabindex="-1"></a><span class="fu">tm_shape</span>(lucas) <span class="sc">+</span> <span class="fu">tm_bubbles</span>(<span class="at">size=</span><span class="dv">2</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-344-1.png" width="672" /></p>
+<p>These attributes can either be fixed or variable.
+So far we have only used fixed attributes (e.g., all points have the size 2).
+Variable attributes follow variables of the data set.
+We could for example control the color of the points by the electrical conductivity.</p>
+<div class="sourceCode" id="cb556"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb556-1"><a href="creating-maps-in-r.html#cb556-1" tabindex="-1"></a><span class="fu">tm_shape</span>(lucas) <span class="sc">+</span> <span class="fu">tm_bubbles</span>(<span class="at">col =</span> <span class="st">&quot;EC&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-345-1.png" width="672" /></p>
+<p>As you can see, we the name of the variable, we want to use, needs to be provided in quotation marks.
+Since the electrical conductivity is a numerical variable, <code>tmap</code> automatically chooses a continuous color scale.
+If we transform EC into a factor variable or a character, <code>tmap</code> would use a categorical color scale.</p>
+<div class="sourceCode" id="cb557"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb557-1"><a href="creating-maps-in-r.html#cb557-1" tabindex="-1"></a>lucas <span class="ot">&lt;-</span> <span class="fu">mutate</span>(lucas, <span class="at">EC_char =</span> <span class="fu">as.character</span>(EC))</span>
+<span id="cb557-2"><a href="creating-maps-in-r.html#cb557-2" tabindex="-1"></a><span class="fu">tm_shape</span>(lucas) <span class="sc">+</span> <span class="fu">tm_bubbles</span>(<span class="at">col =</span> <span class="st">&quot;EC_char&quot;</span>)</span></code></pre></div>
+<pre><code>## Warning: Number of levels of the variable &quot;EC_char&quot; is 75, which is larger than max.categories (which is 30), so levels are combined. Set tmap_options(max.categories = 75) in the layer
+## function to show all levels.</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-346-1.png" width="672" /></p>
+<p>For point data we generally have the arguments: size, color, transparency (alpha), border color, line width, and transparency.</p>
+<div class="sourceCode" id="cb559"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb559-1"><a href="creating-maps-in-r.html#cb559-1" tabindex="-1"></a><span class="fu">tm_shape</span>(lucas) <span class="sc">+</span> </span>
+<span id="cb559-2"><a href="creating-maps-in-r.html#cb559-2" tabindex="-1"></a>        <span class="fu">tm_bubbles</span>(<span class="at">col =</span> <span class="st">&quot;EC&quot;</span>,</span>
+<span id="cb559-3"><a href="creating-maps-in-r.html#cb559-3" tabindex="-1"></a>                   <span class="at">size =</span> <span class="st">&quot;OC&quot;</span>,</span>
+<span id="cb559-4"><a href="creating-maps-in-r.html#cb559-4" tabindex="-1"></a>                   <span class="at">alpha =</span> <span class="fl">0.5</span>, </span>
+<span id="cb559-5"><a href="creating-maps-in-r.html#cb559-5" tabindex="-1"></a>                   <span class="at">border.col =</span> <span class="st">&quot;red&quot;</span>,</span>
+<span id="cb559-6"><a href="creating-maps-in-r.html#cb559-6" tabindex="-1"></a>                   <span class="at">border.lwd =</span> .<span class="dv">5</span>, </span>
+<span id="cb559-7"><a href="creating-maps-in-r.html#cb559-7" tabindex="-1"></a>                   <span class="at">border.alpha =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-347-1.png" width="672" /></p>
+<p>For line data, we can determine the line width, color, type, and transparency.</p>
+<div class="sourceCode" id="cb560"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb560-1"><a href="creating-maps-in-r.html#cb560-1" tabindex="-1"></a><span class="fu">tm_shape</span>(rivers) <span class="sc">+</span></span>
+<span id="cb560-2"><a href="creating-maps-in-r.html#cb560-2" tabindex="-1"></a>        <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;blue&quot;</span>,</span>
+<span id="cb560-3"><a href="creating-maps-in-r.html#cb560-3" tabindex="-1"></a>                 <span class="at">lty =</span> <span class="st">&quot;dashed&quot;</span>,</span>
+<span id="cb560-4"><a href="creating-maps-in-r.html#cb560-4" tabindex="-1"></a>                 <span class="at">lwd =</span> .<span class="dv">3</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-348-1.png" width="672" /></p>
+<p>For polygons, we have similar options.
+We can alter color and border type.</p>
+<div class="sourceCode" id="cb561"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb561-1"><a href="creating-maps-in-r.html#cb561-1" tabindex="-1"></a><span class="fu">tm_shape</span>(saxony) <span class="sc">+</span> </span>
+<span id="cb561-2"><a href="creating-maps-in-r.html#cb561-2" tabindex="-1"></a>        <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">&quot;NAME_2&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb561-3"><a href="creating-maps-in-r.html#cb561-3" tabindex="-1"></a>        <span class="fu">tm_borders</span>(<span class="at">lty =</span> <span class="st">&quot;dashed&quot;</span>, </span>
+<span id="cb561-4"><a href="creating-maps-in-r.html#cb561-4" tabindex="-1"></a>                   <span class="at">lwd =</span> <span class="dv">2</span>, </span>
+<span id="cb561-5"><a href="creating-maps-in-r.html#cb561-5" tabindex="-1"></a>                   <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-349-1.png" width="672" /></p>
+<p>As you can see, we can add multiple visual elements based on the same shape.
+We can also have mutliple shapes in the same map.</p>
+<div class="sourceCode" id="cb562"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb562-1"><a href="creating-maps-in-r.html#cb562-1" tabindex="-1"></a><span class="fu">tm_shape</span>(saxony_dem) <span class="sc">+</span> </span>
+<span id="cb562-2"><a href="creating-maps-in-r.html#cb562-2" tabindex="-1"></a>        <span class="fu">tm_raster</span>() <span class="sc">+</span> </span>
+<span id="cb562-3"><a href="creating-maps-in-r.html#cb562-3" tabindex="-1"></a>        <span class="fu">tm_shape</span>(<span class="fu">st_union</span>(saxony)) <span class="sc">+</span> </span>
+<span id="cb562-4"><a href="creating-maps-in-r.html#cb562-4" tabindex="-1"></a>        <span class="fu">tm_borders</span>(<span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="st">&quot;dashed&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb562-5"><a href="creating-maps-in-r.html#cb562-5" tabindex="-1"></a>        <span class="fu">tm_shape</span>(rivers) <span class="sc">+</span> </span>
+<span id="cb562-6"><a href="creating-maps-in-r.html#cb562-6" tabindex="-1"></a>        <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;blue&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb562-7"><a href="creating-maps-in-r.html#cb562-7" tabindex="-1"></a>        <span class="fu">tm_shape</span>(lucas) <span class="sc">+</span> </span>
+<span id="cb562-8"><a href="creating-maps-in-r.html#cb562-8" tabindex="-1"></a>        <span class="fu">tm_bubbles</span>(<span class="at">col =</span> <span class="st">&quot;EC&quot;</span>, <span class="at">palette =</span> <span class="st">&quot;viridis&quot;</span>, <span class="at">size =</span> .<span class="dv">2</span>) </span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-350-1.png" width="672" /></p>
+<p>The combination of shape and visual element is called a group.
+As you have just seen each map can have multiple groups and each group can have multiple visual elements.</p>
+</div>
+<div id="map-extend" class="section level3 hasAnchor" number="7.1.3">
+<h3><span class="header-section-number">7.1.3</span> Map extend<a href="creating-maps-in-r.html#map-extend" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The map uses the extend and projection of the first group, i.e. the data set that is specified in the first call to <code>tm_shape()</code>.</p>
+<p>This can be changed by explicitly specifying the master shape with <code>is.master</code>.</p>
+<div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb563-1"><a href="creating-maps-in-r.html#cb563-1" tabindex="-1"></a><span class="fu">tm_shape</span>(saxony_dem) <span class="sc">+</span> </span>
+<span id="cb563-2"><a href="creating-maps-in-r.html#cb563-2" tabindex="-1"></a>        <span class="fu">tm_raster</span>() <span class="sc">+</span> </span>
+<span id="cb563-3"><a href="creating-maps-in-r.html#cb563-3" tabindex="-1"></a>        <span class="fu">tm_shape</span>(<span class="fu">st_union</span>(saxony)) <span class="sc">+</span> </span>
+<span id="cb563-4"><a href="creating-maps-in-r.html#cb563-4" tabindex="-1"></a>        <span class="fu">tm_borders</span>(<span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="st">&quot;dashed&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb563-5"><a href="creating-maps-in-r.html#cb563-5" tabindex="-1"></a>        <span class="fu">tm_shape</span>(rivers) <span class="sc">+</span> </span>
+<span id="cb563-6"><a href="creating-maps-in-r.html#cb563-6" tabindex="-1"></a>        <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;blue&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb563-7"><a href="creating-maps-in-r.html#cb563-7" tabindex="-1"></a>        <span class="fu">tm_shape</span>(lucas, <span class="at">is.master=</span> T) <span class="sc">+</span> </span>
+<span id="cb563-8"><a href="creating-maps-in-r.html#cb563-8" tabindex="-1"></a>        <span class="fu">tm_bubbles</span>(<span class="at">col =</span> <span class="st">&quot;EC&quot;</span>, <span class="at">palette =</span> <span class="st">&quot;viridis&quot;</span>, <span class="at">size =</span> .<span class="dv">2</span>) </span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-351-1.png" width="672" /></p>
+<p>Alternatively, the projection and extend can also be set manually.</p>
+<div class="sourceCode" id="cb564"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb564-1"><a href="creating-maps-in-r.html#cb564-1" tabindex="-1"></a><span class="fu">tm_shape</span>(saxony_dem, <span class="at">projection  =</span> <span class="dv">8857</span>) <span class="sc">+</span> </span>
+<span id="cb564-2"><a href="creating-maps-in-r.html#cb564-2" tabindex="-1"></a>        <span class="fu">tm_raster</span>() <span class="sc">+</span> </span>
+<span id="cb564-3"><a href="creating-maps-in-r.html#cb564-3" tabindex="-1"></a>        <span class="fu">tm_shape</span>(rivers) <span class="sc">+</span> </span>
+<span id="cb564-4"><a href="creating-maps-in-r.html#cb564-4" tabindex="-1"></a>        <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;blue&quot;</span>) </span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-352-1.png" width="672" /></p>
+<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb565-1"><a href="creating-maps-in-r.html#cb565-1" tabindex="-1"></a><span class="fu">tm_shape</span>(saxony_dem, <span class="at">bbox =</span> <span class="st">&quot;Europe&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb565-2"><a href="creating-maps-in-r.html#cb565-2" tabindex="-1"></a>        <span class="fu">tm_raster</span>() <span class="sc">+</span> </span>
+<span id="cb565-3"><a href="creating-maps-in-r.html#cb565-3" tabindex="-1"></a>        <span class="fu">tm_shape</span>(rivers) <span class="sc">+</span> </span>
+<span id="cb565-4"><a href="creating-maps-in-r.html#cb565-4" tabindex="-1"></a>        <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;blue&quot;</span>) </span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-353-1.png" width="672" /></p>
+<div class="sourceCode" id="cb566"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb566-1"><a href="creating-maps-in-r.html#cb566-1" tabindex="-1"></a><span class="fu">tm_shape</span>(saxony_dem, <span class="at">bbox =</span> <span class="st">&quot;Bautzen&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb566-2"><a href="creating-maps-in-r.html#cb566-2" tabindex="-1"></a>        <span class="fu">tm_raster</span>() <span class="sc">+</span> </span>
+<span id="cb566-3"><a href="creating-maps-in-r.html#cb566-3" tabindex="-1"></a>        <span class="fu">tm_shape</span>(rivers) <span class="sc">+</span> </span>
+<span id="cb566-4"><a href="creating-maps-in-r.html#cb566-4" tabindex="-1"></a>        <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;blue&quot;</span>) </span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-353-2.png" width="672" /></p>
+<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb567-1"><a href="creating-maps-in-r.html#cb567-1" tabindex="-1"></a><span class="fu">tm_shape</span>(saxony_dem, <span class="at">bbox =</span> <span class="fu">c</span>(<span class="dv">13</span>, <span class="dv">14</span>, <span class="fl">50.8</span>, <span class="fl">51.3</span>)) <span class="sc">+</span> </span>
+<span id="cb567-2"><a href="creating-maps-in-r.html#cb567-2" tabindex="-1"></a>        <span class="fu">tm_raster</span>() <span class="sc">+</span> </span>
+<span id="cb567-3"><a href="creating-maps-in-r.html#cb567-3" tabindex="-1"></a>        <span class="fu">tm_shape</span>(rivers) <span class="sc">+</span> </span>
+<span id="cb567-4"><a href="creating-maps-in-r.html#cb567-4" tabindex="-1"></a>        <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;blue&quot;</span>) </span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-353-3.png" width="672" /></p>
+<div class="sourceCode" id="cb568"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb568-1"><a href="creating-maps-in-r.html#cb568-1" tabindex="-1"></a><span class="fu">tm_shape</span>(saxony_dem, <span class="at">bbox =</span> lucas) <span class="sc">+</span> </span>
+<span id="cb568-2"><a href="creating-maps-in-r.html#cb568-2" tabindex="-1"></a>        <span class="fu">tm_raster</span>() <span class="sc">+</span> </span>
+<span id="cb568-3"><a href="creating-maps-in-r.html#cb568-3" tabindex="-1"></a>        <span class="fu">tm_shape</span>(rivers) <span class="sc">+</span> </span>
+<span id="cb568-4"><a href="creating-maps-in-r.html#cb568-4" tabindex="-1"></a>        <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;blue&quot;</span>) </span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-353-4.png" width="672" /></p>
+<p>We can use place names, coordinates, or other data sets to set the map limits.</p>
+</div>
+<div id="further-map-elements" class="section level3 hasAnchor" number="7.1.4">
+<h3><span class="header-section-number">7.1.4</span> Further map elements<a href="creating-maps-in-r.html#further-map-elements" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>There are additional elements we can add to our map.
+Good maps should always have a north arrow and a scale bar.</p>
+<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb569-1"><a href="creating-maps-in-r.html#cb569-1" tabindex="-1"></a><span class="fu">tm_shape</span>(saxony_dem, <span class="at">bbox =</span> <span class="st">&quot;Saxony&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb569-2"><a href="creating-maps-in-r.html#cb569-2" tabindex="-1"></a>        <span class="fu">tm_raster</span>() <span class="sc">+</span> </span>
+<span id="cb569-3"><a href="creating-maps-in-r.html#cb569-3" tabindex="-1"></a>        <span class="fu">tm_shape</span>(rivers) <span class="sc">+</span> </span>
+<span id="cb569-4"><a href="creating-maps-in-r.html#cb569-4" tabindex="-1"></a>        <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;blue&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb569-5"><a href="creating-maps-in-r.html#cb569-5" tabindex="-1"></a>        <span class="fu">tm_compass</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">&quot;right&quot;</span>, <span class="st">&quot;top&quot;</span>)) <span class="sc">+</span> </span>
+<span id="cb569-6"><a href="creating-maps-in-r.html#cb569-6" tabindex="-1"></a>        <span class="fu">tm_scale_bar</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">&quot;right&quot;</span>, <span class="st">&quot;bottom&quot;</span>))</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-354-1.png" width="672" /></p>
+<p>Further elements are graticules and credits.</p>
+<div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb570-1"><a href="creating-maps-in-r.html#cb570-1" tabindex="-1"></a><span class="fu">tm_graticules</span>() <span class="sc">+</span> </span>
+<span id="cb570-2"><a href="creating-maps-in-r.html#cb570-2" tabindex="-1"></a><span class="fu">tm_shape</span>(saxony_dem, <span class="at">bbox =</span> <span class="st">&quot;Saxony&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb570-3"><a href="creating-maps-in-r.html#cb570-3" tabindex="-1"></a>        <span class="fu">tm_raster</span>() <span class="sc">+</span> </span>
+<span id="cb570-4"><a href="creating-maps-in-r.html#cb570-4" tabindex="-1"></a>        <span class="fu">tm_shape</span>(rivers) <span class="sc">+</span> </span>
+<span id="cb570-5"><a href="creating-maps-in-r.html#cb570-5" tabindex="-1"></a>        <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;blue&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb570-6"><a href="creating-maps-in-r.html#cb570-6" tabindex="-1"></a>        <span class="fu">tm_compass</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">&quot;right&quot;</span>, <span class="st">&quot;top&quot;</span>)) <span class="sc">+</span> </span>
+<span id="cb570-7"><a href="creating-maps-in-r.html#cb570-7" tabindex="-1"></a>        <span class="fu">tm_scale_bar</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">&quot;right&quot;</span>, <span class="st">&quot;bottom&quot;</span>)) <span class="sc">+</span> </span>
+<span id="cb570-8"><a href="creating-maps-in-r.html#cb570-8" tabindex="-1"></a>        <span class="fu">tm_credits</span>(<span class="st">&quot;Jonathan Jupke, 2023&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-355-1.png" width="672" /></p>
+</div>
+<div id="making-the-map-prettier" class="section level3 hasAnchor" number="7.1.5">
+<h3><span class="header-section-number">7.1.5</span> Making the map prettier<a href="creating-maps-in-r.html#making-the-map-prettier" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>So far we have only been concerned with putting data on our map.
+Like all plots however, maps should convey their message and be nice to look at.
+Your readers will have to spend more effort trying to understand an ugly map.
+Generally, nicer figures are not only better in getting across your message.
+They also convey a general sense of care - nice figures show that you put thought and effort into your document.</p>
+<p>The maps we have created thus far do not convey this impression.<br />
+To fix this, we need to address the background.
+There are two options: using a base map or a background color.
+The latter is easier, so I will show it first.</p>
+<div class="sourceCode" id="cb571"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb571-1"><a href="creating-maps-in-r.html#cb571-1" tabindex="-1"></a><span class="fu">tm_shape</span>(saxony_dem) <span class="sc">+</span> </span>
+<span id="cb571-2"><a href="creating-maps-in-r.html#cb571-2" tabindex="-1"></a>        <span class="fu">tm_raster</span>() <span class="sc">+</span> </span>
+<span id="cb571-3"><a href="creating-maps-in-r.html#cb571-3" tabindex="-1"></a>        <span class="fu">tm_layout</span>(<span class="at">bg.color =</span> <span class="st">&quot;lightblue&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-356-1.png" width="672" /></p>
+<p>Background colors can be an easy solution.
+They can however, also invoke false impressions.
+The above map, for example, makes it seem like Saxony is an island.</p>
+<p>Base maps are maps on which your data is drawn.
+They are usually rasters and can be downloaded from multiple sources.
+Here, we will use the <code>maptiles</code> package <span class="citation">(<a href="#ref-Giraud2022">Giraud 2022</a>)</span>.
+This package basically has just one function: <code>get_tiles()</code>.
+That function downloads a base map for you.
+We provide a spatial object (sf, sfc, bbox, SpatRaster, SpatVerctor, or SpatExtent object) to its <code>x</code> argument, the base map style we would like to the <code>provider</code> arguments (see <a href="https://rgeomatic.hypotheses.org/2032">here</a> for examples), and the level of detail to the <code>zoom</code> argument.</p>
+<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb572-1"><a href="creating-maps-in-r.html#cb572-1" tabindex="-1"></a><span class="fu">library</span>(maptiles)</span>
+<span id="cb572-2"><a href="creating-maps-in-r.html#cb572-2" tabindex="-1"></a>bm <span class="ot">&lt;-</span> <span class="fu">get_tiles</span>(<span class="at">x =</span> saxony_dem, </span>
+<span id="cb572-3"><a href="creating-maps-in-r.html#cb572-3" tabindex="-1"></a>          <span class="at">provider =</span> <span class="st">&quot;Esri.WorldImagery&quot;</span>, </span>
+<span id="cb572-4"><a href="creating-maps-in-r.html#cb572-4" tabindex="-1"></a>          <span class="at">zoom =</span> <span class="dv">8</span>,</span>
+<span id="cb572-5"><a href="creating-maps-in-r.html#cb572-5" tabindex="-1"></a>          <span class="at">crop =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb573-1"><a href="creating-maps-in-r.html#cb573-1" tabindex="-1"></a><span class="fu">tm_shape</span>(bm) <span class="sc">+</span></span>
+<span id="cb573-2"><a href="creating-maps-in-r.html#cb573-2" tabindex="-1"></a>        <span class="fu">tm_rgb</span>() <span class="sc">+</span></span>
+<span id="cb573-3"><a href="creating-maps-in-r.html#cb573-3" tabindex="-1"></a>        <span class="fu">tm_shape</span>(saxony_dem) <span class="sc">+</span></span>
+<span id="cb573-4"><a href="creating-maps-in-r.html#cb573-4" tabindex="-1"></a>        <span class="fu">tm_raster</span>() </span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-358-1.png" width="672" /></p>
+<p>Second, the legend is often covering parts of the map. We can avoid this by moving it outside.</p>
+<div class="sourceCode" id="cb574"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb574-1"><a href="creating-maps-in-r.html#cb574-1" tabindex="-1"></a><span class="fu">tm_shape</span>(bm) <span class="sc">+</span></span>
+<span id="cb574-2"><a href="creating-maps-in-r.html#cb574-2" tabindex="-1"></a>        <span class="fu">tm_rgb</span>() <span class="sc">+</span></span>
+<span id="cb574-3"><a href="creating-maps-in-r.html#cb574-3" tabindex="-1"></a>        <span class="fu">tm_shape</span>(saxony_dem) <span class="sc">+</span></span>
+<span id="cb574-4"><a href="creating-maps-in-r.html#cb574-4" tabindex="-1"></a>        <span class="fu">tm_raster</span>() <span class="sc">+</span> </span>
+<span id="cb574-5"><a href="creating-maps-in-r.html#cb574-5" tabindex="-1"></a>        <span class="fu">tm_layout</span>(<span class="at">legend.outside =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-359-1.png" width="672" /></p>
+<p>Lastly, the color scale is rather unusual for a DEM.
+Here we use nicer colors and also add all the other elements to the map.
+You can have a look at all the palettes available to <code>tmap</code> if you call <code>tmaptools::palette_explorer()</code>.</p>
+<div class="sourceCode" id="cb575"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb575-1"><a href="creating-maps-in-r.html#cb575-1" tabindex="-1"></a><span class="fu">tm_shape</span>(bm) <span class="sc">+</span></span>
+<span id="cb575-2"><a href="creating-maps-in-r.html#cb575-2" tabindex="-1"></a>        <span class="fu">tm_rgb</span>() <span class="sc">+</span></span>
+<span id="cb575-3"><a href="creating-maps-in-r.html#cb575-3" tabindex="-1"></a>        <span class="fu">tm_shape</span>(saxony_dem) <span class="sc">+</span></span>
+<span id="cb575-4"><a href="creating-maps-in-r.html#cb575-4" tabindex="-1"></a>        <span class="fu">tm_raster</span>(<span class="at">palette =</span> <span class="fu">terrain.colors</span>(<span class="at">n =</span> <span class="dv">20</span>), <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">title =</span> <span class="st">&quot;Elevation [m]&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb575-5"><a href="creating-maps-in-r.html#cb575-5" tabindex="-1"></a>        <span class="fu">tm_shape</span>(rivers) <span class="sc">+</span> </span>
+<span id="cb575-6"><a href="creating-maps-in-r.html#cb575-6" tabindex="-1"></a>        <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;lightblue&quot;</span>) <span class="sc">+</span></span>
+<span id="cb575-7"><a href="creating-maps-in-r.html#cb575-7" tabindex="-1"></a>        <span class="fu">tm_shape</span>(lucas) <span class="sc">+</span> </span>
+<span id="cb575-8"><a href="creating-maps-in-r.html#cb575-8" tabindex="-1"></a>        <span class="fu">tm_dots</span>(<span class="at">size =</span> .<span class="dv">3</span>, <span class="at">col =</span> <span class="st">&quot;EC&quot;</span>, <span class="at">palette =</span> <span class="st">&quot;inferno&quot;</span>, <span class="at">title =</span> <span class="st">&quot;Electrical Conductivity [μS]&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb575-9"><a href="creating-maps-in-r.html#cb575-9" tabindex="-1"></a>        <span class="fu">tm_compass</span>() <span class="sc">+</span> </span>
+<span id="cb575-10"><a href="creating-maps-in-r.html#cb575-10" tabindex="-1"></a>        <span class="fu">tm_scale_bar</span>() <span class="sc">+</span> </span>
+<span id="cb575-11"><a href="creating-maps-in-r.html#cb575-11" tabindex="-1"></a>        <span class="fu">tm_layout</span>(<span class="at">legend.outside =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb575-12"><a href="creating-maps-in-r.html#cb575-12" tabindex="-1"></a>                  <span class="at">main.title =</span> <span class="st">&quot;Electrical Conductivity in Saxony&quot;</span></span>
+<span id="cb575-13"><a href="creating-maps-in-r.html#cb575-13" tabindex="-1"></a>                  ) </span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-360-1.png" width="672" /></p>
+<p>It can also be nice to create maps with an inset, i.e. maps that include a smaller map that shows the larger context of the map. This is possible with <code>tmap</code> but extends beyond the scope of this chapter.
+See <a href="https://ecodiv.earth/post/creating-a-map-with-inset-using-tmap/">here</a> for a tutorial.</p>
+</div>
+<div id="save-to-maps-to-file" class="section level3 hasAnchor" number="7.1.6">
+<h3><span class="header-section-number">7.1.6</span> Save to maps to file<a href="creating-maps-in-r.html#save-to-maps-to-file" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>You can save tmap objects to file with the <code>tmap_save()</code> function.</p>
+</div>
+</div>
+<div id="rastervis" class="section level2 hasAnchor" number="7.2">
+<h2><span class="header-section-number">7.2</span> rasterVis<a href="creating-maps-in-r.html#rastervis" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Here, we will explore the basic functionality of the <code>rasterVis</code> package.
+As the name already suggests, the purpose of this package is to display raster data.
+While the common R packages to work with rasters, like <code>raster</code> or <code>terra</code> (see chapter 6)), already provide basic plotting functionality, <code>rasterVis</code> extends this substantially.
+You can find a more extensive documentation for the package <a href="https://oscarperpinan.github.io/rastervis/">here</a>.</p>
+<div class="sourceCode" id="cb576"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb576-1"><a href="creating-maps-in-r.html#cb576-1" tabindex="-1"></a><span class="fu">library</span>(rasterVis)</span>
+<span id="cb576-2"><a href="creating-maps-in-r.html#cb576-2" tabindex="-1"></a><span class="fu">library</span>(terra)</span></code></pre></div>
+<p>First we need to load some rasters.
+We will use the <code>geodata</code> package (see next chapter) to download a digital elevation model of Austria.</p>
+<div class="sourceCode" id="cb577"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb577-1"><a href="creating-maps-in-r.html#cb577-1" tabindex="-1"></a>dem_austria <span class="ot">&lt;-</span> geodata<span class="sc">::</span><span class="fu">elevation_30s</span>(<span class="at">country =</span> <span class="st">&quot;Austria&quot;</span>, <span class="at">path =</span> <span class="st">&quot;data/&quot;</span>)</span></code></pre></div>
+<p>In addition, I want to show you how changes over time can be displayed.
+So we will also need spatio-temporal data.
+Below, we download and load solar irradiance data from the Satellite Application Facility on Climate Monitoring (<a href="https://www.cmsaf.eu/">CMSAF</a>).
+There are a series of packages that you could also use specifically to access these data, for example the <a href="https://cran.r-project.org/web/packages/cmsaf/index.html">cmsaf</a> package.</p>
+<div class="sourceCode" id="cb578"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb578-1"><a href="creating-maps-in-r.html#cb578-1" tabindex="-1"></a><span class="fu">download.file</span>(<span class="st">&#39;https://raw.github.com/oscarperpinan/spacetime-vis/master/data/SISmm2008_CMSAF.zip&#39;</span>,</span>
+<span id="cb578-2"><a href="creating-maps-in-r.html#cb578-2" tabindex="-1"></a>              <span class="st">&#39;SISmm2008_CMSAF.zip&#39;</span>)</span>
+<span id="cb578-3"><a href="creating-maps-in-r.html#cb578-3" tabindex="-1"></a><span class="fu">unzip</span>(<span class="st">&#39;SISmm2008_CMSAF.zip&#39;</span>)</span>
+<span id="cb578-4"><a href="creating-maps-in-r.html#cb578-4" tabindex="-1"></a>listFich <span class="ot">&lt;-</span> <span class="fu">dir</span>(<span class="at">pattern=</span><span class="st">&#39;</span><span class="sc">\\</span><span class="st">.nc&#39;</span>)</span>
+<span id="cb578-5"><a href="creating-maps-in-r.html#cb578-5" tabindex="-1"></a>stackSIS <span class="ot">&lt;-</span> <span class="fu">stack</span>(listFich)</span>
+<span id="cb578-6"><a href="creating-maps-in-r.html#cb578-6" tabindex="-1"></a>stackSIS <span class="ot">&lt;-</span> stackSIS <span class="sc">*</span> <span class="dv">24</span> <span class="do">##from irradiance (W/m2) to irradiation Wh/m2</span></span>
+<span id="cb578-7"><a href="creating-maps-in-r.html#cb578-7" tabindex="-1"></a>idx <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">as.Date</span>(<span class="st">&#39;2008-01-15&#39;</span>), <span class="fu">as.Date</span>(<span class="st">&#39;2008-12-15&#39;</span>), <span class="st">&#39;month&#39;</span>)</span>
+<span id="cb578-8"><a href="creating-maps-in-r.html#cb578-8" tabindex="-1"></a>SISmm <span class="ot">&lt;-</span> <span class="fu">setZ</span>(stackSIS, idx)</span>
+<span id="cb578-9"><a href="creating-maps-in-r.html#cb578-9" tabindex="-1"></a><span class="fu">names</span>(SISmm) <span class="ot">&lt;-</span> month.abb</span></code></pre></div>
+<pre><code>## Lade nötigen Namensraum: ncdf4</code></pre>
+<p>Ok, with that we can start plotting the data.
+The basic plotting function in <code>rasterVis</code> is called <code>levelplot()</code>. If we use that with our Austrian DEM and the irradiance data we get these plots:</p>
+<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb580-1"><a href="creating-maps-in-r.html#cb580-1" tabindex="-1"></a><span class="fu">levelplot</span>(dem_austria)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-367-1.png" width="672" /></p>
+<div class="sourceCode" id="cb581"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb581-1"><a href="creating-maps-in-r.html#cb581-1" tabindex="-1"></a><span class="fu">levelplot</span>(SISmm)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-368-1.png" width="672" /></p>
+<p>As you can see, the second plot does not have plots in the margins like the first one.
+<code>levelplot()</code> only creates marginal plots for rasters with a single layer.
+If we select one layer, the solar irradiance plots also include these marginal plots.</p>
+<div class="sourceCode" id="cb582"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb582-1"><a href="creating-maps-in-r.html#cb582-1" tabindex="-1"></a><span class="fu">levelplot</span>(SISmm, <span class="at">layers =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-369-1.png" width="672" /></p>
+<p>By default these plots show the means of their respective column or row but we can change this to any function we like.
+In the plot below, for example, we see the minimal altitude not the mean altitude in the margins.</p>
+<div class="sourceCode" id="cb583"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb583-1"><a href="creating-maps-in-r.html#cb583-1" tabindex="-1"></a><span class="fu">levelplot</span>(dem_austria,<span class="at">margin =</span> <span class="fu">list</span>(<span class="at">FUN =</span> <span class="st">&#39;min&#39;</span>))</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-370-1.png" width="672" /></p>
+<p>We can also alter the raster values directly in the call to <code>levelplot()</code>.
+For example, we can display the logarithm (with base e) by adding the argument: <code>zscaleLog="e"</code>. In this plot, we also add contour lines.</p>
+<div class="sourceCode" id="cb584"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb584-1"><a href="creating-maps-in-r.html#cb584-1" tabindex="-1"></a><span class="fu">levelplot</span>(dem_austria, <span class="at">zscaleLog=</span><span class="st">&quot;e&quot;</span>, <span class="at">contour=</span><span class="cn">TRUE</span>, <span class="at">margin=</span><span class="fu">list</span>(<span class="at">FUN =</span> <span class="st">&quot;min&quot;</span>))</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-371-1.png" width="672" /></p>
+<p>You might have noticed that sofar all plots have used the same colors (magma palette from the <a href="https://github.com/sjmgarnier/viridisLite">viridisLite package</a>).
+We can easily change this to other palettes:</p>
+<div class="sourceCode" id="cb585"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb585-1"><a href="creating-maps-in-r.html#cb585-1" tabindex="-1"></a><span class="fu">levelplot</span>(dem_austria, <span class="at">par.settings =</span> RdBuTheme)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-372-1.png" width="672" /></p>
+<p>Alternative palettes are; viridisTheme, infernoTheme, plasmaTheme, YlOrRdTheme, BuRdTheme, GrTheme and BTCTheme.</p>
+<div id="beyond-the-usual" class="section level3 hasAnchor" number="7.2.1">
+<h3><span class="header-section-number">7.2.1</span> Beyond the usual<a href="creating-maps-in-r.html#beyond-the-usual" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>All of this is very nice but merely a small extension of what <code>raster</code> or <code>terra</code> can already do.
+However, <code>rasterVis</code> has some more tricks up its sleeve.
+Like the <code>xyplot()</code> you can see below.</p>
+<div class="sourceCode" id="cb586"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb586-1"><a href="creating-maps-in-r.html#cb586-1" tabindex="-1"></a><span class="fu">xyplot</span>(Jan<span class="sc">+</span>Feb<span class="sc">~</span>Jul<span class="sc">|</span><span class="fu">cut</span>(x, <span class="dv">2</span>), <span class="at">data =</span> SISmm, <span class="at">auto.key =</span> <span class="fu">list</span>(<span class="at">space=</span><span class="st">&#39;right&#39;</span>))</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-373-1.png" width="672" />
+In the function call there are three building blocks: 1. <code>Jan+Feb~Jul|cut(x, 2)</code>; 2. <code>data = SISmm</code>; 3. <code>auto.key = list(space='right')</code>.
+The latter two require less explanation so we will start with them.
+The data argument receives the raster you want to plot.
+The auto.key, at least here, is only there to receive the position of the legend.
+The first argument is written in R’s formula notation.
+You probably know it from fitting models in R, e.g. <code>lm(x ~ y + z)</code>.
+The response (Jan+Feb) is displayed on the Y-axis and the predictor (Jul) on the X-axis. Each dot in the scatter plot is one cell value of <code>SISmm</code>. <code>|cut(x,2)</code> indicates that we want to split the X-axis into two distinct plots. The values on top of the two plots indicate the X-range for each of them.</p>
+<p>One drawback of this plot is that many points are on top of each other. A density plot would be helpful for that and indeed <code>rasterVis</code> provides hexbinplots just for that. Note that we have to drop the second response variable in the hexbinplot.</p>
+<div class="sourceCode" id="cb587"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb587-1"><a href="creating-maps-in-r.html#cb587-1" tabindex="-1"></a><span class="fu">hexbinplot</span>(Jan<span class="sc">~</span>Jul<span class="sc">|</span><span class="fu">cut</span>(x, <span class="dv">2</span>), <span class="at">data =</span> SISmm)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-374-1.png" width="672" /></p>
+<p>Lastly, <code>rasterVis</code> makes it easy to make four common exploratory plots for the raster cell values: 1. scatter plot matrices (splom), 2. histograms, 3. densityplots and box and whiskers plots.</p>
+<div class="sourceCode" id="cb588"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb588-1"><a href="creating-maps-in-r.html#cb588-1" tabindex="-1"></a><span class="fu">splom</span>(SISmm)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-375-1.png" width="672" /></p>
+<div class="sourceCode" id="cb589"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb589-1"><a href="creating-maps-in-r.html#cb589-1" tabindex="-1"></a><span class="fu">histogram</span>(SISmm)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-376-1.png" width="672" /></p>
+<div class="sourceCode" id="cb590"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb590-1"><a href="creating-maps-in-r.html#cb590-1" tabindex="-1"></a><span class="fu">densityplot</span>(SISmm)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-377-1.png" width="672" /></p>
+<div class="sourceCode" id="cb591"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb591-1"><a href="creating-maps-in-r.html#cb591-1" tabindex="-1"></a><span class="fu">bwplot</span>(SISmm)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-378-1.png" width="672" /></p>
+</div>
+</div>
+<div id="cartographer" class="section level2 hasAnchor" number="7.3">
+<h2><span class="header-section-number">7.3</span> Cartographer<a href="creating-maps-in-r.html#cartographer" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This section will be added soon</p>
+</div>
+<div id="rayshader" class="section level2 hasAnchor" number="7.4">
+<h2><span class="header-section-number">7.4</span> Rayshader<a href="creating-maps-in-r.html#rayshader" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In this entry we will go through the basics of <strong>rayshader</strong>.
+Rayshader is one of those packages that you see again and again when you follow people from the R-spatial community on twitter.
+Especially the package’s creator Tyler Morgan-Wall (see <a href="https://www.tylermw.com/">here</a> for his website and <a href="https://twitter.com/tylermorganwall">here</a> for his Twitter) posts videos and images of things he did with it on an almost daily basis.
+And he has all the reasons to do so.
+I don’t know any other package that enables you to create such stunning 3D graphics with R.
+If you have never seen this package before I am quite sure you are going to be surprised by what is possible.</p>
+<div id="setup" class="section level3 hasAnchor" number="7.4.1">
+<h3><span class="header-section-number">7.4.1</span> Setup<a href="creating-maps-in-r.html#setup" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>First things first, we need to install and load the <strong>rayshader</strong> package, as well as some other packages we will need along the way.</p>
+<div class="sourceCode" id="cb592"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb592-1"><a href="creating-maps-in-r.html#cb592-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;rayshader&quot;</span>)</span>
+<span id="cb592-2"><a href="creating-maps-in-r.html#cb592-2" tabindex="-1"></a><span class="fu">library</span>(rayshader)</span>
+<span id="cb592-3"><a href="creating-maps-in-r.html#cb592-3" tabindex="-1"></a><span class="fu">library</span>(raster)</span>
+<span id="cb592-4"><a href="creating-maps-in-r.html#cb592-4" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+<p>We will use an example raster file from Tyler Morgan-Walls website.
+We can download the files with the following code:</p>
+<div class="sourceCode" id="cb593"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb593-1"><a href="creating-maps-in-r.html#cb593-1" tabindex="-1"></a>loadzip <span class="ot">=</span> <span class="fu">tempfile</span>()</span>
+<span id="cb593-2"><a href="creating-maps-in-r.html#cb593-2" tabindex="-1"></a><span class="fu">download.file</span>(<span class="st">&quot;https://tylermw.com/data/dem_01.tif.zip&quot;</span>, loadzip)</span>
+<span id="cb593-3"><a href="creating-maps-in-r.html#cb593-3" tabindex="-1"></a>localtif <span class="ot">=</span> <span class="fu">raster</span>(<span class="fu">unzip</span>(loadzip, <span class="st">&quot;dem_01.tif&quot;</span>))</span>
+<span id="cb593-4"><a href="creating-maps-in-r.html#cb593-4" tabindex="-1"></a><span class="fu">unlink</span>(loadzip)</span></code></pre></div>
+<p>Before we do anything fancy let’s have look at our new raster.
+It is a DEM with 505 rows and 550 columns and each cell has size of 33.3m * 33.3m.
+There are strong differences in height here, from 0 to 971m.</p>
+<div class="sourceCode" id="cb594"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb594-1"><a href="creating-maps-in-r.html#cb594-1" tabindex="-1"></a>localtif</span></code></pre></div>
+<pre><code>## class      : RasterLayer 
+## dimensions : 505, 550, 277750  (nrow, ncol, ncell)
+## resolution : 33.36518, 33.36518  (x, y)
+## extent     : 505010.3, 523361.2, 5258284, 5275133  (xmin, xmax, ymin, ymax)
+## crs        : +proj=utm +zone=55 +south +ellps=GRS80 +units=m +no_defs 
+## source     : dem_01.tif 
+## names      : dem_01 
+## values     : 0, 971  (min, max)</code></pre>
+<div class="sourceCode" id="cb596"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb596-1"><a href="creating-maps-in-r.html#cb596-1" tabindex="-1"></a><span class="fu">plot</span>(localtif)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-383-1.png" width="672" /></p>
+<p>To work with *rayshader** we will need to transform this to a matrix with the <code>raster_to_matrix()</code> function.
+Then we can start with add a specific <span style="color:CornflowerBlue">texture</span> as well as shadows.</p>
+<div class="sourceCode" id="cb597"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb597-1"><a href="creating-maps-in-r.html#cb597-1" tabindex="-1"></a>elmat <span class="ot">=</span> <span class="fu">raster_to_matrix</span>(localtif)</span></code></pre></div>
+<pre><code>## [1] &quot;Dimensions of matrix are: 505x550&quot;</code></pre>
+<div class="sourceCode" id="cb599"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb599-1"><a href="creating-maps-in-r.html#cb599-1" tabindex="-1"></a>elmat <span class="sc">%&gt;%</span></span>
+<span id="cb599-2"><a href="creating-maps-in-r.html#cb599-2" tabindex="-1"></a>  <span class="fu">sphere_shade</span>(<span class="at">texture =</span> <span class="st">&quot;desert&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb599-3"><a href="creating-maps-in-r.html#cb599-3" tabindex="-1"></a>  <span class="fu">plot_map</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-384-1.png" width="672" />
+The shadows are computed for a default sun angle, but we can change that angle if we like.</p>
+<div class="sourceCode" id="cb600"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb600-1"><a href="creating-maps-in-r.html#cb600-1" tabindex="-1"></a>elmat <span class="sc">%&gt;%</span></span>
+<span id="cb600-2"><a href="creating-maps-in-r.html#cb600-2" tabindex="-1"></a>  <span class="fu">sphere_shade</span>(<span class="at">sunangle =</span> <span class="dv">45</span>, <span class="at">texture =</span> <span class="st">&quot;desert&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb600-3"><a href="creating-maps-in-r.html#cb600-3" tabindex="-1"></a>  <span class="fu">plot_map</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-385-1.png" width="672" /></p>
+<p>Now you might have noticed that the areas in the valley look suspiciously flat.
+That’s because they are water surfaces.
+With the two functions <code>detect_water()</code> and <code>add_water()</code> we can add water to our map.
+<code>detect_water()</code> returns a binary matrix with the same dimensions as <code>elmat</code>.
+A one indicates that the corresponding cell in <code>elmat</code> contains water and a zero that the cell does not.
+With the <span style="color:CornflowerBlue">cutoff</span> argument you can specify how high the water should be, i.e. which cells are classified as carrying water.
+High values mean lower water level.</p>
+<div class="sourceCode" id="cb601"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb601-1"><a href="creating-maps-in-r.html#cb601-1" tabindex="-1"></a>elmat <span class="sc">%&gt;%</span></span>
+<span id="cb601-2"><a href="creating-maps-in-r.html#cb601-2" tabindex="-1"></a>  <span class="fu">sphere_shade</span>(<span class="at">texture =</span> <span class="st">&quot;desert&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb601-3"><a href="creating-maps-in-r.html#cb601-3" tabindex="-1"></a>  <span class="fu">add_water</span>(<span class="fu">detect_water</span>(elmat, <span class="at">cutoff =</span> <span class="fl">0.9</span>), <span class="at">color =</span> <span class="st">&quot;desert&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb601-4"><a href="creating-maps-in-r.html#cb601-4" tabindex="-1"></a>  <span class="fu">plot_map</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-386-1.png" width="672" /></p>
+<p>Now we don’t have any shadows on the water yet.
+But that can be done with <code>add_shadow()</code>.</p>
+<div class="sourceCode" id="cb602"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb602-1"><a href="creating-maps-in-r.html#cb602-1" tabindex="-1"></a>elmat <span class="sc">%&gt;%</span></span>
+<span id="cb602-2"><a href="creating-maps-in-r.html#cb602-2" tabindex="-1"></a>  <span class="fu">sphere_shade</span>(<span class="at">texture =</span> <span class="st">&quot;desert&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb602-3"><a href="creating-maps-in-r.html#cb602-3" tabindex="-1"></a>  <span class="fu">add_water</span>(<span class="fu">detect_water</span>(elmat), <span class="at">color =</span> <span class="st">&quot;desert&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb602-4"><a href="creating-maps-in-r.html#cb602-4" tabindex="-1"></a>  <span class="fu">add_shadow</span>(<span class="fu">ray_shade</span>(elmat), <span class="fl">0.5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb602-5"><a href="creating-maps-in-r.html#cb602-5" tabindex="-1"></a>  <span class="fu">plot_map</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-387-1.png" width="672" /></p>
+<p>In addition to rayshade we can also ad ambient shade, to make it look even better.</p>
+<div class="sourceCode" id="cb603"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb603-1"><a href="creating-maps-in-r.html#cb603-1" tabindex="-1"></a>elmat <span class="sc">%&gt;%</span></span>
+<span id="cb603-2"><a href="creating-maps-in-r.html#cb603-2" tabindex="-1"></a>  <span class="fu">sphere_shade</span>(<span class="at">texture =</span> <span class="st">&quot;desert&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb603-3"><a href="creating-maps-in-r.html#cb603-3" tabindex="-1"></a>  <span class="fu">add_water</span>(<span class="fu">detect_water</span>(elmat), <span class="at">color =</span> <span class="st">&quot;desert&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb603-4"><a href="creating-maps-in-r.html#cb603-4" tabindex="-1"></a>  <span class="fu">add_shadow</span>(<span class="fu">ray_shade</span>(elmat), <span class="fl">0.5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb603-5"><a href="creating-maps-in-r.html#cb603-5" tabindex="-1"></a>  <span class="fu">add_shadow</span>(<span class="fu">ambient_shade</span>(elmat), <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb603-6"><a href="creating-maps-in-r.html#cb603-6" tabindex="-1"></a>  <span class="fu">plot_map</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-388-1.png" width="672" /></p>
+<p>All this was only the preparation though for the 3D capabilities of <strong>rayshader</strong>.</p>
+<div class="sourceCode" id="cb604"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb604-1"><a href="creating-maps-in-r.html#cb604-1" tabindex="-1"></a>elmat <span class="sc">%&gt;%</span></span>
+<span id="cb604-2"><a href="creating-maps-in-r.html#cb604-2" tabindex="-1"></a>  <span class="fu">sphere_shade</span>(<span class="at">texture =</span> <span class="st">&quot;desert&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb604-3"><a href="creating-maps-in-r.html#cb604-3" tabindex="-1"></a>  <span class="fu">add_water</span>(<span class="fu">detect_water</span>(elmat), <span class="at">color =</span> <span class="st">&quot;desert&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb604-4"><a href="creating-maps-in-r.html#cb604-4" tabindex="-1"></a>  <span class="fu">add_shadow</span>(<span class="fu">ray_shade</span>(elmat, <span class="at">zscale =</span> <span class="dv">3</span>), <span class="fl">0.5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb604-5"><a href="creating-maps-in-r.html#cb604-5" tabindex="-1"></a>  <span class="fu">add_shadow</span>(<span class="fu">ambient_shade</span>(elmat), <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb604-6"><a href="creating-maps-in-r.html#cb604-6" tabindex="-1"></a>  <span class="fu">plot_3d</span>(elmat, <span class="at">zscale =</span> <span class="dv">10</span>, <span class="at">fov =</span> <span class="dv">0</span>, <span class="at">theta =</span> <span class="dv">135</span>, <span class="at">zoom =</span> <span class="fl">0.75</span>, <span class="at">phi =</span> <span class="dv">45</span>, <span class="at">windowsize =</span> <span class="fu">c</span>(<span class="dv">1000</span>, <span class="dv">800</span>))</span>
+<span id="cb604-7"><a href="creating-maps-in-r.html#cb604-7" tabindex="-1"></a><span class="fu">Sys.sleep</span>(<span class="fl">0.2</span>)</span>
+<span id="cb604-8"><a href="creating-maps-in-r.html#cb604-8" tabindex="-1"></a><span class="fu">render_snapshot</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-389-1.png" width="672" /></p>
+<p>This package can do much more than we discussed here or than is really useful for scientific purposes.
+See <a href="https://www.rayshader.com/">here</a> for more extensive coverage.</p>
+
+</div>
+</div>
+</div>
+<h3> References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-Giraud2022" class="csl-entry">
+Giraud, Timothée. 2022. <em>Maptiles: Download and Display Map Tiles</em>. <a href="https://CRAN.R-project.org/package=maptiles">https://CRAN.R-project.org/package=maptiles</a>.
+</div>
+<div id="ref-Hijmans2022b" class="csl-entry">
+Hijmans, Robert J., Aniruddha Ghosh, and Alex Mandel. 2022. <em>Geodata: Download Geographic Data</em>. <a href="https://CRAN.R-project.org/package=geodata">https://CRAN.R-project.org/package=geodata</a>.
+</div>
+<div id="ref-Tennekes2018" class="csl-entry">
+Tennekes, Martijn. 2018. <span>“<span class="nocase">tmap</span>: Thematic Maps in <span>R</span>.”</span> <em>Journal of Statistical Software</em> 84 (6): 1–39. <a href="https://doi.org/10.18637/jss.v084.i06">https://doi.org/10.18637/jss.v084.i06</a>.
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="graph-analysis.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="where-do-i-get-data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/07-Maps.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+% Encoding: UTF-8
+
+@Article{Hui2016,
+  author        = {Hui, Francis K.C.},
+  journal       = {Methods in Ecology and Evolution},
+  title         = {{BORAL– Bayesian Ordination and Regression Analysis of Multivariate Abundance Data in R}},
+  year          = {2016},
+  issn          = {2041210X},
+  number        = {6},
+  pages         = {744--750},
+  volume        = {7},
+  abstract      = {Model-based methods have emerged as a powerful approach for analysing multivariate abundance data in community ecology. Key applications include model-based ordination, modelling the various sources of correlations across species, and making inferences while accounting for these between species correlations. boral (version 0.9.1, licence GPL-2) is an r package available on cran for model-based analysis of multivariate abundance data, with estimation performed using Bayesian Markov chain Monte Carlo methods. A key feature of the boral package is the ability to incorporate latent variables as a parsimonious method of modelling between species correlation. Pure latent variable models offer a model-based approach to unconstrained ordination, for visualizing sites and the indicator species characterizing them on a low-dimensional plot. Correlated response models consist of fitting generalized linear models to each species, while including latent variables to account for residual correlation between species, for example, due to unmeasured covariates.},
+  doi           = {10.1111/2041-210X.12514},
+  file          = {:C$\backslash$:/Users/jonat/Documents/10{\_}Paper/Hui - 2016 - BORAL– Bayesian Ordination and Regression Analysis of Multivariate Abundance Data in R.pdf:pdf},
+  keywords      = {Bayesian inference,MCMC,bayesian statistics,boral,boral R package,community composition,generalized linear models,hierarchical models,latent variable,latent variable model,ordination,species interaction,spider data set},
+  mendeley-tags = {MCMC,bayesian statistics,boral,boral R package,latent variable,ordination,spider data set},
+}
+
+@Article{Hui2015a,
+  author        = {Hui, Francis K.C. and Taskinen, Sara and Pledger, Shirley and Foster, Scott D. and Warton, David I.},
+  journal       = {Methods in Ecology and Evolution},
+  title         = {{Model-based approaches to unconstrained ordination}},
+  year          = {2015},
+  issn          = {2041210X},
+  number        = {4},
+  pages         = {399--411},
+  volume        = {6},
+  abstract      = {Unconstrained ordination is commonly used in ecology to visualize multivariate data, in particular, to visualize the main trends between different sites in terms of their species composition or relative abundance. Methods of unconstrained ordination currently used, such as non-metric multidimensional scaling, are algorithm-based techniques developed and implemented without directly accommodating the statistical properties of the data at hand. Failure to account for these key data properties can lead to misleading results. A model-based approach to unconstrained ordination can address this issue, and in this study, two types of models for ordination are proposed based on finite mixture models and latent variable models. Each method is capable of handling different data types and different forms of species response to latent gradients. Further strengths of the models are demonstrated via example and simulation. Advantages of model-based approaches to ordination include the following: residual analysis tools for checking assumptions to ensure the fitted model is appropriate for the data; model selection tools to choose the most appropriate model for ordination; methods for formal statistical inference to draw conclusions from the ordination; and improved efficiency, that is model-based ordination better recovers true relationships between sites, when used appropriately.},
+  annote        = {New approaches to unconstrained ordination - extension to mixture model - latent variable model ---------------------- - use Dunn-Smyth Residuals - use Procrustes Error to compare ordinations},
+  doi           = {10.1111/2041-210X.12236},
+  file          = {:C$\backslash$:/Users/jonat/Documents/10{\_}Paper/Hui et al. - 2015 - Model-based approaches to unconstrained ordination.pdf:pdf},
+  isbn          = {2041210X},
+  keywords      = {COMPAS,CommEcol R package,Correspondence analysis,Latent variable model,Mixture model,Multivariate analysis,Non-metric multidimensional scaling,dunn-smyth residuals,latent variable,mean-variance relationship,ordination},
+  mendeley-tags = {COMPAS,CommEcol R package,dunn-smyth residuals,latent variable,mean-variance relationship,ordination},
+  pmid          = {26519235},
+}
+
+@Book{ovaskainen2020joint,
+  author    = {Ovaskainen, Otso and Abrego, Nerea},
+  publisher = {Cambridge University Press},
+  title     = {Joint Species Distribution Modelling: With Applications in R},
+  year      = {2020},
+}
+
+@Article{Hoegh2020,
+  author        = {Hoegh, Andrew and Roberts, David W.},
+  journal       = {Ecology and Evolution},
+  title         = {{Evaluating and presenting uncertainty in model-based unconstrained ordination}},
+  year          = {2020},
+  issn          = {20457758},
+  number        = {1},
+  pages         = {59--69},
+  volume        = {10},
+  abstract      = {Variability in ecological community composition is often analyzed by recording the presence or abundance of taxa in sample units, calculating a symmetric matrix of pairwise distances or dissimilarities among sample units and then mapping the resulting matrix to a low-dimensional representation through methods collectively called ordination. Unconstrained ordination only uses taxon composition data, without any environmental or experimental covariates, to infer latent compositional gradients associated with the sampling units. Commonly, such distance-based methods have been used for ordination, but recently there has been a shift toward model-based approaches. Model-based unconstrained ordinations are commonly formulated using a Bayesian latent factor model that permits uncertainty assessment for parameters, including the latent factors that correspond to gradients in community composition. While model-based methods have the additional benefit of addressing uncertainty in the estimated gradients, typically the current practice is to report point estimates without summarizing uncertainty. To demonstrate the uncertainty present in model-based unconstrained ordination, the well-known spider and dune data sets were analyzed and shown to have large uncertainty in the ordination projections. Hence to understand the factors that contribute to the uncertainty, simulation studies were conducted to assess the impact of additional sampling units or species to help inform future ordination studies that seek to minimize variability in the latent factors. Accurate reporting of uncertainty is an important part of transparency in the scientific process; thus, a model-based approach that accounts for uncertainty is valuable. An R package, UncertainOrd, contains visualization tools that accurately represent estimates of the gradients in community composition in the presence of uncertainty.},
+  doi           = {10.1002/ece3.5752},
+  file          = {:C$\backslash$:/Users/jonat/Documents/10{\_}Paper/Hoegh, Roberts - 2020 - Evaluating and presenting uncertainty in model-based unconstrained ordination.pdf:pdf},
+  keywords      = {Bayesian estimation,R package,dune data set,latent factor models,model-based ordination,multivariate species models,ordination,spider data set,uncertainty,unconstrained ordination},
+  mendeley-tags = {R package,dune data set,model-based ordination,ordination,spider data set,uncertainty,unconstrained ordination},
+}
+
+@Comment{jabref-meta: databaseType:bibtex;}

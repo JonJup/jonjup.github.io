@@ -1,0 +1,36 @@
+% Encoding: UTF-8
+
+@Manual{Cui2020,
+  title  = {DataExplorer: Automate Data Exploration and Treatment},
+  author = {Boxuan Cui},
+  note   = {R package version 0.8.2},
+  year   = {2020},
+  url    = {https://CRAN.R-project.org/package=DataExplorer},
+}
+
+@Manual{Seibelt2017,
+  title  = {xray: X Ray Vision on your Datasets},
+  author = {Pablo Seibelt},
+  note   = {R package version 0.2},
+  year   = {2017},
+  url    = {https://CRAN.R-project.org/package=xray},
+}
+
+@Article{wood2019benthic,
+  author    = {Wood, Rebecca J and Mitrovic, Simon M and Lim, Richard P and Warne, Michael St J and Dunlop, Jason and Kefford, Ben J},
+  journal   = {Ecological Indicators},
+  title     = {Benthic diatoms as indicators of herbicide toxicity in rivers--A new SPEcies At Risk (SPEARherbicides) index},
+  year      = {2019},
+  pages     = {203--213},
+  volume    = {99},
+  publisher = {Elsevier},
+}
+
+@Book{smol2010diatoms,
+  author    = {Smol, John P and Stoermer, Eugene F},
+  publisher = {Cambridge University Press},
+  title     = {The diatoms: applications for the environmental and earth sciences},
+  year      = {2010},
+}
+
+@Comment{jabref-meta: databaseType:bibtex;}

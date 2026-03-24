@@ -1,0 +1,298 @@
+---
+title: Analyzing the antTrait data with BORAL
+author: Jonathan Jupke
+date: '2020-12-31'
+slug: analyzing-the-anttrait-data-with-boral
+categories: []
+tags:
+  - MOD3
+  - mvabund
+  - R
+  - boral
+bibliography: ref.bib
+comments: no
+images: ~
+---
+
+<style>
+body {
+text-align: justify}
+</style>
+
+In this post we will, analyze the antTraits data with generalized linear latent variable models fit with the <span style="color:CornflowerBlue">BORAL</span> R package [@Hui2016]. Elsewhere on the blog you can find an analysis of the same data using [mvabund](https://jonjup.netlify.app/post/2020-12-08-analyzing-the-anttraits-data-with-mvabund/analyzing-the-anttraits-data-with-mvabund/),  [gllvm](https://jonjup.netlify.app/post/2020-12-31-analyzing-the-anttraits-data-with-gllvm/analyzing-the-anttraits-data-with-gllvm/) and [CAO/CQO](https://jonjup.netlify.app/post/2020-12-31-analyzing-the-anttraits-data-with-cqo-and-cao/analyzing-the-anttraits-data-with-cqo-and-cao/). 
+
+First of, we will setup the analysis by loading the required libraries. 
+If you haven't already done so, you will need to install the <span style="color:CornflowerBlue">pacman</span> R package before running this code.
+
+```{r}
+pacman::p_load(boral,
+               corrplot,
+               dplyr,
+               ggplot2,
+               mvabund,
+               readxl,
+               rjags,
+               UncertainOrd)
+```
+
+```{r echo = FALSE}
+library(kableExtra)
+```
+
+
+```{r echo=F}
+dir = "../../../../../01_Uni/01_Lehre/05_MOD3-Lecture/003_processed_data/boral/antTraits/"
+
+fit_uc_po = readRDS(file.path(dir, "boral_unconstrained_poisson.RDS"))
+fit_uc_nb = readRDS(file.path(dir,"boral_unconstrained_negbinom.RDS"))
+fit_co_nb = readRDS(file.path(dir,"boral_constrained_negbinom.RDS"))
+fit_co_nb_tr = readRDS(file.path(dir,"boral_constrained_negbinom_trait.RDS"))
+```
+
+The antTraits data set we will analyze here is included <span style="color:CornflowerBlue">mvabund</span> and <span style="color:CornflowerBlue">gllvm</span> so we can load it using the `data()` function.
+
+```{r}
+data(antTraits)
+
+Y <- antTraits$abund
+# scale environmental variables 
+X <- scale(antTraits$env)
+ 
+TR = antTraits$traits
+```
+
+First, we fit the one of simplest model conceivable in <span style="color:CornflowerBlue">BORAL</span>.
+It is fit with count data so we use a Poisson distribution. 
+From other analyses, using <span style="color:CornflowerBlue">mvabund</span> and  <span style="color:CornflowerBlue">gllvm</span>, we know that negative binomial distribution is likely better suited for these data. 
+Nonetheless, we will start out with a Poisson distribution to see if we find a fan-shaped pattern in the residuals. 
+The model is unconstrained so we do not need the environmental data (<span style="color:CornflowerBlue">X</span>) or the traits (<span style="color:CornflowerBlue">TR</span>) yet. 
+Further, we specify the number of latent variables (2) using the <span style="color:CornflowerBlue">num.lv</span> option in the <span style="color:CornflowerBlue">lv.control</span> argument. 
+The row effect (<span style="color:CornflowerBlue">row.eff</span>) accounts for differences in total site abundance [@Hui2015a]. 
+Another possibility is to fit a model with a random row effect drawn from a normal distribution with mean zero and unknown standard deviation. 
+As n is rather small in this study, we stick with the fixed row effects. 
+Lastly, we set <span style="color:CornflowerBlue">save.model</span> to TRUE. 
+This will enable us to add uncertainty estimates later. 
+
+```{r eval=F}
+fit_uc_po = boral(
+  y = Y,
+  family = "poisson",
+  lv.control = list(num.lv = 2),
+  row.eff = "fixed",
+  save.model = T
+)
+```
+
+Let's have a look at the summary of this model. 
+First we get the call we used to construct the model. 
+The second element is a matrix with the coefficients. 
+beta0 is the species specific intercept, theta1 and theta2 are the species-specific coefficient of the latent variables ($\theta_{0j},\theta_{j1},\theta_{j2}$ in @Hui2016)
+
+```{r echo = F}
+sum_uc_po = summary(fit_uc_po)
+sum_uc_po$coefficients[c(1,2),] %>% 
+  kable(format="html") %>% 
+  kable_minimal 
+```
+
+Next, we get the site scores (<span style="color:CornflowerBlue">lvs</span>) and row effects (<span style="color:CornflowerBlue">row.coefficient</span>). The element <span style="color:CornflowerBlue">est</span> shows which method was used to get parameter point estimates from the posterior distribution. <span style="color:CornflowerBlue">Calc.ics</span> returns various information criteria that can be used for model selection, but only if  <span style="color:CornflowerBlue">Calc.ics</span> was set to TRUE in the model call. 
+Note that this function was is no longer updated and we did not use it here. 
+If you followed the script verbatim until here this element will simply contain FALSE. 
+The next column contains the <span style="color:CornflowerBlue">trail.size</span> which is only relevant for binomially distributed data. 
+<span style="color:CornflowerBlue">Num.ord.levels</span> are the levels of an ordinal model.
+Lastly, <span style="color:CornflowerBlue">prior.control</span> contains options that were used to specify the priors. 
+Since we didn't use any this only returns <span style="color:CornflowerBlue">ssvs.index</span> which is -1. 
+ssvs refers to *stochastic search variable selection* which is a way to use spike and slab priors for the environmental variable coefficients. 
+Spike and slab priors are a neat method for variable selection in Bayesian statistics.
+They simply concentrate much of the probability mass (density) of the prior distribution at zero (the spike). 
+This way the coefficient estimates are biased toward zero and a zero coefficient is practically the same as excluding a variable. 
+-1 means that we did not use ssvs. 
+To use svss set prior.control = list(ssvs.index = 1). 
+It is also possible to use ssvs for a subset of variables.
+To do that you have to provide <span style="color:CornflowerBlue">ssvs.index</span> with vector that has as many elements as there are environmental variables. 
+For example, c(1,-1,1,1,-1) if you wanted to use ssvs for the first, third and fourth variable but not the second or the fifth.   
+
+Let's turn to the residual plots
+
+```{r message = F, warning=F}
+par(mfrow=c(2,2))
+plot(fit_uc_po)
+```
+
+As we expected, the first plot is strongly fan-shaped (residual variance increase with linear predictor), so we can go ahead and fit a negative binomial model. Except for the family argument non of the argument changed from the first call. 
+
+```{r eval=F}
+fit_uc_nb <- boral(
+  y = Y,
+  family = "negative.binomial",
+  lv.control = list(num.lv = 2),
+  row.eff = "fixed",
+  save.model = T
+)
+```
+
+```{r}
+par(mfrow=c(2,2))
+plot(fit_uc_nb)
+```
+
+The fan-shape is gone, and we see a slight underdispersion as we did with <span style="color:CornflowerBlue">mvabund</span> and <span style="color:CornflowerBlue">gllvm</span>. 
+This might be due to the fact that the data are rather zero-inflated than overdispersed but BORAL can not fit such models. 
+It might be possible to construct hurdle models as is suggested for HMSC [@ovaskainen2020joint]. 
+Hurdle models consist of two models, a binary one modeling the occurrence probability and a count model modeling the abundance conditional on presence. 
+However, I will not pursue this approach further here.   
+
+Next, we create a biplot. 
+The black numbers are the sites, located at theirs respective site scores. 
+Species names are added in red to show their optima. 
+If we were to add all species names the plot would become illegible. 
+So instead we focus on the four species (<span style="color:CornflowerBlue">ind.spp</span>) with the largest latent variable coefficients.
+
+```{r}
+lvsplot(fit_uc_nb, 
+        biplot = T, 
+        ind.spp = 4)
+```
+
+When we compare this ordination diagram to that obtained with [gllvms](https://jonjup.netlify.app/post/2020-12-31-analyzing-the-anttraits-data-with-gllvm/analyzing-the-anttraits-data-with-gllvm/index_files/figure-html/unnamed-chunk-11-1.png) we can see that the site scores are similar. The sites 16 to 20 are a group in the upper left corner that is associated with high abundances of *Aphaenogaster longiceps* (though site 19 falls out of the group in <span style="color:CornflowerBlue">BORAL</span>) and the sites 12,13 and 15 form a group in the upper right corner.  The arrangement of sites between these two groups differs.
+
+@Hoegh2020 proposed a way to visualize uncertainty in site scores. 
+Basically, we sample each latent variable coefficient from its own empirical posterior distribution. 
+We can extract the posterior from our <span style="color:CornflowerBlue">BORAL</span> model with `get.mcmcsamples()` because we set <span style="color:CornflowerBlue">save.model</span> to TRUE. The resulting object is large (1000 x 255). 
+Each row is one MCMC sample and each column gives another parameter or statistic of that sample. 
+The first column is the deviance than come species-specific parameters (intercept, latent variable coefficients, dispersion) for each species x parameter combination (lv.coefs[species, parameter]). 
+Next we find what we are looking for here the estimates of the site scores (lvs[site, latent variable]). 
+Last are the estimates of the row coefficients.   
+Depending on the number of parameters and sites there can be a lot of columns, like in our case. 
+So we create an indices to select the relevant columns based on their names (<span style="color:CornflowerBlue">s1c</span> and <span style="color:CornflowerBlue">s2c</span>) and subset the samples with them. 
+Now we have the data we need to display uncertainty ordinations using the `CredibleViz()` function. With the type argument we select how to display the uncertainty and with items which sites to display it for. The object returned by `CredibleViz()` is a ggplot so we can further modify it to our liking. 
+
+```{r warning=FALSE, message=FALSE}
+samples = get.mcmcsamples(fit_uc_nb)
+s1c = grepl(x = colnames(samples), pattern = "lvs+.+\\d,1")
+s2c = grepl(x = colnames(samples), pattern = "lvs+.+\\d,2")
+samples1 <- samples[, s1c]
+samples2 <- samples[, s2c]
+
+options(warn = -1)
+
+cv = CredibleViz(
+  coord1 = samples1,
+  coord2 = samples2,
+  type = "density",
+  items = c(19)
+)
+cv$plot.obj + 
+  xlim(-1.3,1.3) + 
+  ylim(-1.3,1.3)
+```
+
+Here we can see two interesting features. 
+First the 95% Highest posterior density (HPD) interval includes almost half of the ordination space, including an "outlying island". 
+This is likely due to the low number of observation we have.
+A decreasing HPD width with increasing sample size was shown by @Hoegh2020 for simulated data. Second, the highest density area is different from the shown point estimate for site 19. 
+This is because the default estimate from <span style="color:CornflowerBlue">BORAL</span> is the posterior median not the posterior mean or mode. 
+Both of which would likely be closer to highest density area. 
+
+That should be enough for the unconstrained models. 
+In the code below, we fit a constrained model with the environmental variables in <span style="color:CornflowerBlue">X</span>.
+Note that we do not have to specify a formula, but can select variables from <span style="color:CornflowerBlue">X</span> to with the <span style="color:CornflowerBlue">X.ind</span> argument. 
+
+```{r eval = F}
+fit_co_nb <-
+  boral(
+    y = Y,
+    X = X,
+    family = "negative.binomial",
+    lv.control = list(num.lv = 2),
+    save.model = TRUE
+  )
+```
+
+Residual plots look good. 
+```{r}
+par(mfrow=c(2,2))
+plot(fit_co_nb)
+```
+
+The structure of the biplot is now completely different. 
+Now we are only looking at what is not explained by environmental variables. 
+So sites that were close to each other in the first biplot are similar in species composition but this might be due to similar environmental variables. 
+In the second biplot the effect of environmental variables on the abundances is partialed out. We are only looking the residuals. 
+
+```{r message=F, warning=F}
+lvsplot(fit_co_nb, 
+        biplot = T, 
+        ind.spp = 4)
+```
+
+We can also display the residual correlation before and after accounting for environmental variables. 
+To make the plot easier to understand.
+We drop all taxa that don't have any correlations. 
+
+```{r}
+envcors <- get.enviro.cor(fit_co_nb)
+rescors <- get.residual.cor(fit_co_nb) 
+par(xpd=TRUE)
+
+drop_id = which(colSums(envcors$sig.cor) == 1)
+
+corrplot(
+        envcors$sig.cor[-drop_id,-drop_id],
+        type = "lower",
+        diag = FALSE,
+        title =  "Correlations due to covariates", 
+        mar = c(3,0.5,5,1), 
+        tl.srt = 45,
+        tl.cex = .8,
+        tl.pos = "ld", 
+        method = "square", 
+        order = "AOE"
+        )
+drop_id = which(colSums(rescors$sig.cor) == 1)
+corrplot(
+        rescors$sig.cor[-drop_id, -drop_id],
+        type = "lower",
+        diag = FALSE,
+        title =  "Residual correlations",
+        mar = c(3, 0.5, 5, 1),
+        tl.srt = 45,
+        tl.cex = .8,
+        tl.pos = "ld", 
+        method = "square", 
+        order = "AOE"
+)
+```
+
+To round this analysis up, we will also have a look at which traits and how they might mediate the responses of species to the environment. <span style="color:CornflowerBlue">BORAL</span> can not work with non-numeric traits so we will have to remove Pilosity (ordinal variable) and Polymorphism (binary variable).
+
+```{r eval = F}
+# Non-numeric variables have to be removed
+TR2 = TR[,-c(3,4)]
+
+example_which_traits <- vector("list",ncol(X)+1)
+for(i in 1:length(example_which_traits)) 
+        example_which_traits[[i]] <- 1:ncol(TR2)
+
+fit_co_nb_tr <-
+  boral(
+    y = Y,
+    X = X,
+    traits = TR2,
+    which.traits = example_which_traits,
+    family = "negative.binomial",
+    lv.control = list(num.lv = 2),
+    save.model = TRUE
+  )
+```
+
+We can also use corrplots to which traits might modify the response to which environmental variable. 
+Remember that traits are included as means for the prior distributions of coefficients. Without traits or further specifying priors the priors for $\beta$ are normal with mean 0 and standard deviation 10. If we include traits the priors become  $\theta_{0j} \sim N(t_j^T\kappa_0, \sigma^2_0)$ and $\beta_{jk} \sim N(t_j^T\kappa_k, \sigma^2_k)$ where $t_k$ is a vector of traits for species k. The kappas can be though of as regression coefficients in the regression between traits and $\beta$ parameters. These kappas (or their means to be precise) are shown in the correlation plot below. We see that the strongest relation is between Femur length and the species-specific intercept. Species that have longer femurs apparently tend to be more abundant irrespective of environmental factors. The strongest negative relation is between femur length and canopy cover. This shows that abundance of species with longer femurs tends to decrease stronger the higher the canopy cover is. 
+
+```{r}
+corrplot(fit_co_nb_tr$traits.coefs.mean,
+         is.corr = FALSE,
+        method = "color")
+```
+
+# References

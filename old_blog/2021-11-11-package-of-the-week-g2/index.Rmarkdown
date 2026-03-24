@@ -1,0 +1,97 @@
+---
+title: 'package of the week : g2'
+author: Jonathan Jupke
+date: '2021-11-11'
+slug: package-of-the-week-g2
+categories:
+  - R package of the week
+tags:
+  - untagged
+draft: yes
+toc: no
+images: ~
+---
+
+### what is g2 
+
+the g2 R package is a wrapper for the (G2.js)[https://g2.antv.vision/en] java visualization library. 
+Just like the popular (ggplot2)[https://ggplot2.tidyverse.org/] package, G2.js is an implementation of the (grammar of graphics)[https://link.springer.com/book/10.1007/0-387-28695-0] proposed by Leland Wilkinson. 
+
+### Installing g2
+
+
+
+
+```{r}
+remotes::install_github("devOpifex/g2r")
+## the alter pacakge is a required package that you need to install. 
+remotes::install_github("devOpifex/alter")
+```
+
+```{r}
+library(dplyr)
+library(g2r)
+```
+
+```{r}
+g2(cars, asp(speed, dist)) %>% 
+  fig_point() %>% 
+  fig_smooth()
+```
+
+```{r}
+g2(iris, 
+    asp(Sepal.Length, Sepal.Width, color = Petal.Width)
+  ) %>% 
+  fig_point(asp(size = Sepal.Width)) %>% 
+  gauge_color_viridis()
+```
+
+```{r}
+data(penguins, package = "palmerpenguins")
+```
+
+
+
+```{r}
+g2(penguins, 
+    asp(bill_length_mm, bill_depth_mm, color = island)
+  ) %>% 
+  fig_point(asp(shape = island)) 
+```
+```{r}
+g2(iris, asp(Petal.Width, color = Species)) %>% 
+  fig_density()
+```
+
+```{r}
+g2(mtcars, asp(mpg, qsec)) %>% 
+  fig_point(asp(shape = "circle")) %>% 
+  fig_point(adjust("jitter"))
+```
+
+```{r}
+g2(iris, asp(Sepal.Length, Sepal.Width, color = Species)) %>% 
+  fig_point(asp(shape = "circle")) %>% 
+  planes(~Species, type = "tree")
+```
+
+```{r}
+s <- stl(nottem, "per")
+
+qg2(s)
+```
+```{r}
+library(forecast)
+
+ts <- AirPassengers %>%
+  stlf(lambda=0)
+ 
+g2(ts, asp(x)) %>% 
+  fig_line(asp(y = y)) %>% 
+  fig_line(asp(y = mean)) %>% 
+  fig_ribbon(asp(ymin = lower_80, ymax = upper_80)) %>% 
+  fig_ribbon(asp(ymin = lower_95, ymax = upper_95)) %>% 
+  tooltip(shared = TRUE)
+```
+

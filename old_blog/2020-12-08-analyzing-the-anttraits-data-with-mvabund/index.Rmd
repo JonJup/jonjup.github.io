@@ -1,0 +1,223 @@
+---
+title: Analyzing the antTraits data with mvabund
+author: Jonthan Jupke
+date: '2020-12-08'
+slug: analyzing-the-anttraits-data-with-mvabund
+categories: []
+tags:
+  - R
+  - MOD3
+  - mvabund
+comments: no
+images: ~
+---
+
+<style>
+body {
+text-align: justify}
+</style>
+
+
+In this post, we will use the *mvabund* R-package to analyze the antTraits data set. Elsewhere on the blog you can find an analysis of the same data using [gllvm](https://jonjup.netlify.app/post/2020-12-31-analyzing-the-anttraits-data-with-gllvm/analyzing-the-anttraits-data-with-gllvm/), [boral](https://jonjup.netlify.app/post/2020-12-31-analyzing-the-anttrait-data-with-boral-and-gllvm/analyzing-the-anttrait-data-with-boral/) and [CAO/CQO](https://jonjup.netlify.app/post/2020-12-31-analyzing-the-anttraits-data-with-cqo-and-cao/analyzing-the-anttraits-data-with-cqo-and-cao/).
+
+# Preparing the analysis
+
+First we will setup the analysis by loading the required libraries. 
+If you haven't already done so, you will need to install the pacman R package before running this code. 
+
+```{r}
+pacman::p_load(data.table,
+               dplyr,
+               ggplot2,
+               lattice,
+               magrittr,
+               mvabund,
+               readxl,
+               stringr,
+               tidyr)
+```
+
+The antTraits data set we will analyze today is included *<span style="color:CornflowerBlue">mvabund</span>* and *<span style="color:CornflowerBlue">gllvm</span>*. 
+```{r}
+data(antTraits)
+```
+The data set is a list that contains three data frames with self explanatory names. 
+```{r}
+names(antTraits)
+```
+
+*<span style="color:CornflowerBlue">abund</span>* contains the abundance of 41 epigaeic Australian ant species at 30 sites. 
+For more information on the data try  *<span style="color:CornflowerBlue">?antTraits</span>*.
+```{r, echo = F}
+head(antTraits$abund[,1:5])
+```
+Note that this data set faces the typical n<p problem of more variables (species) than observations (sites) which makes the estimation of parameters difficult. 
+
+As in every analysis with *<span style="color:CornflowerBlue">mvabund</span>* we start of by converting our data in the mvabund data format and investigating the mean variance plot. 
+
+```{r}
+ant_mv = mvabund(antTraits$abund)
+meanvar.plot(ant_mv,
+             xlab = expression(mu),
+             ylab = expression(sigma))
+```
+There is a straight line relationship between variance and mean but since the y-axis is scaled logarithmically this indicates an exponential relationship. 
+
+# Fiting a model
+
+First we will fit a Poisson model. 
+As we are not interested in response correlations we assume that the variance-covariance matrix is the identity matrix *<span style="color:CornflowerBlue">I</span>*. 
+```{r}
+mod_p = manyglm(ant_mv ~ .,
+                data = antTraits$env,
+                family = "poisson",
+                cor.type = "I")
+```
+
+Let's have a look at the residuals: 
+```{r}
+plot(mod_p, which = 1)
+plot(mod_p, which = 2)
+plot(mod_p, which = 3)
+```
+
+While the third plot looks ok, there is a clear fan-shape (residuals get larger with larger values of the linear predictor) in the first plot and the Q-Q plot suggests that there is overdispersion (small values are smaller and large values larger than you would expect in a normal distribution).  
+
+A negative binomial model might be the better choice here. 
+```{r}
+mod_nb = manyglm(ant_mv ~ ., 
+                 data = antTraits$env, 
+                 family = "negbinom", 
+                 cor.type = "I")
+```
+
+How do the residuals look now? 
+```{r}
+plot(mod_nb, which = 1)
+plot(mod_nb, which = 2)
+plot(mod_nb, which = 3)
+```
+
+The fan-shape in the first plot is gone. 
+In the upper right corner of the Q-Q plot the observed values now fall below the 1:1 line which means that the residuals are underdispersed. 
+Possibly, this is because that data are rather zero-inflated and not overdispersed. 
+Indeed, a zero-inflated-Poisson gllvm model fit the data better than a negative binomial one, in that [analysis](https://jonjup.netlify.app/post/2020-12-31-analyzing-the-anttraits-data-with-gllvm/analyzing-the-anttraits-data-with-gllvm/). 
+In *<span style="color:CornflowerBlue">mvabund</span>*, we currently cannot fit such models, so we will move ahead with the negative binomial one. 
+
+
+```{r, echo=F}
+anova_list = readRDS("../../../../../01_Uni/01_Lehre/05_MOD3-Lecture/003_processed_data/mvabund/anova/antTrait/anova_list.RDS")
+mod_nb_anova = anova_list$LR_pit.trap
+```
+
+# Model results 
+
+Now we can compute the statistical significance of our predictors for every individual species and the community as whole with the `anova()` function. 
+
+```{r , eval=F}
+mod_nb_anova = anova.manyglm(
+        object = mod_nb,
+        p.uni = "adjusted",
+        test = "LR",
+        resamp = "pit.trap"
+)
+```
+
+
+First, we can have a look at the community level results 
+```{r}
+mod_nb_anova$table
+```
+
+The first column contains the variable names, the second the Residual degrees of freedom (*<span style="color:CornflowerBlue">Res.Df</span>*). 
+Note how the fact that later variables are added to the previous model is made explicit by showing the decreasing residual degrees of freedom. 
+The difference in Degrees of Freedom (*<span style="color:CornflowerBlue">Df.diff</span>*) shows how many degrees of freedom are necessary to add this variable. 
+The test statistic (here the deviance or likelihood ratio) is next and last is the pseudo *p*-value.
+Only the canopy cover has a statistically significant influence on the community composition. 
+
+As we have more than 40 species a table is a bad way to inspect the species-level results. Instead, we can plot the *p*-values of each variable for each species. 
+This will require some reshaping of our data but can be achieved in a few lines of code. 
+You can right-click the plots to open them in a new tab, where they will be larger. 
+```{r warning=FALSE, message=FALSE}
+# uni.p holds the univariate p-values. The first row is 
+# the intercept which we do not care about. 
+# uni.p is a matrix. To make our life easier for the 
+# following steps we will convert it into a data frame
+plot_data_species = data.frame(mod_nb_anova$uni.p[-1,])
+plot_data_species$variable = rownames(plot_data_species)
+# Just to make the plot prettier we will replace all the 
+# dots in variable and taxon names with spaces. 
+names(plot_data_species) %<>% 
+  str_replace_all(pattern = "\\.",
+                  replacement = "\\ ")
+# Here we pivot our data from the wide format (one column
+# per taxon) to the long format (one columns which holds 
+# the taxon and one which the p-value)
+pivot_id   = which(names(plot_data_species) == "variable")
+pivot_cols = names(plot_data_species)[-pivot_id]
+plot_data_species %<>% pivot_longer(cols = pivot_cols)
+                                    
+plot_data_species$variable %<>% 
+  str_replace_all(pattern = "\\.",
+                  replacement = "\\ ")
+plot_data_species %>% 
+        ggplot(aes(x = value, y = name)) + 
+        geom_point(aes(col = variable)) + 
+        geom_vline(xintercept = 0.05) + 
+  theme(text = element_text(size = 10))
+```
+
+In addition  to the statistical significance we can inspect the regression coefficients in a level plot. 
+```{r}
+par(cex.axis=0.5)
+a        = max(abs(coef(mod_nb)))
+colort   = colorRampPalette(c("blue", "white", "red"))
+plot.tas = levelplot(
+  t(as.matrix(coef(mod_nb))),
+  ylab = "",
+  xlab  = "",
+  col.regions = colort(100),
+  at = seq(-a, a, length = 100),
+  scales = list(x = list(rot = 45))
+)
+print(plot.tas)
+```
+The problem with this plot is, that it is scaled relative to the actually occurring values and one value (Volume.lying.CWD for *Cardiocondyla nuda atalanta*) is strongly negative. 
+To avoid this we can either use an absolute scale, base the relative scale on another statistic, remove the species or the variable. 
+Below, we use the third quantile instead of the maximum coefficient value to scale the coloring.
+```{r}
+a        = quantile(abs(coef(mod_nb)), .75)
+colort   = colorRampPalette(c("blue", "white", "red"))
+plot.tas = levelplot(
+  t(as.matrix(coef(mod_nb))),
+  ylab = "",
+  xlab  = "",
+  col.regions = colort(100),
+  at = seq(-a, a, length = 100),
+  scales = list(x = list(rot = 45))
+)
+print(plot.tas)
+```
+
+Such plots are of limited use to identify exact coefficient values but especially when there are many species or covariables they can be very handy to identify groups or general trends. 
+
+Lastly, we can have a look at the relationship between traits and variables.
+
+```{r}
+trait_model1 = traitglm(
+  antTraits$abund,
+  antTraits$env,
+  antTraits$traits,
+  method = "manyglm",
+  family = "negative.binomial"
+)
+
+a        = max(abs(trait_model1$fourth.corner) )
+colort   = colorRampPalette(c("blue","white","red")) 
+plot.4th = levelplot(t(as.matrix(trait_model1$fourth.corner)), xlab="Environmental Variables",
+                     ylab="Species traits", col.regions=colort(100), at=seq(-a, a, length=100),
+                     scales = list( x= list(rot = 45)))
+print(plot.4th)
+```
+
+

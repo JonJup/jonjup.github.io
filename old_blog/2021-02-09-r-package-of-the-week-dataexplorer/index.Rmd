@@ -1,0 +1,103 @@
+---
+title: 'R package of the week: DataExplorer'
+author: 'Jonathan Jupke '
+date: '2021-02-09'
+slug: r-package-of-the-week-dataexplorer
+categories:
+  - R package of the week
+tags:
+  - R
+  - R package
+comments: no
+images: ~
+bibliography: ref.bib
+link-citations: true
+---
+
+```{r eval = F}
+install.packages("DataExplorer")
+library(DataExplorer)
+data = readRDS("collected_site_scores.RDS")
+```
+
+```{r echo=F}
+library(DataExplorer)
+data = readRDS("~/01_Uni/02_getreal/002_working_package_02/001_community_data/001_individual_data_sets/001_ld/diathor/collected_site_scores.RDS")
+library(magrittr)
+data = data[,1:6]
+data[sample(1:nrow(data),100), epid := NA]
+data$habitat = sample(c("wetland", "large river", "stream", "lake", "lake outlet"), nrow(data), replace = T)
+data$habitat %<>% factor
+```
+
+This weeks package is similar to last weeks. 
+Just like **xray** @Seibelt2017,  **DataExplorer** @Cui2020 is used for exploratory data analysis. 
+To highlight the features and capabilities of the package we will use a data set of different diatom
+metrics derived from a large data set of diatoms, which I
+unfortunately am not able to share with you. 
+These metrics were computed with the **diaThor**  package, which I will cover in a later post.
+
+# How do my data look?
+
+Assume you just got this data set and now you want to get a feeling for
+it. Your initial questions might be: Are there any missing data?
+
+```{r}
+plot_missing(data)
+```
+
+Indeed, 100 rows in [epid]{style="color:CornflowerBlue"} are missing which constitutes 4.4% if the rows. 
+What about our categorical variables. 
+How are they distributed? 
+
+```{r}
+plot_bar(data)
+```
+
+Note that I did not have to tell the function which variables are categorical. 
+As long as they are formatted as a factor, the function will pick them out itself. 
+Of course, we also want to know how the continuous variables are distributed, which we can find out with `plot_histogram()`.
+
+```{r}
+plot_histogram(data)
+```
+
+# Relationships between variables
+
+Now we have a basic understanding of all the variables we can start to look at relationships.
+All metrics except for richness are diatom indices. 
+This is not the place to go into details but diatoms are great as bioindicators, i.e. to judge the state of a waterbody. 
+There are many different species (according to @smol2010diatoms about 200 new species are described each year) and many of them are sensitive to environmental conditions. 
+These indices (EPID, IPS, TDI, SPEAR) are different ways to achieve this goal. They focus on somewhat different aspects of the environment. 
+Actually SPEAR is distinct from the others, it gives the relative richness of species that are sensitive to pesticides and was originally developed for invertebrates. 
+@wood2019benthic applied the approach to diatoms. 
+Anyhow, are these metrics depended on the species richness? 
+```{r}
+plot_boxplot(data, by = "richness")
+```
+No actually it does not look like it. 
+As alternative to the boxplot, we could also have looked at scatter plots 
+Because the data set is quite large (2285 observations) we will only look at a subset of 100 rows ([sampled_rows]{style="color:CornflowerBlue"})
+```{r}
+ plot_scatterplot(dplyr::select(data,!gr_sample_id) , by = "richness", sampled_rows = 100)
+```
+
+In practice we should either plot all data, or repeat the step above several times to ensure that the random selection of sites does not impact verdict. 
+However in this case there does not seem to be any correlation between species richness and any of the diatom metrics. 
+
+As a last step we can look at the correlation plot for the variables. 
+
+```{r}
+plot_correlation(data)
+```
+
+# For the lazy data explorer 
+
+Another nice feature is the `create_report()` function, which allows you to kick back for a moment while the function automatically runs several of the functions above as well as QQ-Plots and a PCA on the data set and compiles a HTML document with all of them. 
+
+```{r eval=FALSE}
+create_report(data)
+```
+
+
+# References

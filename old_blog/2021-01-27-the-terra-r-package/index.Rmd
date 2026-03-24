@@ -1,0 +1,545 @@
+---
+title: The terra R package
+author: 'Jonathan Jupke '
+date: '2021-01-27'
+slug: the-terra-r-package
+categories:
+  - GIS
+tags:
+  - GIS
+  - terra
+comments: no
+images: null
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+For the longest time, when you wanted to manipulate raster files in R, the raster package was your tool of choice.
+And it still is a well-proven and tested alternative to the newer packages, one of which we will discuss today: terra.
+
+# Basic idea
+
+terra implements two new object classes: SpatRaster and SpatVector.
+It is written and maintained by Robert Hijmans who also did so for the raster package.
+In that sense you can think of terra as the sequel to raster.
+Why did Robert Hijmans decide we need a new package?
+Well the problem of creating a widely used R package is that other packages start to use it and depend on it working they way it did when that package was written.
+So even if you don't like certain aspects of you package anymore, you can't just go ahead and rewrite them.
+Robert Hijmans thinks that raster has grown to be unnecessarily complex with over 200 functions.
+Its also slower than it could be and doesn't support HDF5 files, which is a popular format for satellite data complex.
+So now terra is faster, simpler (functions have been streamlined) and more capable.
+However, when you know raster, you also know how to do most things in terra.
+
+# Creating a new Raster
+
+The easiest way to specify a new raster is by calling `rast()` without any arguments.
+
+```{r eval= F}
+# loading the required packages 
+library(terra)
+library(dplyr)
+library(sf)
+library(tmap)
+```
+
+```{r echo = F, results = "hide", message =FALSE}
+library(terra)
+library(dplyr)
+library(sf)
+library(tmap)
+```
+
+```{r}
+(x <- rast())
+```
+
+As you can see, the new object covers the whole earth and is projected using longitude and latitude on a WGS84 globe.
+The resolution is 1 by 1 which means each cell covers 1 degree of latitude and one degree of longitude.
+Of course, we can also specify the extend and resolution of the rasters we create.
+The following, raster for example, only covers the southern hemisphere.
+
+```{r}
+(x = rast(ymax = 0))
+```
+
+As you can see, this also automatically altered the resolution to 0.5.
+We cut the area in half so the resolution that corresponds to that direction is also cut in half.
+By explicitly setting the resolution, we can prevent this from happening.
+
+```{r}
+x = rast(ymax = 0, res = c(1,1))
+```
+
+Alternatively we can also specify the number of rows and cells we want our raster to have.
+
+```{r}
+x = rast(nrow = 180, ncol = 360)
+```
+
+You can check the resolution of a raster with the `res()` function.
+The function can also be used to compare the resolution of two (or more) rasters.
+
+```{r}
+y = rast()
+all(res(x) == res(y))
+```
+
+We can also `res()` to change the resolution of a raster after creating or loading it.
+
+```{r}
+res(y) = 10
+y
+res(y) = c(10,100)
+y
+```
+
+The last thing we have not altered about this raster skeleton, is its coordinate reference system.
+If you only have an EPSG code for you desired CRS check out this [website](https://epsg.io/).
+It provides you with the corresponding PROJ.4 string.
+
+```{r}
+x = rast()
+crs(x)
+# set to WGS 84
+crs(x) <- "+proj=longlat +datum=WGS84 +no_defs "
+# set to UTM 48
+crs(x) <- "+proj=utm +zone=48 +datum=WGS84"
+x
+```
+
+# Going beyond the hull
+
+We can now create an empty raster anywhere on the world.
+However, as long as no values are in the cells this doesn't get us anywhere.
+About time we introduce some values.
+
+```{r}
+r <- rast(ncol=10, nrow=10)
+# number of cells (ncol * nrow)
+ncell(r)
+# do we have any values yet? 
+hasValues(r)
+# now we fill the raster with increasing numbers, staring with 1 
+values(r) <- 1:ncell(r)
+plot(r, main='Raster with 100 cells')
+```
+
+Let's have a look at two actual raster file from my harddrive.
+
+```{r}
+file1 <- here::here("data/terra/DGM25_2905530.xyz")
+file2 <- here::here("data/terra/DGM25_2905540.xyz")
+dem1 <- rast(file1)
+dem2 <- rast(file2)
+par(mfrow = c(1,2))
+plot(dem1)
+plot(dem2)
+crs(dem1) = "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs "
+crs(dem2) = "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs "
+```
+
+As you can see they are two digital elevation models.
+
+```{r}
+dem1
+```
+
+# Multiple layers in one SpatRaster
+
+One SpatRaster can have multiple raster layers.
+Think of the temperature in the same area in several years where each layer is one year.
+Let's simulate such an example.
+
+```{r}
+# First we create a raster with temperatures between 10 and 15 degrees
+r1 = rast(nrow = 25, ncol = 25)
+values(r1) = runif(n = 25^2, min = 10, max = 15)
+plot(r1)
+# Now we create two rasters that are based on r1 but slightly warmer. 
+r2 = r1 + 1
+r3 = r2 + 1
+```
+
+We can combine the three rasters into one multi-layer object.
+With terra this is as easy as writing a simple vector
+
+```{r}
+s <- c(r1, r2, r3)
+s
+```
+
+Note that the class of a multi-layer object is the same as a single layer raster.
+
+```{r}
+class(s)
+```
+
+Calling the generic plot function on such a multi-layer raster plots all layers, so be care full with this if you have many layers!
+
+```{r}
+plot(s)
+```
+
+We can subset the object like a list.
+
+```{r}
+s[[1]]
+```
+
+# Raster algebra
+
+SpatRaster objects can be passed to most algebraic operations in R such as `+` and `-` or `sum()` and `abs()`.
+You have just seen this above, when I added a degree of temperature to our simulated temperature rasters.
+Below are some more examples
+
+```{r}
+p = r1 + 4
+o = sqrt(r1)
+x = sum(values(r))
+```
+
+You can also add, substract, multiply and divide rasters with each other.
+
+```{r}
+xo = x + o 
+ox = x + o
+px = p / x
+```
+
+# High-level functions
+
+In most situations you will have rasters that are larger than what you need.
+You might be interested in the landcover of your study area but the data covers all of Europe.
+Conversely, you might also need to combine different rasters if the scale of your analysis is larger than the data you are using.
+Often this is the case when larger rasters are split in smaller areas to reduce their size.
+
+In the first case you would use `crop()`.
+Provided with a raster and an extend, `crop()` will return only the part of the raster that lies within the extend.
+An extend usually is a named vector with four elements: xmin, xmax, ymin and ymax.
+It might for example be the bounding box you derived from the vector data you were analyzing in sf.
+You can create this raster yourself if you know, or can derive, the relevant numbers.
+An alternative is the `drawExtent()` function from the raster package.
+This lets you click on an already plotted raster an returns the extend of the thus created rectangle.
+Try the code below in your own R instance to see what I mean.
+
+```{r eval = F}
+plot(dem1)
+extent = raster::drawExtent()
+dem1crop = terra::crop(x =dem1, y=extent)
+```
+
+```{r echo = F}
+plot(dem1)
+extent = readRDS(here::here("data/terra/extent.RDS"))
+dem1crop = terra::crop(x =dem1, y=extent)
+plot(dem1crop)
+```
+
+Nice!
+Now have reduced the raster to the area we are actually interested in.
+We can compute the mean hight or the sum of all hights with `global()`.
+
+```{r}
+global(dem1crop, "sum")
+global(dem1crop, "mean")
+```
+
+We can also expand a raster with the `extend()` function.
+That means we add rows and/ or columns with `NA` values.
+The other way around we can also trim them, removing all cells with `NA`s in the margins.
+
+```{r}
+dem1.exp = extend(dem1, y = c(100,100))
+plot(dem1.exp)
+```
+
+Since all the `NA`s are just white, it's hard to see what we actually did here.
+Let's give them some random value so we can see the cells we added.
+
+```{r}
+na_cells = which(is.na(values(dem1.exp)))
+values(dem1.exp)[na_cells] = 300
+plot(dem1.exp)
+```
+
+We can now clearly see the added cells in brown.
+With `trim()` we can remove them again.
+
+```{r}
+na_cells = which(values(dem1.exp) == 300)
+values(dem1.exp)[na_cells] = NA
+dem1.trm = trim(dem1.exp)
+plot(dem1.trm)
+```
+
+As mentioned before, sometimes you want to combine rasters.
+For example our two DEMs are both part of a larger DEM that covers all of the German federal state Rhineland-Palatinate.
+We can combine the two rasters with `merge()`
+
+```{r}
+dem_merge = merge(dem1, dem2)
+plot(dem_merge)
+```
+
+Whenever you want to use multiple raster in an operation, it is important that they have the same CRS and cell sizes.
+You can increase cell sizes with `aggregate()` and reduce cell sizes with `disaggregate()`.
+In the first case, several cells are combined into one.
+The number of cells is set with the `fact` argument.
+When you supply one number it is used for both directions.
+So if you call `aggregate(x, fact = 2)` and raster has the cell size 10m by 10m, the new raster will be 20m by 20m.
+You can also provide `fact` with a vector that specifies the aggregation factor in each direction.
+The third argument is `fun` which specifies how to calculate the new cell value.
+If our new cell consists of four old cells (i.e., we used an aggregation factor of 2) we somehow need to combine those four numbers into one.
+Common options here are the mean, the median, the modal, the maximum, the minimum, or the sum.
+
+```{r}
+dem1_agg_2_mean = aggregate(dem1, fact=2, fun = "mean")
+dem1_agg_3_mean = aggregate(dem1, fact=4, fun = "mean")
+dem1_agg_4_mean = aggregate(dem1, fact=6, fun = "mean")
+dem1_agg_5_mean = aggregate(dem1, fact=8, fun = "mean")
+par(mfrow = c(2,2))
+plot(dem1_agg_2_mean)
+plot(dem1_agg_3_mean)
+plot(dem1_agg_4_mean)
+plot(dem1_agg_5_mean)
+par(mfrow = c(2,2))
+dem1_agg_mean = aggregate(dem1, fact = c(1,6), fun = "mean")
+dem1_agg_min = aggregate(dem1, fact = 4, fun = "min")
+dem1_agg_max = aggregate(dem1, fact = 4, fun = "max")
+dem1_agg_sum = aggregate(dem1, fact = 4, fun = "sum")
+plot(dem1_agg_mean,  main = "directed aggregation")
+plot(dem1_agg_min,   main = "minimum")
+plot(dem1_agg_max,   main = "maximum")
+plot(dem1_agg_sum , main = "sum")
+```
+
+When we want to go in the other direction, we disaggregate raster cells with the `disagg()` function.
+Sadly, we cannot magically determine what values are the field truth for the new, smaller cells.
+Instead each new cell gets the same value as it's parent.
+
+```{r}
+dem1_disagg = disagg(dem1, fact = 2)
+plot(dem1_disagg)
+```
+
+## Extracting polygon values with rasters.
+
+We often encounter situations where we want to extract the values of a raster that coincide with vector data we have. 
+For example, we might have taken soil samples along a mountain and now we want to now the altitude of the samples or we are interested in the land cover of a river catchment. 
+
+To demonstrate this, we will need some vector data sets. 
+For the point data, we can simulate points within the bounding box of the DEMs we used before. 
+```{r}
+# - extract extend of DEM
+dem.ext <- ext(dem1)
+# - convert extend to bounding box usable by sf
+dem.bb <- st_bbox(dem.ext)
+# - create 10 random points within bounding box
+random_points <- st_sample(x = st_as_sfc(dem.bb), 10)
+random_points <- st_as_sf(random_points, crs = 25832)
+#- interactive map
+tmap_mode("view")
+tm_shape(dem1) + tm_raster() + tm_shape(random_points) + tm_dots(size = 1)
+```
+
+Now we have ten points that are randomly distributed across the map. 
+If your repeat this with you own computer your ten points will be at other positions. 
+Now that we have, we can extract the raster values, i.e., the altitude, at the locations of our points. 
+This extraction is done with `extract()`.
+The first argument to `extract()` is the raster raster from which we want to extract values.
+The second argument is the location of points, at which we want to extract the values. 
+
+```{r}
+ex.points <- extract(dem1, random_points)
+```
+
+We get a non-spatial data.frame back that holds the row number of points and the elevation at these points. 
+We can add the altitude values back to the points like this: 
+
+```{r}
+random_points$altitude <- ex.points$DGM25_2905530
+tm_shape(random_points) + tm_dots(col = "altitude")
+```
+
+Now we want to look at polygons instead of points. 
+First, we need some polygons. 
+Here, we use river catchments from Rhineland-Palatinate. 
+
+```{r}
+catchments <- st_read(here::here("data/catchments.gpkg"))
+```
+Let's have a look at the data. 
+```{r}
+tm_shape(catchments) + 
+        tm_polygons(alpha = .5) + 
+        tm_shape(dem_merge) + 
+        tm_raster()
+```
+
+As we can see, we are missing elevation data for most of the catchments. 
+Thus, we will first remove all catchments for which we are lacking data. 
+
+```{r}
+dem.ext <- ext(dem_merge)
+# - convert extend to bounding box usable by sf
+dem.bb <- st_bbox(dem.ext) |> st_as_sfc() |> st_as_sf(crs = 25832)
+# - transform catchments to same bb as the DEMs
+catchments <- st_transform(catchments, crs = 25832)
+# - subset catchments to only those that are completely within the DEM 
+catchments2  <- catchments[dem.bb, , op = st_within]
+```
+
+Let's have a look at the result. 
+```{r}
+tm_shape(catchments2) + 
+        tm_polygons(alpha = .5) + 
+        tm_shape(dem_merge) + 
+        tm_raster()
+```
+
+Next, we extract the raster values from the cells within the different catchment polygons with the `extract()` function.
+There is a function with the same name in the `raster` package. 
+To make sure that we are using the function from `terra`, we should therefore call the package explicitly by using `terra::` in front of the `extract()` function. 
+
+```{r}
+dem_ext <- terra::extract(dem_merge, catchments2)
+head(dem_ext)
+```
+
+The result is a data.frame with two columns: `ID` and `DGM25_2905530`. 
+The second cell is named after the raster from which we extracted the values. 
+The `ID` column assigns the raster values to the polygons we used for the extraction. 
+```{r}
+unique(dem_ext$ID)
+```
+As we can see, the ID values go from one to seven and we have 
+
+```{r}
+nrow(catchments2)
+```
+
+seven catchment polygons. So all rows in `dem_ext` in which the `ID` variable is `1` contain raster cell values from cells that are within the polygon in the first row on `catchments2`. 
+
+We could now compute the mean elevation within each catchment and assign those values as a variable to `catchments2`. 
+Here, I will show two different ways to summarize one variable by another. In our case, the elevation (`DGM25_2905530`) by the catchment (`ID`). 
+First, we can use `group_by()` and `summarize()` from the `dplyr` package.
+The first function defines the variable that groups the rows and the second computes some function of a variable. 
+```{r}
+dem_ext |> 
+        group_by(ID) |> 
+        summarize(mean_elev = mean(DGM25_2905530))
+```
+
+Alternatively, we can use the `data.table` package. 
+Here, we need to turn `dem_ext` into a data.table object with `setDT()`. 
+`setDT()` is a mutating function. That means we do not need to assign the result to an object but the object within the function is changed (mutated) directly.  
+Data tables can be subset or modified following the basic scheme `dt[i,j,by]`, we `i` is a logical expression subsetting the rows, `j` is an expression subsetting or modifying columns and `by` provides a grouping structure for `j`. 
+
+```{r}
+library(data.table)
+setDT(dem_ext)
+(dem_ext2 <- dem_ext[, mean(DGM25_2905530), by = "ID"])
+```
+
+Either way we get the same results, which we can now add back to the catchments. 
+```{r}
+catchments2$elev_new <- dem_ext2$V1
+tm_shape(catchments2) + tm_polygons(col = "elev_new")
+```
+
+
+
+
+
+## Masking
+
+Sometimes we might want to fill holes in rasters, i.e., areas that only contain NAs or some other non-informative value, with the values from a second raster.
+This operation is called masking.
+Here we will work through a short example, where there are randomly scatted NAs throughout the raster.
+This might happen if small but thick clouds prevented our satellite to accurately measure conditions on the ground.
+
+```{r}
+# Example1 
+dem1_na = dem1 
+values(dem1_na)[sample(1:ncell(dem1), size = 100)] = NA
+#to increase the visibility of the masked cells we will create a separate mask layer with extreme values. 
+dem1_mask = dem1
+values(dem1_mask) = 1000
+dem1_nax = cover(x = dem1_na, y = dem1_mask)
+plot(dem1_nax)
+```
+
+The `lapp()` function is used for functional programming.
+It is similar to `apply()`-family functions or `map`-family functions from the *purrr* package.
+It applies a function to each layer of a raster Here for example we increase the height of a third of the cells by 10m.
+
+```{r}
+dem1_2 = dem1_3 = dem1
+values(dem1_2) = rbinom(ncell(dem1),1,0.33)
+values(dem1_3) = 10
+dem1_all = c(dem1, dem1_2, dem1_3)
+dem_lapp = lapp(dem1_all, function(x,y,z) x + y * z)
+plot(dem_lapp)
+```
+
+We can classify the cells with the `classify()` function.
+
+```{r}
+m <- c(0, 100, 1,
+       100, 250, 2,
+       250, 400, 3,
+       400, 600, 4)
+dem1_cut = classify(dem1, rcl = m)
+plot(dem1_cut)
+```
+
+`focal()` can be used to replace the value of a focal cell by some function of its neighbours.
+Which neighbors and what function to use can be chosen as arguments.
+
+```{r}
+mw = focal(dem1, w=3)
+plot(mw)
+```
+
+# Cell-level functions
+
+In terra the cells within a raster a numbered from the upper left cell to the upper right and then continuing in the second row.
+See the first plot in **Going beyond the hull**.
+There is bunch of functions to help you figure out the values of specific cells:
+
+```{r, eval = F}
+# how many columns
+ncol(r)
+# how many rows
+nrow(r)
+# how many cells 
+ncell(r)
+# in which row is cell 3?
+rowFromCell(dem1, 3)
+# in which column is cell 3?
+colFromCell(dem1, 3)
+# which cell is in row 5 and column 5?
+cellFromRowCol(dem1,5,5)
+# what are the coordinates of cell 100? 
+xyFromCell(dem1, 100)
+# which cell lies at the coordinates 0,0 
+cellFromXY(r, cbind(0,0))
+# which column has a Y coordinate of 0 
+colFromX(r, 0)
+# which row has a Y coordinate of 0 
+rowFromY(r, 0)
+```
+
+We have seen before that we can use `values()` to alter or extract the cell values of a raster to a vector.
+As alternatives we can use `valuesBlock()` to read a rectangle of blocks or `extract()` to get the cell values in a specific area.
+
+```{r}
+cells <- cellFromRowCol(dem1, 50, 35:39)
+xy <- xyFromCell(dem1, cells)
+extract(dem1, xy)
+```
+
+This wraps up our quick first peek at the *terra* package.
+However there are many more things one can do with the package which we might cover in a later post.
+If you want to know more about it before, check out this [talk](https://www.youtube.com/watch?v=5b2xhqlH49I) of Robert Hijmans and Anirddha Ghosh

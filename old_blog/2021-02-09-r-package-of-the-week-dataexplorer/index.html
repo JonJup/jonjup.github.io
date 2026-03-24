@@ -1,0 +1,96 @@
+---
+title: 'R package of the week: DataExplorer'
+author: 'Jonathan Jupke '
+date: '2021-02-09'
+slug: r-package-of-the-week-dataexplorer
+categories:
+  - R package of the week
+tags:
+  - R
+  - R package
+comments: no
+images: ~
+bibliography: ref.bib
+link-citations: true
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<pre class="r"><code>install.packages(&quot;DataExplorer&quot;)
+library(DataExplorer)
+data = readRDS(&quot;collected_site_scores.RDS&quot;)</code></pre>
+<p>This weeks package is similar to last weeks.
+Just like <strong>xray</strong> <span class="citation"><a href="#ref-Seibelt2017" role="doc-biblioref">Seibelt</a> (<a href="#ref-Seibelt2017" role="doc-biblioref">2017</a>)</span>, <strong>DataExplorer</strong> <span class="citation"><a href="#ref-Cui2020" role="doc-biblioref">Cui</a> (<a href="#ref-Cui2020" role="doc-biblioref">2020</a>)</span> is used for exploratory data analysis.
+To highlight the features and capabilities of the package we will use a data set of different diatom
+metrics derived from a large data set of diatoms, which I
+unfortunately am not able to share with you.
+These metrics were computed with the <strong>diaThor</strong> package, which I will cover in a later post.</p>
+<div id="how-do-my-data-look" class="section level1">
+<h1>How do my data look?</h1>
+<p>Assume you just got this data set and now you want to get a feeling for
+it. Your initial questions might be: Are there any missing data?</p>
+<pre class="r"><code>plot_missing(data)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Indeed, 100 rows in <span style="color:CornflowerBlue">epid</span> are missing which constitutes 4.4% if the rows.
+What about our categorical variables.
+How are they distributed?</p>
+<pre class="r"><code>plot_bar(data)</code></pre>
+<pre><code>## 1 columns ignored with more than 50 categories.
+## gr_sample_id: 2285 categories</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Note that I did not have to tell the function which variables are categorical.
+As long as they are formatted as a factor, the function will pick them out itself.
+Of course, we also want to know how the continuous variables are distributed, which we can find out with <code>plot_histogram()</code>.</p>
+<pre class="r"><code>plot_histogram(data)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="relationships-between-variables" class="section level1">
+<h1>Relationships between variables</h1>
+<p>Now we have a basic understanding of all the variables we can start to look at relationships.
+All metrics except for richness are diatom indices.
+This is not the place to go into details but diatoms are great as bioindicators, i.e. to judge the state of a waterbody.
+There are many different species (according to <span class="citation"><a href="#ref-smol2010diatoms" role="doc-biblioref">Smol and Stoermer</a> (<a href="#ref-smol2010diatoms" role="doc-biblioref">2010</a>)</span> about 200 new species are described each year) and many of them are sensitive to environmental conditions.
+These indices (EPID, IPS, TDI, SPEAR) are different ways to achieve this goal. They focus on somewhat different aspects of the environment.
+Actually SPEAR is distinct from the others, it gives the relative richness of species that are sensitive to pesticides and was originally developed for invertebrates.
+<span class="citation"><a href="#ref-wood2019benthic" role="doc-biblioref">Wood et al.</a> (<a href="#ref-wood2019benthic" role="doc-biblioref">2019</a>)</span> applied the approach to diatoms.
+Anyhow, are these metrics depended on the species richness?</p>
+<pre class="r"><code>plot_boxplot(data, by = &quot;richness&quot;)</code></pre>
+<pre><code>## Warning: Removed 100 rows containing non-finite values (stat_boxplot).</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+No actually it does not look like it.
+As alternative to the boxplot, we could also have looked at scatter plots
+Because the data set is quite large (2285 observations) we will only look at a subset of 100 rows (<span style="color:CornflowerBlue">sampled_rows</span>)</p>
+<pre class="r"><code> plot_scatterplot(dplyr::select(data,!gr_sample_id) , by = &quot;richness&quot;, sampled_rows = 100)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>In practice we should either plot all data, or repeat the step above several times to ensure that the random selection of sites does not impact verdict.
+However in this case there does not seem to be any correlation between species richness and any of the diatom metrics.</p>
+<p>As a last step we can look at the correlation plot for the variables.</p>
+<pre class="r"><code>plot_correlation(data)</code></pre>
+<pre><code>## 1 features with more than 20 categories ignored!
+## gr_sample_id: 2285 categories</code></pre>
+<pre><code>## Warning: Removed 18 rows containing missing values (geom_text).</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+<div id="for-the-lazy-data-explorer" class="section level1">
+<h1>For the lazy data explorer</h1>
+<p>Another nice feature is the <code>create_report()</code> function, which allows you to kick back for a moment while the function automatically runs several of the functions above as well as QQ-Plots and a PCA on the data set and compiles a HTML document with all of them.</p>
+<pre class="r"><code>create_report(data)</code></pre>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Cui2020" class="csl-entry">
+Cui, Boxuan. 2020. <em>DataExplorer: Automate Data Exploration and Treatment</em>. <a href="https://CRAN.R-project.org/package=DataExplorer">https://CRAN.R-project.org/package=DataExplorer</a>.
+</div>
+<div id="ref-Seibelt2017" class="csl-entry">
+Seibelt, Pablo. 2017. <em>Xray: X Ray Vision on Your Datasets</em>. <a href="https://CRAN.R-project.org/package=xray">https://CRAN.R-project.org/package=xray</a>.
+</div>
+<div id="ref-smol2010diatoms" class="csl-entry">
+Smol, John P, and Eugene F Stoermer. 2010. <em>The Diatoms: Applications for the Environmental and Earth Sciences</em>. Cambridge University Press.
+</div>
+<div id="ref-wood2019benthic" class="csl-entry">
+Wood, Rebecca J, Simon M Mitrovic, Richard P Lim, Michael St J Warne, Jason Dunlop, and Ben J Kefford. 2019. <span>“Benthic Diatoms as Indicators of Herbicide Toxicity in Rivers–a New SPEcies at Risk (SPEARherbicides) Index.”</span> <em>Ecological Indicators</em> 99: 203–13.
+</div>
+</div>
+</div>

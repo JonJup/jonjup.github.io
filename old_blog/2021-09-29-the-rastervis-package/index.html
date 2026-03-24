@@ -1,0 +1,89 @@
+---
+title: The rasterVis package
+author: Jonathan Jupke
+date: '2021-09-29'
+slug: the-rastervis-package
+categories:
+  - GIS
+tags:
+  - GIS
+  - R package
+comments: no
+images: ~
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>Here, we will explore the basic functionality of the <code>rasterVis</code> package. As the name already suggests, the purpose of this package is to display raster data.
+While the common R packages to work with rasters, like <code>raster</code> or <a href="https://jonjup.netlify.app/post/2021-01-27-the-terra-r-package/the-terra-r-package/">terra</a>, already provide basic plotting functionality, <code>rasterVis</code> extends this substantially.
+You can find a more extensive documentation for the package <a href="https://oscarperpinan.github.io/rastervis/">here</a>.</p>
+<pre class="r"><code>library(rasterVis)
+library(terra)</code></pre>
+<p>First we need to load some rasters. We will use the <a href="https://jonjup.netlify.app/post/2021-09-17-the-geodata-package/the-geodata-package/">geodata package</a> to download a digital elevation model of Austria.</p>
+<pre class="r"><code>dem_austria &lt;- geodata::elevation_30s(country = &quot;Austria&quot;, path = &quot;data/&quot;)</code></pre>
+<p>In addition, I want to show you how changes over time can be displayed.
+So we will also need spatio-temporal data.
+Below, we download and load solar irradiance data from the Satellite Application Facility on Climate Monitoring (<a href="https://www.cmsaf.eu/">CMSAF</a>).
+There are a series of packages that you could also use specifically to access these data, for example the <a href="https://cran.r-project.org/web/packages/cmsaf/index.html">cmsaf</a> package.</p>
+<pre class="r"><code>download.file(&#39;https://raw.github.com/oscarperpinan/spacetime-vis/master/data/SISmm2008_CMSAF.zip&#39;,
+              &#39;SISmm2008_CMSAF.zip&#39;)
+unzip(&#39;SISmm2008_CMSAF.zip&#39;)
+listFich &lt;- dir(pattern=&#39;\\.nc&#39;)
+stackSIS &lt;- stack(listFich)
+stackSIS &lt;- stackSIS * 24 ##from irradiance (W/m2) to irradiation Wh/m2
+idx &lt;- seq(as.Date(&#39;2008-01-15&#39;), as.Date(&#39;2008-12-15&#39;), &#39;month&#39;)
+SISmm &lt;- setZ(stackSIS, idx)
+names(SISmm) &lt;- month.abb</code></pre>
+<pre><code>## Lade nötigen Namensraum: ncdf4</code></pre>
+<p>Ok, with that we can start plotting the data.
+The basic plotting function in <code>rasterVis</code> is called <code>levelplot()</code>. If we use that with our Austrian DEM and the irradiance data we get these plots:</p>
+<pre class="r"><code>levelplot(dem_austria)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>levelplot(SISmm)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>As you can see, the second plot does not have plots in the margins like the first one.
+<code>levelplot()</code> only creates marginal plots for rasters with a single layer.
+If we select one layer, the solar irradiance plots also include these marginal plots.</p>
+<pre class="r"><code>levelplot(SISmm, layers = 1)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>By default these plots show the means of their respective column or row but we can change this to any function we like.
+In the plot below, for example, we see the minimal altitude not the mean altitude in the margins.</p>
+<pre class="r"><code>levelplot(dem_austria,margin = list(FUN = &#39;min&#39;))</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>We can also alter the raster values directly in the call to <code>levelplot()</code>.
+For example, we can display the logarithm (with base e) by adding the argument: <code>zscaleLog="e"</code>. In this plot, we also add contour lines.</p>
+<pre class="r"><code>levelplot(dem_austria, zscaleLog=&quot;e&quot;, contour=TRUE, margin=list(FUN = &quot;min&quot;))</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>You might have noticed that sofar all plots have used the same colors (magma palette from the <a href="https://github.com/sjmgarnier/viridisLite">viridisLite package</a>).
+We can easily change this to other palettes:</p>
+<pre class="r"><code>levelplot(dem_austria, par.settings = RdBuTheme)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>Alternative palettes are; viridisTheme, infernoTheme, plasmaTheme, YlOrRdTheme, BuRdTheme, GrTheme and BTCTheme.</p>
+<div id="beyond-the-usual" class="section level1">
+<h1>Beyond the usual</h1>
+<p>All of this is very nice but merely a small extension of what <code>raster</code> or <a href="https://jonjup.netlify.app/post/2021-01-27-the-terra-r-package/the-terra-r-package/">terra</a> can already do.
+However, <code>rasterVis</code> has some more tricks up its sleeve.
+Like the <code>xyplot()</code> you can see below.</p>
+<pre class="r"><code>xyplot(Jan+Feb~Jul|cut(x, 2), data = SISmm, auto.key = list(space=&#39;right&#39;))</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+In the function call there are three building blocks: 1. <code>Jan+Feb~Jul|cut(x, 2)</code>; 2. <code>data = SISmm</code>; 3. <code>auto.key = list(space='right')</code>.
+The latter two require less explanation so we will start with them.
+The data argument receives the raster you want to plot.
+The auto.key, at least here, is only there to receive the position of the legend.
+The first argument is written in R’s formula notation.
+You probably know it from fitting models in R, e.g. <code>lm(x ~ y + z)</code>.
+The response (Jan+Feb) is displayed on the Y-axis and the predictor (Jul) on the X-axis. Each dot in the scatter plot is one cell value of <code>SISmm</code>. <code>|cut(x,2)</code> indicates that we want to split the X-axis into two distinct plots. The values on top of the two plots indicate the X-range for each of them.</p>
+<p>One drawback of this plot is that many points are on top of each other. A density plot would be helpful for that and indeed <code>rasterVis</code> provides hexbinplots just for that. Note that we have to drop the second response variable in the hexbinplot.</p>
+<pre class="r"><code>hexbinplot(Jan~Jul|cut(x, 2), data = SISmm)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>Lastly, <code>rasterVis</code> makes it easy to make four common exploratory plots for the raster cell values: 1. scatter plot matrices (splom), 2. histograms, 3. densityplots and box and whiskers plots.</p>
+<pre class="r"><code>splom(SISmm)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<pre class="r"><code>histogram(SISmm)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<pre class="r"><code>densityplot(SISmm)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<pre class="r"><code>bwplot(SISmm)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+</div>

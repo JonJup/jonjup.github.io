@@ -33,3 +33,7 @@ format:
     smooth-scroll: true
     code-overflow: wrap
     highlight-style: github
+
+
+resources:
+  - MIDFIRELicensingandAttribution.html

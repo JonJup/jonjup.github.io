@@ -1,0 +1,82 @@
+% Encoding: UTF-8
+
+@Article{tikhonov2020joint,
+  author    = {Tikhonov, Gleb and Opedal, {\O}ystein H and Abrego, Nerea and Lehikoinen, Aleksi and de Jonge, Melinda MJ and Oksanen, Jari and Ovaskainen, Otso},
+  journal   = {Methods in ecology and evolution},
+  title     = {Joint species distribution modelling with the r-package Hmsc},
+  year      = {2020},
+  number    = {3},
+  pages     = {442--447},
+  volume    = {11},
+  publisher = {Wiley Online Library},
+}
+
+@Article{ovaskainen2017make,
+  author    = {Ovaskainen, Otso and Tikhonov, Gleb and Norberg, Anna and Guillaume Blanchet, F and Duan, Leo and Dunson, David and Roslin, Tomas and Abrego, Nerea},
+  journal   = {Ecology Letters},
+  title     = {How to make more out of community data? A conceptual framework and its implementation as models and software},
+  year      = {2017},
+  number    = {5},
+  pages     = {561--576},
+  volume    = {20},
+  publisher = {Wiley Online Library},
+}
+
+@Book{ovaskainen2020joint,
+  author    = {Ovaskainen, Otso and Abrego, Nerea},
+  publisher = {Cambridge University Press},
+  title     = {Joint Species Distribution Modelling: With Applications in R},
+  year      = {2020},
+}
+
+@Article{Plummer2006,
+  author  = {Martyn Plummer and Nicky Best and Kate Cowles and Karen Vines},
+  journal = {R News},
+  title   = {CODA: Convergence Diagnosis and Output Analysis for MCMC},
+  year    = {2006},
+  number  = {1},
+  pages   = {7--11},
+  volume  = {6},
+  pdf     = {https://www.r-project.org/doc/Rnews/Rnews_2006-1.pdf},
+  url     = {https://journal.r-project.org/archive/},
+}
+
+@Article{pearce2000evaluating,
+  author    = {Pearce, Jennie and Ferrier, Simon},
+  journal   = {Ecological modelling},
+  title     = {Evaluating the predictive performance of habitat models developed using logistic regression},
+  year      = {2000},
+  number    = {3},
+  pages     = {225--245},
+  volume    = {133},
+  publisher = {Elsevier},
+}
+
+@Article{LauraJimenez2020,
+  author          = {{Laura Jim{\'{e}}nez} and Sober{\'{o}}n, J.},
+  journal         = {Methods in Ecology and Evolution},
+  title           = {{Leaving the area under the receiving operating characteristic curve behind: An evaluation method for species distribution modeling applications based on presence-only data}},
+  year            = {2020},
+  number          = {1},
+  pages           = {1--2},
+  volume          = {1},
+  abstract        = {simulates scenarios on spatially-explicit landscapes. The software$\backslash$nprovides$\backslash$n$\backslash$nfunctionality for a wide variety of modelling applications ranging$\backslash$nfrom $\backslash$n$\backslash$napplied questions, where it can be parameterised for real landscapes$\backslash$nand},
+  doi             = {10.1111/j.2041-210x.2010.00016.x},
+  file            = {:C$\backslash$:/Users/jonat/Documents/10{\_}Paper/Laura Jim{\'{e}}nez, Sober{\'{o}}n - 2020 - Leaving the area under the receiving operating characteristic curve behind An evaluation method for s(2).pdf:pdf},
+  keywords        = {AUC,SDM,method comparison,presence only data},
+  mendeley-groups = {003{\_}Lesen/02{\_}Complete/01{\_}High},
+  mendeley-tags   = {AUC,SDM,method comparison,presence only data},
+}
+
+@Article{tjur2009coefficients,
+  author    = {Tjur, Tue},
+  journal   = {The American Statistician},
+  title     = {Coefficients of determination in logistic regression models—A new proposal: The coefficient of discrimination},
+  year      = {2009},
+  number    = {4},
+  pages     = {366--372},
+  volume    = {63},
+  publisher = {Taylor \& Francis},
+}
+
+@Comment{jabref-meta: databaseType:bibtex;}

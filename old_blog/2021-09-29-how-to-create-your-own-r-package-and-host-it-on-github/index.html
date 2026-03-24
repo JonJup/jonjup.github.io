@@ -1,0 +1,64 @@
+---
+title: How to create your own R package and host it on github
+author: Jonathan Jupke
+date: '2021-09-29'
+slug: how-to-create-your-own-r-package-and-host-it-on-github
+categories: []
+tags: []
+comments: no
+bibliography: ref.bib
+images: ~
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>Writing good R code for a larger project entails writing functions.
+Functions make your code cleaner, shorter and easier to read because they help you to not repeat yourself.
+DRY (don’t repeat yourself) is one the fundamental concepts of good coding identified by <span class="citation"><a href="#ref-thomas2019pragmatic" role="doc-biblioref">Thomas and Hunt</a> (<a href="#ref-thomas2019pragmatic" role="doc-biblioref">2019</a>)</span>.
+But how should you store the R-scripts that hold the functions? Within the project? Maybe you can also use them somewhere else and at some point you will have worked in enough projects to forget which project had that one function you are looking for right now. You can also save them all in a central folder on your hardrive, but then navigating to that folder from your project folder can become annoying.
+Instead, I suggest that you create yourself a little R-package and host it on github.
+Then at the beginning of your scripts you can load it like every other package.
+An added benefit is that packages make it easy to properly document the functions - your future self will thank you ;).</p>
+<p>This is all well and fine, you might think now, but how do I do that? How do I create a package?
+This is what this post is here to tell you.
+As always, I will not explore every last depth of this topic but if you are interested in that check out this <a href="https://r-pkgs.org/">book</a>.</p>
+<div id="getting-started" class="section level1">
+<h1>Getting started</h1>
+<p>Luckily most steps have been automated and for our little self-made packages we do not need to understand the internal workings of it all.
+We start with:</p>
+<pre class="r"><code>usethis::create_package(&quot;provide_path_to_folder_here&quot;)</code></pre>
+<p>which, well, creates a package … or at least many of the files and folders that packages commonly have.
+The function only needs the path to the desired folder of the package.
+This folder now some files and, most importantly, the folder <code>R</code>.
+In this folder, you write and save all the functions that your package should have.
+It is easiest if each script contains one file and the file and function name are equal - though both are not necessary.</p>
+<p>Let’s assume you have added a script called “testme.r” to your R folder.
+Next we can load all scripts to see if they have any errors.</p>
+<pre class="r"><code>devtools::load_all()</code></pre>
+<p>This function approximates the steps that your package would go through if it would be installed.
+Further checks are done with</p>
+<pre class="r"><code>devtools::check()</code></pre>
+<p>If the functions you are writing require other packages you can add these packages to the list of dependencies your package has with</p>
+<pre class="r"><code>use_package(&quot;dplyr&quot;)</code></pre>
+<p>if the package you were using would be dplyr.</p>
+<p>This is already it! If you passed the checks above, which you should run every time you change something in your package, you package is ready. Now we only need to move it to github.</p>
+<p>For this we first turn the folder into a git repository.</p>
+<pre class="r"><code>use_git()</code></pre>
+<p>Then we need an authentification token from github.</p>
+<pre class="r"><code>create_github_token()</code></pre>
+<p>We can save this token with</p>
+<pre class="r"><code>gitcreds_set(url = &quot;https://github.com&quot;)</code></pre>
+<p>and finally we can connect our local folder to github.</p>
+<pre class="r"><code>use_github()</code></pre>
+<p>In my case, I named the package jjmisc. To install it I run:</p>
+<pre class="r"><code>devtools::install_github(repo = &quot;https://github.com/JonJup/jjmisc&quot;)</code></pre>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-thomas2019pragmatic" class="csl-entry">
+Thomas, David, and Andrew Hunt. 2019. <em>The Pragmatic Programmer: Your Journey to Mastery</em>. Addison-Wesley Professional.
+</div>
+</div>
+</div>

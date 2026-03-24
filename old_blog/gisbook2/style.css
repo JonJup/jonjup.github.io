@@ -1,0 +1,31 @@
+p.caption {
+  color: #777;
+  margin-top: 10px;
+}
+p code {
+  white-space: inherit;
+}
+pre {
+  word-break: normal;
+  word-wrap: normal;
+}
+pre code {
+  white-space: inherit;
+}
+.work {
+  background-image: url("images/work.png");
+}
+.blackbox {
+  padding: 1em 1em 1em 4em;
+  background: grey;
+  color: black;
+  border: 2px solid orange;
+  border-radius: 10px;
+  background: #f5f5f5 5px center/3em no-repeat;
+}
+.center {
+  text-align: center;
+}
+body {
+  text-align: justify;
+}

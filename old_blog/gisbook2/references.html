@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 10 References | Spatial Data Science in R</title>
+  <meta name="description" content="Lessons and tasks from GIS courses by Jonathan Jupke" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 10 References | Spatial Data Science in R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Lessons and tasks from GIS courses by Jonathan Jupke" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 10 References | Spatial Data Science in R" />
+  
+  <meta name="twitter:description" content="Lessons and tasks from GIS courses by Jonathan Jupke" />
+  
+
+<meta name="author" content="Jonathan Jupke" />
+
+
+<meta name="date" content="2024-11-18" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="usefull-packages.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="libs/proj4-2.6.2/proj4.min.js"></script>
+<script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding-2.2.2/leaflet.js"></script>
+<script src="libs/leaflet-providers-2.0.0/leaflet-providers_2.0.0.js"></script>
+<script src="libs/leaflet-providers-plugin-2.2.2/leaflet-providers-plugin.js"></script>
+<link href="libs/HomeButton-0.0.1/home-button.css" rel="stylesheet" />
+<script src="libs/HomeButton-0.0.1/home-button.js"></script>
+<script src="libs/HomeButton-0.0.1/easy-button-src.min.js"></script>
+<script src="libs/clipboard-0.0.1/setClipboardText.js"></script>
+<link href="libs/mapviewCSS-0.0.1/mapview-popup.css" rel="stylesheet" />
+<link href="libs/mapviewCSS-0.0.1/mapview.css" rel="stylesheet" />
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Spatial Data Science in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html"><i class="fa fa-check"></i><b>1</b> Introduction to the sf package</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#loading-spatial-data-into-r"><i class="fa fa-check"></i><b>1.1</b> Loading spatial data into R</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#creating-spatial-data-yourself"><i class="fa fa-check"></i><b>1.2</b> Creating spatial data yourself</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#basic-operations"><i class="fa fa-check"></i><b>1.3</b> Basic operations</a></li>
+<li class="chapter" data-level="1.4" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#useful-functions"><i class="fa fa-check"></i><b>1.4</b> Useful functions</a>
+<ul>
+<li class="chapter" data-level="1.4.1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_area"><i class="fa fa-check"></i><b>1.4.1</b> <code>st_area</code></a></li>
+<li class="chapter" data-level="1.4.2" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_bbox"><i class="fa fa-check"></i><b>1.4.2</b> <code>st_bbox()</code></a></li>
+<li class="chapter" data-level="1.4.3" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_buffer"><i class="fa fa-check"></i><b>1.4.3</b> <code>st_buffer()</code></a></li>
+<li class="chapter" data-level="1.4.4" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_coordinates"><i class="fa fa-check"></i><b>1.4.4</b> <code>st_coordinates()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#geometric-set-operations"><i class="fa fa-check"></i><b>1.5</b> Geometric set operations</a>
+<ul>
+<li class="chapter" data-level="1.5.1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_distance"><i class="fa fa-check"></i><b>1.5.1</b> <code>st_distance</code></a></li>
+<li class="chapter" data-level="1.5.2" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_nearest_feature"><i class="fa fa-check"></i><b>1.5.2</b> <code>st_nearest_feature</code></a></li>
+<li class="chapter" data-level="1.5.3" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#spatial-subsetting"><i class="fa fa-check"></i><b>1.5.3</b> spatial subsetting</a></li>
+<li class="chapter" data-level="1.5.4" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#spatial-joins"><i class="fa fa-check"></i><b>1.5.4</b> spatial joins</a></li>
+<li class="chapter" data-level="1.5.5" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#spatial-sggregation"><i class="fa fa-check"></i><b>1.5.5</b> spatial sggregation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html"><i class="fa fa-check"></i><b>2</b> Rasters in R: The terra package</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#basic-idea"><i class="fa fa-check"></i><b>2.1</b> Basic idea</a></li>
+<li class="chapter" data-level="2.2" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#creating-a-new-raster"><i class="fa fa-check"></i><b>2.2</b> Creating a new Raster</a></li>
+<li class="chapter" data-level="2.3" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#going-beyond-the-hull"><i class="fa fa-check"></i><b>2.3</b> Going beyond the hull</a></li>
+<li class="chapter" data-level="2.4" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#multiple-layers-in-one-spatraster"><i class="fa fa-check"></i><b>2.4</b> Multiple layers in one SpatRaster</a></li>
+<li class="chapter" data-level="2.5" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#raster-algebra"><i class="fa fa-check"></i><b>2.5</b> Raster algebra</a></li>
+<li class="chapter" data-level="2.6" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#high-level-functions"><i class="fa fa-check"></i><b>2.6</b> High-level functions</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#extracting-raster-values-with-vectors"><i class="fa fa-check"></i><b>2.6.1</b> Extracting raster values with vectors</a></li>
+<li class="chapter" data-level="2.6.2" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#masking"><i class="fa fa-check"></i><b>2.6.2</b> Masking</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#cell-level-functions"><i class="fa fa-check"></i><b>2.7</b> Cell-level functions</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html"><i class="fa fa-check"></i><b>3</b> Point Pattern Analysis</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#the-ppp-class"><i class="fa fa-check"></i><b>3.1</b> the ppp class</a></li>
+<li class="chapter" data-level="3.2" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#first-order-processes"><i class="fa fa-check"></i><b>3.2</b> First order processes</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#kernel-density"><i class="fa fa-check"></i><b>3.2.1</b> Kernel density</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#second-order-processes"><i class="fa fa-check"></i><b>3.3</b> Second order processes</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#average-nearest-neighbor"><i class="fa fa-check"></i><b>3.3.1</b> Average nearest neighbor</a></li>
+<li class="chapter" data-level="3.3.2" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#the-k-funktion"><i class="fa fa-check"></i><b>3.3.2</b> The K-Funktion</a></li>
+<li class="chapter" data-level="3.3.3" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#morans-i"><i class="fa fa-check"></i><b>3.3.3</b> Morans I</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="interpolation.html"><a href="interpolation.html"><i class="fa fa-check"></i><b>4</b> Interpolation</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="interpolation.html"><a href="interpolation.html#the-data"><i class="fa fa-check"></i><b>4.1</b> The data</a></li>
+<li class="chapter" data-level="4.2" data-path="interpolation.html"><a href="interpolation.html#proximity-polygons"><i class="fa fa-check"></i><b>4.2</b> Proximity Polygons</a></li>
+<li class="chapter" data-level="4.3" data-path="interpolation.html"><a href="interpolation.html#trend-surface-analysis"><i class="fa fa-check"></i><b>4.3</b> Trend Surface Analysis</a></li>
+<li class="chapter" data-level="4.4" data-path="interpolation.html"><a href="interpolation.html#splines"><i class="fa fa-check"></i><b>4.4</b> Splines</a></li>
+<li class="chapter" data-level="4.5" data-path="interpolation.html"><a href="interpolation.html#weighted-averaging"><i class="fa fa-check"></i><b>4.5</b> Weighted averaging</a></li>
+<li class="chapter" data-level="4.6" data-path="interpolation.html"><a href="interpolation.html#kriging"><i class="fa fa-check"></i><b>4.6</b> Kriging</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="machine-learning.html"><a href="machine-learning.html"><i class="fa fa-check"></i><b>5</b> Machine Learning</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="machine-learning.html"><a href="machine-learning.html#terrain-analysis-with-terra"><i class="fa fa-check"></i><b>5.1</b> Terrain analysis with terra</a></li>
+<li class="chapter" data-level="5.2" data-path="machine-learning.html"><a href="machine-learning.html#ploting-the-data"><i class="fa fa-check"></i><b>5.2</b> Ploting the data</a></li>
+<li class="chapter" data-level="5.3" data-path="machine-learning.html"><a href="machine-learning.html#logistic-regression"><i class="fa fa-check"></i><b>5.3</b> Logistic regression</a></li>
+<li class="chapter" data-level="5.4" data-path="machine-learning.html"><a href="machine-learning.html#mlr3"><i class="fa fa-check"></i><b>5.4</b> mlr3</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="machine-learning.html"><a href="machine-learning.html#creating-a-task"><i class="fa fa-check"></i><b>5.4.1</b> Creating a <em>task</em></a></li>
+<li class="chapter" data-level="5.4.2" data-path="machine-learning.html"><a href="machine-learning.html#the-learner"><i class="fa fa-check"></i><b>5.4.2</b> The <em>learner</em></a></li>
+<li class="chapter" data-level="5.4.3" data-path="machine-learning.html"><a href="machine-learning.html#hyperparameter-tuning"><i class="fa fa-check"></i><b>5.4.3</b> Hyperparameter Tuning</a></li>
+<li class="chapter" data-level="5.4.4" data-path="machine-learning.html"><a href="machine-learning.html#predictions"><i class="fa fa-check"></i><b>5.4.4</b> Predictions</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="graph-analysis.html"><a href="graph-analysis.html"><i class="fa fa-check"></i><b>6</b> Graph Analysis</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="graph-analysis.html"><a href="graph-analysis.html#the-igraph-package"><i class="fa fa-check"></i><b>6.1</b> The igraph package</a></li>
+<li class="chapter" data-level="6.2" data-path="graph-analysis.html"><a href="graph-analysis.html#from-data-to-graph"><i class="fa fa-check"></i><b>6.2</b> From data to graph</a></li>
+<li class="chapter" data-level="6.3" data-path="graph-analysis.html"><a href="graph-analysis.html#centrality-measures"><i class="fa fa-check"></i><b>6.3</b> Centrality measures</a></li>
+<li class="chapter" data-level="6.4" data-path="graph-analysis.html"><a href="graph-analysis.html#visualization"><i class="fa fa-check"></i><b>6.4</b> Visualization</a></li>
+<li class="chapter" data-level="6.5" data-path="graph-analysis.html"><a href="graph-analysis.html#network-models"><i class="fa fa-check"></i><b>6.5</b> Network Models</a></li>
+<li class="chapter" data-level="6.6" data-path="graph-analysis.html"><a href="graph-analysis.html#optimal-channel-networks"><i class="fa fa-check"></i><b>6.6</b> Optimal Channel Networks</a></li>
+<li class="chapter" data-level="6.7" data-path="graph-analysis.html"><a href="graph-analysis.html#sfnetworks"><i class="fa fa-check"></i><b>6.7</b> sfnetworks</a>
+<ul>
+<li class="chapter" data-level="6.7.1" data-path="graph-analysis.html"><a href="graph-analysis.html#finding-paths-in-the-network"><i class="fa fa-check"></i><b>6.7.1</b> Finding paths in the network</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html"><i class="fa fa-check"></i><b>7</b> Creating Maps in R</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#tmap"><i class="fa fa-check"></i><b>7.1</b> tmap</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#basic-tmaps"><i class="fa fa-check"></i><b>7.1.1</b> Basic tmaps</a></li>
+<li class="chapter" data-level="7.1.2" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#adjusting-visual-elements-and-multiple-groups"><i class="fa fa-check"></i><b>7.1.2</b> Adjusting visual elements and multiple groups</a></li>
+<li class="chapter" data-level="7.1.3" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#map-extend"><i class="fa fa-check"></i><b>7.1.3</b> Map extend</a></li>
+<li class="chapter" data-level="7.1.4" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#further-map-elements"><i class="fa fa-check"></i><b>7.1.4</b> Further map elements</a></li>
+<li class="chapter" data-level="7.1.5" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#making-the-map-prettier"><i class="fa fa-check"></i><b>7.1.5</b> Making the map prettier</a></li>
+<li class="chapter" data-level="7.1.6" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#save-to-maps-to-file"><i class="fa fa-check"></i><b>7.1.6</b> Save to maps to file</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#rastervis"><i class="fa fa-check"></i><b>7.2</b> rasterVis</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#beyond-the-usual"><i class="fa fa-check"></i><b>7.2.1</b> Beyond the usual</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#cartographer"><i class="fa fa-check"></i><b>7.3</b> Cartographer</a></li>
+<li class="chapter" data-level="7.4" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#rayshader"><i class="fa fa-check"></i><b>7.4</b> Rayshader</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#setup"><i class="fa fa-check"></i><b>7.4.1</b> Setup</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html"><i class="fa fa-check"></i><b>8</b> Where do I get data❓</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#websites"><i class="fa fa-check"></i><b>8.1</b> Websites</a></li>
+<li class="chapter" data-level="8.2" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#packages"><i class="fa fa-check"></i><b>8.2</b> Packages</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#geodata"><i class="fa fa-check"></i><b>8.2.1</b> geodata</a></li>
+<li class="chapter" data-level="8.2.2" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#osmdata"><i class="fa fa-check"></i><b>8.2.2</b> osmdata</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="usefull-packages.html"><a href="usefull-packages.html"><i class="fa fa-check"></i><b>9</b> Usefull packages</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="usefull-packages.html"><a href="usefull-packages.html#coordinatecleaner"><i class="fa fa-check"></i><b>9.1</b> ‘CoordinateCleaner’</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>10</b> References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Spatial Data Science in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="references" class="section level1 hasAnchor" number="10">
+<h1><span class="header-section-number">Chapter 10</span> References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div class="csl-entry">
+Baddeley, Adrian, Ege Rubak, and Rolf Turner. 2015. <em>Spatial Point Patterns: Methodology and Applications with r</em>. CRC press.
+</div>
+<div class="csl-entry">
+Baddeley, Adrian, and Rolf Turner. 2005. <span>“<span><strong>Spatstat</strong></span> : <span>An</span> <span><em>R</em></span> <span>Package</span> for <span>Analyzing Spatial Point Patterns</span>.”</span> <em>Journal of Statistical Software</em> 12 (6). <a href="https://doi.org/10.18637/jss.v012.i06">https://doi.org/10.18637/jss.v012.i06</a>.
+</div>
+<div class="csl-entry">
+Bivand, Roger S., Edzer Pebesma, and Virgilio Gómez-Rubio. 2013. <em>Applied <span>Spatial Data Analysis</span> with <span>R</span></em>. <span>New York, NY</span>: <span>Springer New York</span>. <a href="https://doi.org/10.1007/978-1-4614-7618-4">https://doi.org/10.1007/978-1-4614-7618-4</a>.
+</div>
+<div class="csl-entry">
+Braun, John Maindonald AND W. John. 2018. <em>Data Analysis and Graphics Using r: An Example-Based Approach</em>. Cambridge University Press.
+</div>
+<div class="csl-entry">
+Butts, Carter T. 2008. <span>“Network: A Package for Managing Relational Data in r.”</span> <em>Journal of Statistical Software</em> 24 (2). <a href="https://www.jstatsoft.org/htaccess.php?volume=24&amp;type=i&amp;issue=02&amp;filename=paper">https://www.jstatsoft.org/htaccess.php?volume=24&amp;type=i&amp;issue=02&amp;filename=paper</a>.
+</div>
+<div class="csl-entry">
+———. 2022. <em>Sna: Tools for Social Network Analysis</em>. <a href="https://CRAN.R-project.org/package=sna">https://CRAN.R-project.org/package=sna</a>.
+</div>
+<div class="csl-entry">
+Carraro, Luca, Enrico Bertuzzo, Emanuel A. Fronhofer, Reinhard Furrer, Isabelle Gounand, Andrea Rinaldo, and Florian Altermatt. 2020. <span>“Generation and Application of River Network Analogues for Use in Ecology and Evolution.”</span> Preprint. <span>Ecology</span>. <a href="https://doi.org/10.1101/2020.02.17.948851">https://doi.org/10.1101/2020.02.17.948851</a>.
+</div>
+<div class="csl-entry">
+Cruz Rot, Marcelino de la. 2008. <span>“Metodos Para Analizar Datos Puntuales.”</span> In <em>Introduccion Al Analisis Espacial de Datos En Ecologia y Ciencias Ambientales: Metodos y Aplicaciones.</em>, edited by Fernando T. Maestre, Adrian Escudero, and Andreu Bonet, 76–127. Asociacion Espanola de Ecologia Terrestre, Universidad Rey Juan Carlos; Caja de Ahorros del Mediterraneo.
+</div>
+<div class="csl-entry">
+Csardi, Gabor, and Tamas Nepusz. 2006. <span>“The Igraph Software Package for Complex Network Research.”</span> <em>InterJournal</em> Complex Systems: 1695. <a href="https://igraph.org">https://igraph.org</a>.
+</div>
+<div class="csl-entry">
+Douglas Nychka, Reinhard Furrer, John Paige, and Stephan Sain. 2021. <span>“Fields: Tools for Spatial Data.”</span> Boulder, CO, USA: University Corporation for Atmospheric Research. <a href="https://github.com/dnychka/fieldsRPackage">https://github.com/dnychka/fieldsRPackage</a>.
+</div>
+<div class="csl-entry">
+Dowle, Matt, and Arun Srinivasan. 2021. <em>Data.table: Extension of ‘Data.frame‘</em>. <a href="https://CRAN.R-project.org/package=data.table">https://CRAN.R-project.org/package=data.table</a>.
+</div>
+<div class="csl-entry">
+Dunn, Peter K, and Gordon K Smyth. 1996. <span>“Randomized Quantile Residuals”</span> 5 (3): 236–44.
+</div>
+<div class="csl-entry">
+Fletcher, Robert, and Marie-Josée Fortin. 2018. <em>Spatial <span>Ecology</span> and <span>Conservation Modeling</span>: <span>Applications</span> with <span>R</span></em>. <span>Cham</span>: <span>Springer International Publishing</span>. <a href="https://doi.org/10.1007/978-3-030-01989-1">https://doi.org/10.1007/978-3-030-01989-1</a>.
+</div>
+<div class="csl-entry">
+Fox, John. 2002. <em>An r and s-Plus Companion to Applied Regression</em>. Sage Publications.
+</div>
+<div class="csl-entry">
+Gabriel, Edith, Peter J Diggle, Barry Rowlingson, and Francisco J Rodriguez-Cortes. 2022. <em>Stpp: Space-Time Point Pattern Simulation, Visualisation and Analysis</em>. <a href="https://CRAN.R-project.org/package=stpp">https://CRAN.R-project.org/package=stpp</a>.
+</div>
+<div class="csl-entry">
+Gelb, Jérémy. 2021. <em>spNetwork: Spatial Analysis on Network</em>. <a href="https://jeremygelb.github.io/spNetwork/">https://jeremygelb.github.io/spNetwork/</a>.
+</div>
+<div class="csl-entry">
+Giraud, Timothée. 2022. <em>Maptiles: Download and Display Map Tiles</em>. <a href="https://CRAN.R-project.org/package=maptiles">https://CRAN.R-project.org/package=maptiles</a>.
+</div>
+<div class="csl-entry">
+Gräler, Benedikt, Edzer Pebesma, and Gerard Heuvelink. 2016. <span>“Spatio-Temporal Interpolation Using Gstat.”</span> <em>The R Journal</em> 8: 204–18. <a href="https://journal.r-project.org/archive/2016/RJ-2016-014/index.html">https://journal.r-project.org/archive/2016/RJ-2016-014/index.html</a>.
+</div>
+<div class="csl-entry">
+Hiemstra, P. H., E. J. Pebesma, C. J. W. Twenh"ofel, and G. B. M. Heuvelink. 2008. <span>“Real-Time Automatic Interpolation of Ambient Gamma Dose Rates from the Dutch Radioactivity Monitoring Network.”</span> <em>Computers &amp; Geosciences</em>.
+</div>
+<div class="csl-entry">
+Hijmans, Robert J. 2022a. <em>Raster: Geographic Data Analysis and Modeling</em>. <a href="https://CRAN.R-project.org/package=raster">https://CRAN.R-project.org/package=raster</a>.
+</div>
+<div class="csl-entry">
+———. 2022b. <em>Terra: Spatial Data Analysis</em>. <a href="https://CRAN.R-project.org/package=terra">https://CRAN.R-project.org/package=terra</a>.
+</div>
+<div class="csl-entry">
+Hijmans, Robert J., Aniruddha Ghosh, and Alex Mandel. 2022. <em>Geodata: Download Geographic Data</em>. <a href="https://CRAN.R-project.org/package=geodata">https://CRAN.R-project.org/package=geodata</a>.
+</div>
+<div class="csl-entry">
+Lang, Michel, Martin Binder, Jakob Richter, Patrick Schratz, Florian Pfisterer, Stefan Coors, Quay Au, Giuseppe Casalicchio, Lars Kotthoff, and Bernd Bischl. 2019. <span>“<span class="nocase">mlr3</span>: A Modern Object-Oriented Machine Learning Framework in <span>R</span>.”</span> <em>Journal of Open Source Software</em>, December. <a href="https://doi.org/10.21105/joss.01903">https://doi.org/10.21105/joss.01903</a>.
+</div>
+<div class="csl-entry">
+Lang, Michel, Bernd Bischl, Jakob Richter, Xudong Sun, and Martin Binder. 2022. <em>Paradox: Define and Work with Parameter Spaces for Complex Algorithms</em>. <a href="https://CRAN.R-project.org/package=paradox">https://CRAN.R-project.org/package=paradox</a>.
+</div>
+<div class="csl-entry">
+Lloyd, Christopher D. 2010. <em>Spatial Data Analysis</em>. Oxford University Press.
+</div>
+<div class="csl-entry">
+Lovelace, Robin, Jakub Nowosad, and Jannes Muenchow. 2019. <em>Geocomputation with r</em>. CRC Press.
+</div>
+<div class="csl-entry">
+Luke, Douglas. 2015. <em>A User’s Guide to Network Analysis in r</em>. Use r! Cham: Springer International Publishing. <a href="https://doi.org/10.1007/978-3-319-23883-8">https://doi.org/10.1007/978-3-319-23883-8</a>.
+</div>
+<div class="csl-entry">
+Meyer, David, Evgenia Dimitriadou, Kurt Hornik, Andreas Weingessel, and Friedrich Leisch. 2022. <em>E1071: Misc Functions of the Department of Statistics, Probability Theory Group (Formerly: E1071), TU Wien</em>. <a href="https://CRAN.R-project.org/package=e1071">https://CRAN.R-project.org/package=e1071</a>.
+</div>
+<div class="csl-entry">
+Pebesma, Edzer. 2018. <span>“Simple <span>Features</span> for <span>R</span>: <span>Standardized Support</span> for <span>Spatial Vector Data</span>.”</span> <em>The R Journal</em> 10 (1): 439. <a href="https://doi.org/10.32614/RJ-2018-009">https://doi.org/10.32614/RJ-2018-009</a>.
+</div>
+<div class="csl-entry">
+Pebesma, Edzer, and Roger Bivand. 2022. <em>Spatial Data Sciencewith Applications in r</em>. <a href="https://r-spatial.org/book/">https://r-spatial.org/book/</a>.
+</div>
+<div class="csl-entry">
+Pebesma, Edzer, Thomas Mailund, and James Hiebert. 2016. <span>“Measurement Units in <span>R</span>.”</span> <em>R Journal</em> 8 (2): 486–94. <a href="https://doi.org/10.32614/RJ-2016-061">https://doi.org/10.32614/RJ-2016-061</a>.
+</div>
+<div class="csl-entry">
+Pedersen, Thomas Lin. 2022a. <em>Ggraph: An Implementation of Grammar of Graphics for Graphs and Networks</em>. <a href="https://CRAN.R-project.org/package=ggraph">https://CRAN.R-project.org/package=ggraph</a>.
+</div>
+<div class="csl-entry">
+———. 2022b. <em>Tidygraph: A Tidy API for Graph Manipulation</em>. <a href="https://CRAN.R-project.org/package=tidygraph">https://CRAN.R-project.org/package=tidygraph</a>.
+</div>
+<div class="csl-entry">
+Pélissier, Raphaël, and François Goreaud. 2015. <span>“<span class="nocase">ads</span> Package for <span>R</span>: A Fast Unbiased Implementation of the <span class="math inline">\(K\)</span>-Function Family for Studying Spatial Point Patterns in Irregular-Shaped Sampling Windows.”</span> <em>Journal of Statistical Software</em> 63 (6): 1–18. <a href="http://dx.doi.org/10.18637/jss.v063.i06">http://dx.doi.org/10.18637/jss.v063.i06</a>.
+</div>
+<div class="csl-entry">
+Rowlingson, Barry, and Peter Diggle. 2022. <em>Splancs: Spatial and Space-Time Point Pattern Analysis</em>. <a href="https://CRAN.R-project.org/package=splancs">https://CRAN.R-project.org/package=splancs</a>.
+</div>
+<div class="csl-entry">
+Schratz, Patrick, and Marc Becker. 2022. <em>Mlr3spatiotempcv: Spatiotemporal Resampling Methods for ’Mlr3’</em>. <a href="https://CRAN.R-project.org/package=mlr3spatiotempcv">https://CRAN.R-project.org/package=mlr3spatiotempcv</a>.
+</div>
+<div class="csl-entry">
+Tennekes, Martijn. 2018. <span>“<span class="nocase">tmap</span>: Thematic Maps in <span>R</span>.”</span> <em>Journal of Statistical Software</em> 84 (6): 1–39. <a href="https://doi.org/10.18637/jss.v084.i06">https://doi.org/10.18637/jss.v084.i06</a>.
+</div>
+<div class="csl-entry">
+van der Meer, Lucas, Lorena Abad, Andrea Gilardi, and Robin Lovelace. 2024. <em>Sfnetworks: Tidy Geospatial Networks</em>. <a href="https://CRAN.R-project.org/package=sfnetworks">https://CRAN.R-project.org/package=sfnetworks</a>.
+</div>
+<div class="csl-entry">
+Wickham, Hadley. 2016. <em>Ggplot2: Elegant Graphics for Data Analysis</em>. Springer-Verlag New York. <a href="https://ggplot2.tidyverse.org">https://ggplot2.tidyverse.org</a>.
+</div>
+<div class="csl-entry">
+Wickham, Hadley, Romain François, Lionel Henry, and Kirill Müller. 2022. <em>Dplyr: A Grammar of Data Manipulation</em>. <a href="https://CRAN.R-project.org/package=dplyr">https://CRAN.R-project.org/package=dplyr</a>.
+</div>
+<div class="csl-entry">
+Wright, Marvin N., and Andreas Ziegler. 2017. <span>“<span class="nocase">ranger</span>: A Fast Implementation of Random Forests for High Dimensional Data in <span>C++</span> and <span>R</span>.”</span> <em>Journal of Statistical Software</em> 77 (1): 1–17. <a href="https://doi.org/10.18637/jss.v077.i01">https://doi.org/10.18637/jss.v077.i01</a>.
+</div>
+<div class="csl-entry">
+Zizka, Alexander, Daniele Silvestro, Tobias Andermann, Josué Azevedo, Camila Duarte Ritter, Daniel Edler, Harith Farooq, et al. 2019. <span>“<span class="math inline">\(\less\)</span>Scp<span class="math inline">\(\greater\)</span><span>CoordinateCleaner</span><span class="math inline">\(\less\)</span>/Scp<span class="math inline">\(\greater\)</span>: Standardized Cleaning of Occurrence Records from Biological Collection Databases.”</span> Edited by Tiago Quental. <em>Methods in Ecology and Evolution</em> 10 (5): 744–51. <a href="https://doi.org/10.1111/2041-210x.13152">https://doi.org/10.1111/2041-210x.13152</a>.
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="usefull-packages.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/10-References.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,83 @@
+---
+title: How to create your own R package and host it on github
+author: Jonathan Jupke
+date: '2021-09-29'
+slug: how-to-create-your-own-r-package-and-host-it-on-github
+categories: []
+tags: []
+comments: no
+bibliography: ref.bib
+images: ~
+---
+
+Writing good R code for a larger project entails writing functions. 
+Functions make your code cleaner, shorter and easier to read because they help you to not repeat yourself. 
+DRY (don't repeat yourself) is one the fundamental concepts of good coding identified by @thomas2019pragmatic.
+But how should you store the R-scripts that hold the functions? Within the project? Maybe you can also use them somewhere else and at some point you will have worked in enough projects to forget which project had that one function you are looking for right now. You can also save them all in a central folder on your hardrive, but then navigating to that folder from your project folder can become annoying. 
+Instead, I suggest that you create yourself a little R-package and host it on github. 
+Then at the beginning of your scripts you can load it like every other package. 
+An added benefit is that packages make it easy to properly document the functions - your future self will thank you ;).
+
+This is all well and fine, you might think now, but how do I do that? How do I create a package? 
+This is what this post is here to tell you. 
+As always, I will not explore every last depth of this topic but if you are interested in that check out this [book](https://r-pkgs.org/).
+
+# Getting started 
+
+Luckily most steps have been automated and for our little self-made packages we do not need to understand the internal workings of it all. 
+We start with: 
+```{r eval=FALSE}
+usethis::create_package("provide_path_to_folder_here")
+```
+which, well, creates a package ... or at least many of the files and folders that packages commonly have. 
+The function only needs the path to the desired folder of the package. 
+This folder now some files and, most importantly, the folder `R`.
+In this folder, you write and save all the functions that your package should have. 
+It is easiest if each script contains one file and the file and function name are equal - though both are not necessary. 
+
+Let's assume you have added a script called "testme.r" to your R folder. 
+Next we can load all scripts to see if they have any errors. 
+```{r eval = FALSE}
+devtools::load_all()
+```
+This function approximates the steps that your package would go through if it would be installed. 
+Further checks are done with
+```{r eval = F}
+devtools::check()
+```
+If the functions you are writing require other packages you can add these packages to the list of dependencies your package has with 
+```{r eval =F} 
+use_package("dplyr")
+```
+if the package you were using would be dplyr. 
+
+This is already it! If you passed the checks above, which you should run every time you change something in your package, you package is ready. Now we only need to move it to github. 
+
+For this we first turn the folder into a git repository. 
+```{r eval = F}
+use_git()
+```
+
+Then we need an authentification token from github.
+```{r eval = F}
+create_github_token()
+```
+
+We can save this token with 
+```{r eval = F}
+gitcreds_set(url = "https://github.com")
+```
+
+and finally we can connect our local folder to github. 
+```{r eval = F}
+use_github()
+```
+
+In my case, I named the package jjmisc. To install it I run: 
+```{r eval=F}
+devtools::install_github(repo = "https://github.com/JonJup/jjmisc")
+```
+
+
+
+# References

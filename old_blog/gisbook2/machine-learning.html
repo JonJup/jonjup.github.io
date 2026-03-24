@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 5 Machine Learning | Spatial Data Science in R</title>
+  <meta name="description" content="Lessons and tasks from GIS courses by Jonathan Jupke" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 5 Machine Learning | Spatial Data Science in R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Lessons and tasks from GIS courses by Jonathan Jupke" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 5 Machine Learning | Spatial Data Science in R" />
+  
+  <meta name="twitter:description" content="Lessons and tasks from GIS courses by Jonathan Jupke" />
+  
+
+<meta name="author" content="Jonathan Jupke" />
+
+
+<meta name="date" content="2024-11-18" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="interpolation.html"/>
+<link rel="next" href="graph-analysis.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="libs/proj4-2.6.2/proj4.min.js"></script>
+<script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding-2.2.2/leaflet.js"></script>
+<script src="libs/leaflet-providers-2.0.0/leaflet-providers_2.0.0.js"></script>
+<script src="libs/leaflet-providers-plugin-2.2.2/leaflet-providers-plugin.js"></script>
+<link href="libs/HomeButton-0.0.1/home-button.css" rel="stylesheet" />
+<script src="libs/HomeButton-0.0.1/home-button.js"></script>
+<script src="libs/HomeButton-0.0.1/easy-button-src.min.js"></script>
+<script src="libs/clipboard-0.0.1/setClipboardText.js"></script>
+<link href="libs/mapviewCSS-0.0.1/mapview-popup.css" rel="stylesheet" />
+<link href="libs/mapviewCSS-0.0.1/mapview.css" rel="stylesheet" />
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Spatial Data Science in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html"><i class="fa fa-check"></i><b>1</b> Introduction to the sf package</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#loading-spatial-data-into-r"><i class="fa fa-check"></i><b>1.1</b> Loading spatial data into R</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#creating-spatial-data-yourself"><i class="fa fa-check"></i><b>1.2</b> Creating spatial data yourself</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#basic-operations"><i class="fa fa-check"></i><b>1.3</b> Basic operations</a></li>
+<li class="chapter" data-level="1.4" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#useful-functions"><i class="fa fa-check"></i><b>1.4</b> Useful functions</a>
+<ul>
+<li class="chapter" data-level="1.4.1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_area"><i class="fa fa-check"></i><b>1.4.1</b> <code>st_area</code></a></li>
+<li class="chapter" data-level="1.4.2" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_bbox"><i class="fa fa-check"></i><b>1.4.2</b> <code>st_bbox()</code></a></li>
+<li class="chapter" data-level="1.4.3" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_buffer"><i class="fa fa-check"></i><b>1.4.3</b> <code>st_buffer()</code></a></li>
+<li class="chapter" data-level="1.4.4" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_coordinates"><i class="fa fa-check"></i><b>1.4.4</b> <code>st_coordinates()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#geometric-set-operations"><i class="fa fa-check"></i><b>1.5</b> Geometric set operations</a>
+<ul>
+<li class="chapter" data-level="1.5.1" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_distance"><i class="fa fa-check"></i><b>1.5.1</b> <code>st_distance</code></a></li>
+<li class="chapter" data-level="1.5.2" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#st_nearest_feature"><i class="fa fa-check"></i><b>1.5.2</b> <code>st_nearest_feature</code></a></li>
+<li class="chapter" data-level="1.5.3" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#spatial-subsetting"><i class="fa fa-check"></i><b>1.5.3</b> spatial subsetting</a></li>
+<li class="chapter" data-level="1.5.4" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#spatial-joins"><i class="fa fa-check"></i><b>1.5.4</b> spatial joins</a></li>
+<li class="chapter" data-level="1.5.5" data-path="introduction-to-the-sf-package.html"><a href="introduction-to-the-sf-package.html#spatial-sggregation"><i class="fa fa-check"></i><b>1.5.5</b> spatial sggregation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html"><i class="fa fa-check"></i><b>2</b> Rasters in R: The terra package</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#basic-idea"><i class="fa fa-check"></i><b>2.1</b> Basic idea</a></li>
+<li class="chapter" data-level="2.2" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#creating-a-new-raster"><i class="fa fa-check"></i><b>2.2</b> Creating a new Raster</a></li>
+<li class="chapter" data-level="2.3" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#going-beyond-the-hull"><i class="fa fa-check"></i><b>2.3</b> Going beyond the hull</a></li>
+<li class="chapter" data-level="2.4" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#multiple-layers-in-one-spatraster"><i class="fa fa-check"></i><b>2.4</b> Multiple layers in one SpatRaster</a></li>
+<li class="chapter" data-level="2.5" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#raster-algebra"><i class="fa fa-check"></i><b>2.5</b> Raster algebra</a></li>
+<li class="chapter" data-level="2.6" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#high-level-functions"><i class="fa fa-check"></i><b>2.6</b> High-level functions</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#extracting-raster-values-with-vectors"><i class="fa fa-check"></i><b>2.6.1</b> Extracting raster values with vectors</a></li>
+<li class="chapter" data-level="2.6.2" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#masking"><i class="fa fa-check"></i><b>2.6.2</b> Masking</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="rasters-in-r-the-terra-package.html"><a href="rasters-in-r-the-terra-package.html#cell-level-functions"><i class="fa fa-check"></i><b>2.7</b> Cell-level functions</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html"><i class="fa fa-check"></i><b>3</b> Point Pattern Analysis</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#the-ppp-class"><i class="fa fa-check"></i><b>3.1</b> the ppp class</a></li>
+<li class="chapter" data-level="3.2" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#first-order-processes"><i class="fa fa-check"></i><b>3.2</b> First order processes</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#kernel-density"><i class="fa fa-check"></i><b>3.2.1</b> Kernel density</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#second-order-processes"><i class="fa fa-check"></i><b>3.3</b> Second order processes</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#average-nearest-neighbor"><i class="fa fa-check"></i><b>3.3.1</b> Average nearest neighbor</a></li>
+<li class="chapter" data-level="3.3.2" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#the-k-funktion"><i class="fa fa-check"></i><b>3.3.2</b> The K-Funktion</a></li>
+<li class="chapter" data-level="3.3.3" data-path="point-pattern-analysis.html"><a href="point-pattern-analysis.html#morans-i"><i class="fa fa-check"></i><b>3.3.3</b> Morans I</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="interpolation.html"><a href="interpolation.html"><i class="fa fa-check"></i><b>4</b> Interpolation</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="interpolation.html"><a href="interpolation.html#the-data"><i class="fa fa-check"></i><b>4.1</b> The data</a></li>
+<li class="chapter" data-level="4.2" data-path="interpolation.html"><a href="interpolation.html#proximity-polygons"><i class="fa fa-check"></i><b>4.2</b> Proximity Polygons</a></li>
+<li class="chapter" data-level="4.3" data-path="interpolation.html"><a href="interpolation.html#trend-surface-analysis"><i class="fa fa-check"></i><b>4.3</b> Trend Surface Analysis</a></li>
+<li class="chapter" data-level="4.4" data-path="interpolation.html"><a href="interpolation.html#splines"><i class="fa fa-check"></i><b>4.4</b> Splines</a></li>
+<li class="chapter" data-level="4.5" data-path="interpolation.html"><a href="interpolation.html#weighted-averaging"><i class="fa fa-check"></i><b>4.5</b> Weighted averaging</a></li>
+<li class="chapter" data-level="4.6" data-path="interpolation.html"><a href="interpolation.html#kriging"><i class="fa fa-check"></i><b>4.6</b> Kriging</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="machine-learning.html"><a href="machine-learning.html"><i class="fa fa-check"></i><b>5</b> Machine Learning</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="machine-learning.html"><a href="machine-learning.html#terrain-analysis-with-terra"><i class="fa fa-check"></i><b>5.1</b> Terrain analysis with terra</a></li>
+<li class="chapter" data-level="5.2" data-path="machine-learning.html"><a href="machine-learning.html#ploting-the-data"><i class="fa fa-check"></i><b>5.2</b> Ploting the data</a></li>
+<li class="chapter" data-level="5.3" data-path="machine-learning.html"><a href="machine-learning.html#logistic-regression"><i class="fa fa-check"></i><b>5.3</b> Logistic regression</a></li>
+<li class="chapter" data-level="5.4" data-path="machine-learning.html"><a href="machine-learning.html#mlr3"><i class="fa fa-check"></i><b>5.4</b> mlr3</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="machine-learning.html"><a href="machine-learning.html#creating-a-task"><i class="fa fa-check"></i><b>5.4.1</b> Creating a <em>task</em></a></li>
+<li class="chapter" data-level="5.4.2" data-path="machine-learning.html"><a href="machine-learning.html#the-learner"><i class="fa fa-check"></i><b>5.4.2</b> The <em>learner</em></a></li>
+<li class="chapter" data-level="5.4.3" data-path="machine-learning.html"><a href="machine-learning.html#hyperparameter-tuning"><i class="fa fa-check"></i><b>5.4.3</b> Hyperparameter Tuning</a></li>
+<li class="chapter" data-level="5.4.4" data-path="machine-learning.html"><a href="machine-learning.html#predictions"><i class="fa fa-check"></i><b>5.4.4</b> Predictions</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="graph-analysis.html"><a href="graph-analysis.html"><i class="fa fa-check"></i><b>6</b> Graph Analysis</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="graph-analysis.html"><a href="graph-analysis.html#the-igraph-package"><i class="fa fa-check"></i><b>6.1</b> The igraph package</a></li>
+<li class="chapter" data-level="6.2" data-path="graph-analysis.html"><a href="graph-analysis.html#from-data-to-graph"><i class="fa fa-check"></i><b>6.2</b> From data to graph</a></li>
+<li class="chapter" data-level="6.3" data-path="graph-analysis.html"><a href="graph-analysis.html#centrality-measures"><i class="fa fa-check"></i><b>6.3</b> Centrality measures</a></li>
+<li class="chapter" data-level="6.4" data-path="graph-analysis.html"><a href="graph-analysis.html#visualization"><i class="fa fa-check"></i><b>6.4</b> Visualization</a></li>
+<li class="chapter" data-level="6.5" data-path="graph-analysis.html"><a href="graph-analysis.html#network-models"><i class="fa fa-check"></i><b>6.5</b> Network Models</a></li>
+<li class="chapter" data-level="6.6" data-path="graph-analysis.html"><a href="graph-analysis.html#optimal-channel-networks"><i class="fa fa-check"></i><b>6.6</b> Optimal Channel Networks</a></li>
+<li class="chapter" data-level="6.7" data-path="graph-analysis.html"><a href="graph-analysis.html#sfnetworks"><i class="fa fa-check"></i><b>6.7</b> sfnetworks</a>
+<ul>
+<li class="chapter" data-level="6.7.1" data-path="graph-analysis.html"><a href="graph-analysis.html#finding-paths-in-the-network"><i class="fa fa-check"></i><b>6.7.1</b> Finding paths in the network</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html"><i class="fa fa-check"></i><b>7</b> Creating Maps in R</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#tmap"><i class="fa fa-check"></i><b>7.1</b> tmap</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#basic-tmaps"><i class="fa fa-check"></i><b>7.1.1</b> Basic tmaps</a></li>
+<li class="chapter" data-level="7.1.2" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#adjusting-visual-elements-and-multiple-groups"><i class="fa fa-check"></i><b>7.1.2</b> Adjusting visual elements and multiple groups</a></li>
+<li class="chapter" data-level="7.1.3" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#map-extend"><i class="fa fa-check"></i><b>7.1.3</b> Map extend</a></li>
+<li class="chapter" data-level="7.1.4" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#further-map-elements"><i class="fa fa-check"></i><b>7.1.4</b> Further map elements</a></li>
+<li class="chapter" data-level="7.1.5" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#making-the-map-prettier"><i class="fa fa-check"></i><b>7.1.5</b> Making the map prettier</a></li>
+<li class="chapter" data-level="7.1.6" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#save-to-maps-to-file"><i class="fa fa-check"></i><b>7.1.6</b> Save to maps to file</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#rastervis"><i class="fa fa-check"></i><b>7.2</b> rasterVis</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#beyond-the-usual"><i class="fa fa-check"></i><b>7.2.1</b> Beyond the usual</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#cartographer"><i class="fa fa-check"></i><b>7.3</b> Cartographer</a></li>
+<li class="chapter" data-level="7.4" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#rayshader"><i class="fa fa-check"></i><b>7.4</b> Rayshader</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="creating-maps-in-r.html"><a href="creating-maps-in-r.html#setup"><i class="fa fa-check"></i><b>7.4.1</b> Setup</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html"><i class="fa fa-check"></i><b>8</b> Where do I get data❓</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#websites"><i class="fa fa-check"></i><b>8.1</b> Websites</a></li>
+<li class="chapter" data-level="8.2" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#packages"><i class="fa fa-check"></i><b>8.2</b> Packages</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#geodata"><i class="fa fa-check"></i><b>8.2.1</b> geodata</a></li>
+<li class="chapter" data-level="8.2.2" data-path="where-do-i-get-data.html"><a href="where-do-i-get-data.html#osmdata"><i class="fa fa-check"></i><b>8.2.2</b> osmdata</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="usefull-packages.html"><a href="usefull-packages.html"><i class="fa fa-check"></i><b>9</b> Usefull packages</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="usefull-packages.html"><a href="usefull-packages.html#coordinatecleaner"><i class="fa fa-check"></i><b>9.1</b> ‘CoordinateCleaner’</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>10</b> References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Spatial Data Science in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="machine-learning" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">Chapter 5</span> Machine Learning<a href="machine-learning.html#machine-learning" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>In this tutorial you will learn how to use R to<br />
+- fit and predict from logistic generalized linear models<br />
+- fit and predict from different machine learning algorithms with the <code>mlr3</code> package <span class="citation">(<a href="#ref-mlr3">Lang et al. 2019</a>)</span><br />
+- conduct spatial and non-spatial cross validation to evaluate the genralizability of your model.<br />
+Specifically, we will predict the probability of landslides in a small part of the Ecuadorian Andes.
+As always we start out by loading all the necessary packages.</p>
+<div class="sourceCode" id="cb325"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb325-1"><a href="machine-learning.html#cb325-1" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb325-2"><a href="machine-learning.html#cb325-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb325-3"><a href="machine-learning.html#cb325-3" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb325-4"><a href="machine-learning.html#cb325-4" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
+<span id="cb325-5"><a href="machine-learning.html#cb325-5" tabindex="-1"></a><span class="fu">library</span>(mapview)</span>
+<span id="cb325-6"><a href="machine-learning.html#cb325-6" tabindex="-1"></a><span class="fu">library</span>(mlr3spatiotempcv)</span>
+<span id="cb325-7"><a href="machine-learning.html#cb325-7" tabindex="-1"></a><span class="fu">library</span>(mlr3tuning)</span>
+<span id="cb325-8"><a href="machine-learning.html#cb325-8" tabindex="-1"></a><span class="fu">library</span>(mlr3verse)</span>
+<span id="cb325-9"><a href="machine-learning.html#cb325-9" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb325-10"><a href="machine-learning.html#cb325-10" tabindex="-1"></a><span class="fu">library</span>(spdep)</span>
+<span id="cb325-11"><a href="machine-learning.html#cb325-11" tabindex="-1"></a><span class="fu">library</span>(statmod)</span>
+<span id="cb325-12"><a href="machine-learning.html#cb325-12" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb325-13"><a href="machine-learning.html#cb325-13" tabindex="-1"></a><span class="fu">library</span>(tmap)</span></code></pre></div>
+<p>The data you need for this exercise consists of a digital elevation model (DEM) for the area and a data set of landslides locations (download <a href="https://seafile.rlp.net/d/c757bff20f1f49f99cb2/">here</a>).</p>
+<div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb326-1"><a href="machine-learning.html#cb326-1" tabindex="-1"></a>dem <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">&quot;data/ml_raster.tiff&quot;</span>)</span>
+<span id="cb326-2"><a href="machine-learning.html#cb326-2" tabindex="-1"></a>lsl <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/landslides.csv&quot;</span>)</span></code></pre></div>
+<p>Let have a short look at the data.</p>
+<div class="sourceCode" id="cb327"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb327-1"><a href="machine-learning.html#cb327-1" tabindex="-1"></a><span class="fu">head</span>(lsl)</span></code></pre></div>
+<pre><code>##          x       y lslpts    slope        cplan        cprof     elev log10_carea
+## 1 713887.7 9558537  FALSE 33.75185  0.023180449  0.003193061 2422.810    2.784319
+## 2 712787.7 9558917  FALSE 39.40821 -0.038638908 -0.017187813 2051.771    4.146013
+## 3 713407.7 9560307  FALSE 37.45409 -0.013329108  0.009671087 1957.832    3.643556
+## 4 714887.7 9560237  FALSE 31.49607  0.040931452  0.005888638 1968.621    2.268703
+## 5 715247.7 9557117  FALSE 44.07456  0.009686948  0.005149810 3007.774    3.003426
+## 6 714927.7 9560777  FALSE 29.85981 -0.009047707 -0.005738329 1736.887    3.174073</code></pre>
+<p>Here we have 350 observations from the Andes in Ecuador.
+The data include the initiation points of 175 landslides (<code>lslpts = TRUE</code>).
+In addition, 175 reference points which are randomly distributed in the sampling area are included.
+We will try to predict landslides, or determine the probability of a landslide occurring for the whole study area.
+For these predictions we will use the slope, the plan curvature (<code>cplan</code>), the profile curvature (<code>cprof</code>), the elevation (<code>elev</code>), and the log<span class="math inline">\(_{10}\)</span> of the catchment area (<code>log10_carea</code>).</p>
+<p>These predictors are already part of the data you loaded.
+Nonetheless, we will go through the steps with which you can derive them from you elevation raster and add them to your <code>sf</code> data set.
+The specific variables that are already provided in the data are a little trickier to derive than what we will do.
+You would need to use a so called <em>bridge</em> from R to other GIS software (in this case SAGA R) to do so, and this goes beyond the scope of this course.
+If you are interested in this topic and want to give it a try I recommend Chapter 10 of <span class="citation">Lovelace, Nowosad, and Muenchow (<a href="#ref-Lovelace2019">2019</a>)</span>.</p>
+<div id="terrain-analysis-with-terra" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> Terrain analysis with terra<a href="machine-learning.html#terrain-analysis-with-terra" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Conducting a terrain analysis with terra is reasonably easy.
+There is a single function (<code>terrain()</code>) with which you can compute several variables.
+The function has four arguments you will want to consider and some more for writing the results to file.
+<code>x</code> is the DEM in <code>SpatRaster</code> format, the format used by <code>terra</code>.
+<code>v</code> is the variable or variables you want to compute.
+You can choose slope, aspect, TPI, TRI, roughness, and flow direction.
+TRI (Terrain Ruggedness Index) is the mean of the absolute differences between the value of a cell and the value of its 8 surrounding cells. TPI (Topographic Position Index) is the difference between the value of a cell and the mean value of its 8 surrounding cells. Roughness is the difference between the maximum and the minimum value of a cell and its 8 surrounding cells.
+You can provide multiple values to <code>v</code> by combining them in a vector.
+<code>neighbors</code> is the number of neighboring cells you want to consider to compute your slope and aspect.
+You can choose between 4 and 8 also known as rook and queen case after the chess pieces (see Figure <a href="machine-learning.html#fig:queencase">5.1</a> taken from <span class="citation">Lloyd (<a href="#ref-lloydsda">2010</a>)</span>).</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:queencase"></span>
+<img src="images/queen_and_rook_case.png" alt="Queens and Rook case" width="357" />
+<p class="caption">
+Figure 5.1: Queens and Rook case
+</p>
+</div>
+<p><br/></p>
+<div class="sourceCode" id="cb329"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb329-1"><a href="machine-learning.html#cb329-1" tabindex="-1"></a>ta1 <span class="ot">&lt;-</span> <span class="fu">terrain</span>(dem<span class="sc">$</span>elev, <span class="at">v =</span> <span class="st">&quot;slope&quot;</span>)</span>
+<span id="cb329-2"><a href="machine-learning.html#cb329-2" tabindex="-1"></a>ta2 <span class="ot">&lt;-</span> <span class="fu">terrain</span>(dem<span class="sc">$</span>elev, <span class="at">v =</span> <span class="fu">c</span>(<span class="st">&quot;slope&quot;</span>, <span class="st">&quot;aspect&quot;</span>, <span class="st">&quot;TPI&quot;</span>))</span></code></pre></div>
+<p>We can see that the results are again <code>SpatRaster</code> objects.</p>
+<div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb330-1"><a href="machine-learning.html#cb330-1" tabindex="-1"></a>ta2</span></code></pre></div>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 415, 383, 3  (nrow, ncol, nlyr)
+## resolution  : 10, 10  (x, y)
+## extent      : 711962.7, 715792.7, 9556862, 9561012  (xmin, xmax, ymin, ymax)
+## coord. ref. : WGS 84 / UTM zone 17S (EPSG:32717) 
+## source(s)   : memory
+## names       :    slope,       aspect,       TPI 
+## min values  :  0.00000, 4.752037e-04, -21.59433 
+## max values  : 74.14679, 3.599997e+02,  13.26920</code></pre>
+<p>To fit models, we now need to add the new variables to the landslides data.
+To add the raster values to the sample points we have to convert the points, which at this stage are not yet spatially explicit, into <code>sf</code> format and then to <code>terra's</code> vector format <code>SpatVector</code> with <code>vect()</code>.
+We create <code>lsl_terrain</code> a copy of <code>lsl</code> which we use for this demonstration only.
+Afterward, we will fit the models with the original and unaltered <code>lsl</code>.</p>
+<div class="sourceCode" id="cb332"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb332-1"><a href="machine-learning.html#cb332-1" tabindex="-1"></a>lsl_terrain <span class="ot">&lt;-</span> lsl</span>
+<span id="cb332-2"><a href="machine-learning.html#cb332-2" tabindex="-1"></a>lsl_terrain <span class="sc">%&lt;&gt;%</span> </span>
+<span id="cb332-3"><a href="machine-learning.html#cb332-3" tabindex="-1"></a>        <span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>), <span class="at">crs=</span><span class="st">&quot;EPSG:32717&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb332-4"><a href="machine-learning.html#cb332-4" tabindex="-1"></a>        <span class="fu">vect</span>()</span></code></pre></div>
+<p>We extract the values of the raster cells at the location of the landslide observations with the <code>extract()</code> function.</p>
+<div class="sourceCode" id="cb333"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb333-1"><a href="machine-learning.html#cb333-1" tabindex="-1"></a>lsl2 <span class="ot">&lt;-</span> <span class="fu">extract</span>(<span class="at">y =</span> lsl_terrain, <span class="at">x =</span> ta2)</span></code></pre></div>
+<p>Now we can bring the landslide data back to the <code>sf</code> format and combine it with the extracted terrain analysis data.
+In all of this the variable <code>lslpts</code> is reclassified as character at some point.
+With the last line of the code below, we turn it back into a bolean.</p>
+<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb334-1"><a href="machine-learning.html#cb334-1" tabindex="-1"></a>lsl_terrain <span class="sc">%&lt;&gt;%</span> </span>
+<span id="cb334-2"><a href="machine-learning.html#cb334-2" tabindex="-1"></a>        <span class="fu">st_as_sf</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb334-3"><a href="machine-learning.html#cb334-3" tabindex="-1"></a>        <span class="fu">bind_cols</span>(lsl2) <span class="sc">%&gt;%</span></span>
+<span id="cb334-4"><a href="machine-learning.html#cb334-4" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">lslpts =</span> <span class="fu">as.logical</span>(lslpts))</span></code></pre></div>
+<pre><code>## New names:
+## • `slope` -&gt; `slope...2`
+## • `slope` -&gt; `slope...9`</code></pre>
+<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb336-1"><a href="machine-learning.html#cb336-1" tabindex="-1"></a>lsl_terrain</span></code></pre></div>
+<pre><code>## Simple feature collection with 350 features and 10 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 712197.7 ymin: 9556947 xmax: 715737.7 ymax: 9560807
+## Projected CRS: WGS 84 / UTM zone 17S
+## First 10 features:
+##    lslpts slope...2        cplan        cprof     elev log10_carea ID slope...9    aspect        TPI                 geometry
+## 1   FALSE  33.75185  0.023180449  0.003193061 2422.810    2.784319  1  34.29864 238.95861  0.2219849 POINT (713887.7 9558537)
+## 2   FALSE  39.40821 -0.038638908 -0.017187813 2051.771    4.146013  2  38.21037  33.21008 -2.3615265 POINT (712787.7 9558917)
+## 3   FALSE  37.45409 -0.013329108  0.009671087 1957.832    3.643556  3  37.70793 312.93348  0.1600342 POINT (713407.7 9560307)
+## 4   FALSE  31.49607  0.040931452  0.005888638 1968.621    2.268703  4  30.82579  12.59296  1.4586945 POINT (714887.7 9560237)
+## 5   FALSE  44.07456  0.009686948  0.005149810 3007.774    3.003426  5  43.54292 295.99650  0.2507935 POINT (715247.7 9557117)
+## 6   FALSE  29.85981 -0.009047707 -0.005738329 1736.887    3.174073  6  31.43264  39.48969 -0.9816742 POINT (714927.7 9560777)
+## 7   FALSE  31.57465  0.055624146  0.021838507 2583.551    2.251919  7  32.18023 231.95105  2.2877808 POINT (714287.7 9558367)
+## 8   FALSE  53.42223  0.005728012  0.001018965 2522.235    2.583303  8  53.35639 285.90275  0.6058044 POINT (714147.7 9558467)
+## 9   FALSE  32.60400  0.024040293 -0.016939975 1929.097    2.836454  9  33.26295 355.05564 -0.5811005 POINT (713717.7 9560657)
+## 10  FALSE  37.45409 -0.013329108  0.009671087 1957.832    3.643556 10  37.70793 312.93348  0.1600342 POINT (713407.7 9560307)</code></pre>
+<p>We can now remove the data as we will continue our work with the origina ones.</p>
+</div>
+<div id="ploting-the-data" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Ploting the data<a href="machine-learning.html#ploting-the-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Next we will look at DEM and landslides in parallel.
+First, we will mask the raster to just the study area.
+That means we remove all cells of the raster that are not within the study area.
+Partly, because it looks nicer and partly because it removes the <code>NaN</code> in the raster that would cause problems later on.</p>
+<p>First, we turn the <code>lsl</code> data into <code>sf</code> format.</p>
+<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb338-1"><a href="machine-learning.html#cb338-1" tabindex="-1"></a>lsl <span class="sc">%&lt;&gt;%</span>  <span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>), <span class="at">crs=</span><span class="st">&quot;EPSG:32717&quot;</span>)</span></code></pre></div>
+<p>Then we derive its convex hull.
+We need to call <code>st_union()</code> on the points before,
+because otherwise <code>st_convex_hull()</code> would try to create a separate convex hull for each point.</p>
+<div class="sourceCode" id="cb339"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb339-1"><a href="machine-learning.html#cb339-1" tabindex="-1"></a>mask <span class="ot">&lt;-</span> </span>
+<span id="cb339-2"><a href="machine-learning.html#cb339-2" tabindex="-1"></a>        lsl <span class="sc">|&gt;</span> </span>
+<span id="cb339-3"><a href="machine-learning.html#cb339-3" tabindex="-1"></a>        <span class="fu">st_union</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb339-4"><a href="machine-learning.html#cb339-4" tabindex="-1"></a>        <span class="fu">st_convex_hull</span>()</span></code></pre></div>
+<p>When we call the mask function we need to use <code>vect()</code> to transform the mask into the <code>SpatVector</code> class.</p>
+<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb340-1"><a href="machine-learning.html#cb340-1" tabindex="-1"></a>dem2 <span class="ot">&lt;-</span> <span class="fu">mask</span>(dem, <span class="fu">vect</span>(mask))</span></code></pre></div>
+<p>Now we can create a nice plot.</p>
+<div class="sourceCode" id="cb341"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb341-1"><a href="machine-learning.html#cb341-1" tabindex="-1"></a><span class="co"># create hill shade</span></span>
+<span id="cb341-2"><a href="machine-learning.html#cb341-2" tabindex="-1"></a>hs <span class="ot">&lt;-</span> </span>
+<span id="cb341-3"><a href="machine-learning.html#cb341-3" tabindex="-1"></a>        <span class="fu">shade</span>(<span class="at">slope =</span> dem2<span class="sc">$</span>slope <span class="sc">*</span> pi <span class="sc">/</span> <span class="dv">180</span>, </span>
+<span id="cb341-4"><a href="machine-learning.html#cb341-4" tabindex="-1"></a>              <span class="fu">terrain</span>(dem2<span class="sc">$</span>elev, <span class="at">v =</span> <span class="st">&quot;aspect&quot;</span>, <span class="at">unit =</span> <span class="st">&quot;radians&quot;</span>))</span>
+<span id="cb341-5"><a href="machine-learning.html#cb341-5" tabindex="-1"></a><span class="co"># tmaptools does not support terra yet. </span></span>
+<span id="cb341-6"><a href="machine-learning.html#cb341-6" tabindex="-1"></a>bbx <span class="ot">=</span> tmaptools<span class="sc">::</span><span class="fu">bb</span>(raster<span class="sc">::</span><span class="fu">raster</span>(hs), <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.0001</span>, <span class="dv">1</span>),</span>
+<span id="cb341-7"><a href="machine-learning.html#cb341-7" tabindex="-1"></a>                    <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.0001</span>, <span class="dv">1</span>), <span class="at">relative =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb341-8"><a href="machine-learning.html#cb341-8" tabindex="-1"></a>map <span class="ot">=</span> <span class="fu">tm_shape</span>(hs, <span class="at">bbox =</span> bbx) <span class="sc">+</span></span>
+<span id="cb341-9"><a href="machine-learning.html#cb341-9" tabindex="-1"></a>  <span class="fu">tm_grid</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>, <span class="at">n.x =</span> <span class="dv">1</span>, <span class="at">n.y =</span> <span class="dv">1</span>, <span class="at">labels.inside.frame =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb341-10"><a href="machine-learning.html#cb341-10" tabindex="-1"></a>          <span class="at">labels.rot =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">90</span>), <span class="at">lines =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb341-11"><a href="machine-learning.html#cb341-11" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="at">palette =</span> <span class="fu">gray</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">100</span> <span class="sc">/</span> <span class="dv">100</span>), <span class="at">n =</span> <span class="dv">100</span>, <span class="at">legend.show =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb341-12"><a href="machine-learning.html#cb341-12" tabindex="-1"></a>  <span class="fu">tm_shape</span>(dem2<span class="sc">$</span>elev) <span class="sc">+</span></span>
+<span id="cb341-13"><a href="machine-learning.html#cb341-13" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">palette =</span> <span class="fu">terrain.colors</span>(<span class="dv">10</span>), <span class="at">legend.show =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb341-14"><a href="machine-learning.html#cb341-14" tabindex="-1"></a>  <span class="fu">tm_shape</span>(lsl) <span class="sc">+</span></span>
+<span id="cb341-15"><a href="machine-learning.html#cb341-15" tabindex="-1"></a>  <span class="fu">tm_bubbles</span>(<span class="st">&quot;lslpts&quot;</span>, <span class="at">size =</span> <span class="fl">0.2</span>, <span class="at">palette =</span> <span class="st">&quot;-RdYlBu&quot;</span>,</span>
+<span id="cb341-16"><a href="machine-learning.html#cb341-16" tabindex="-1"></a>             <span class="at">title.col =</span> <span class="st">&quot;Landslide: &quot;</span>) <span class="sc">+</span></span>
+<span id="cb341-17"><a href="machine-learning.html#cb341-17" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">inner.margins =</span> <span class="dv">0</span>, <span class="at">legend.outside =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb341-18"><a href="machine-learning.html#cb341-18" tabindex="-1"></a>  <span class="fu">tm_legend</span>(<span class="at">bg.color =</span> <span class="st">&quot;white&quot;</span>)</span>
+<span id="cb341-19"><a href="machine-learning.html#cb341-19" tabindex="-1"></a>map</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-215-1.png" width="672" />
+<br/></p>
+</div>
+<div id="logistic-regression" class="section level2 hasAnchor" number="5.3">
+<h2><span class="header-section-number">5.3</span> Logistic regression<a href="machine-learning.html#logistic-regression" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>With the <code>glm()</code> function we can fit a logistic regression model that tries to predict the probability of a landslide with planar curvature, profile curvature, elevation, the decadal logarithm of the cathment area.
+The call looks similar to the linear regression models you already know except for the <code>family = binomial()</code> argument, which specifies the distribution we assume for the residuals.</p>
+<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb342-1"><a href="machine-learning.html#cb342-1" tabindex="-1"></a>glm1 <span class="ot">=</span> <span class="fu">glm</span>(lslpts <span class="sc">~</span> slope <span class="sc">+</span> cplan <span class="sc">+</span> cprof <span class="sc">+</span> elev <span class="sc">+</span> log10_carea,</span>
+<span id="cb342-2"><a href="machine-learning.html#cb342-2" tabindex="-1"></a>          <span class="at">family =</span> <span class="fu">binomial</span>(),</span>
+<span id="cb342-3"><a href="machine-learning.html#cb342-3" tabindex="-1"></a>          <span class="at">data =</span> lsl)</span></code></pre></div>
+<p>Just like linear regressions, GLMs have a number of assumptions about the data that need to be met in order for the model to be meaningful.
+These assumptions are:
+1. correct distribution function, 2. correct link function, 3. linearity, 4. lack of outliers, and 5. independence of observations.
+Your first step after fitting a model should always be to see if it fits the data well and if assumptions are met.</p>
+<p>Some of them can be checked in tandem: link function, linearity and distribution would, if wrongly specified, all lead to patterns in the residuals that we can investigate with residual plots.
+For linear models we use the <em>response residuals</em>, i.e. the difference between the observed point and the predicted point <span class="math inline">\(y_i - \hat{\mu}\)</span>.
+For GLMs this is not possible, because the variance of the residuals changes with the mean.
+That means we assume that a pattern in the residuals and visually testing whether our data deviate from the expected pattern is a lot harder than looking for any pattern at all.
+Thus we use other types of residuals which should indeed show not pattern but are a little bit more difficult to compute.
+The details of this was discussed in the lecutre and plenty of material is provided in the presentation notes.
+Here we will use Quantile residuals which we can compute with the <code>statmod</code>package <span class="citation">(<a href="#ref-dunnRandomizedQuantileResiduals2020">Dunn and Smyth 1996</a>)</span>.</p>
+<div class="sourceCode" id="cb343"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb343-1"><a href="machine-learning.html#cb343-1" tabindex="-1"></a>quantile_residuals <span class="ot">&lt;-</span> statmod<span class="sc">::</span><span class="fu">qresiduals</span>(glm1)</span>
+<span id="cb343-2"><a href="machine-learning.html#cb343-2" tabindex="-1"></a><span class="fu">plot</span>(quantile_residuals <span class="sc">~</span> glm1<span class="sc">$</span>fitted.values)</span>
+<span id="cb343-3"><a href="machine-learning.html#cb343-3" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fu">mean</span>(quantile_residuals))</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-217-1.png" width="672" />
+<br/></p>
+<p>investigating the QQ Plot (points should be on diagonal line), or</p>
+<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb344-1"><a href="machine-learning.html#cb344-1" tabindex="-1"></a><span class="fu">qqnorm</span>(quantile_residuals); <span class="fu">qqline</span>(quantile_residuals, <span class="at">col =</span> <span class="dv">2</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-218-1.png" width="672" />
+<br/></p>
+<p>residuals versus row number (again optimally no pattern).</p>
+<div class="sourceCode" id="cb345"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb345-1"><a href="machine-learning.html#cb345-1" tabindex="-1"></a><span class="fu">scatter.smooth</span>(quantile_residuals)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-219-1.png" width="672" />
+<br/></p>
+<p>Outliers or influential observations can be identified with Cook’s distance.
+This metric gives the degree to which the model is altered by removing any one observation.
+Larger values imply larger changes, i.e. a larger influence on the model.
+There are some rule of thumbs what values are considered problematic: <span class="math inline">\(4/(n-p-1)\)</span> <span class="citation">(<a href="#ref-Fox2002">Fox 2002</a>)</span> or 1 <span class="citation">(<a href="#ref-maindonad2018">Braun 2018</a>)</span>.
+Here, we simply can see that all values are below these thresholds.
+Nonetheless, we have a look at the largest value.
+How do regression parameters change if we drop this observation.</p>
+<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb346-1"><a href="machine-learning.html#cb346-1" tabindex="-1"></a>lsl.cd <span class="ot">&lt;-</span> <span class="fu">cooks.distance</span>(glm1)</span>
+<span id="cb346-2"><a href="machine-learning.html#cb346-2" tabindex="-1"></a><span class="fu">plot</span>(lsl.cd)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-220-1.png" width="672" /></p>
+<div class="sourceCode" id="cb347"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb347-1"><a href="machine-learning.html#cb347-1" tabindex="-1"></a>infl <span class="ot">&lt;-</span> <span class="fu">which.max</span>(lsl.cd)</span>
+<span id="cb347-2"><a href="machine-learning.html#cb347-2" tabindex="-1"></a>glm2 <span class="ot">&lt;-</span> <span class="fu">update</span>(glm1, <span class="at">subset =</span> (<span class="sc">-</span>infl))</span>
+<span id="cb347-3"><a href="machine-learning.html#cb347-3" tabindex="-1"></a><span class="fu">coef</span>(glm1)</span></code></pre></div>
+<pre><code>##   (Intercept)         slope         cplan         cprof          elev   log10_carea 
+##  2.511364e+00  7.901064e-02 -2.894196e+01 -1.756360e+01  1.789238e-04 -2.274877e+00</code></pre>
+<div class="sourceCode" id="cb349"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb349-1"><a href="machine-learning.html#cb349-1" tabindex="-1"></a><span class="fu">coef</span>(glm2)</span></code></pre></div>
+<pre><code>##   (Intercept)         slope         cplan         cprof          elev   log10_carea 
+##  2.642992e+00  8.082282e-02 -3.003641e+01 -8.765858e+00  1.641055e-04 -2.342504e+00</code></pre>
+<p>Parameters barely change.</p>
+<p>Our data are spatial and spatial data often contain spatial autocorrelation.
+If our data would be spatially auto correlated the assumption of independent observations would be violated.
+We can check the Moran’s I of the residuals.</p>
+<div class="sourceCode" id="cb351"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb351-1"><a href="machine-learning.html#cb351-1" tabindex="-1"></a>lsl_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(lsl, <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>), <span class="at">crs =</span> <span class="st">&quot;EPSG:32717&quot;</span>)</span>
+<span id="cb351-2"><a href="machine-learning.html#cb351-2" tabindex="-1"></a>knn   <span class="ot">&lt;-</span> <span class="fu">knearneigh</span>(<span class="at">x =</span> lsl_sf, <span class="at">k =</span> <span class="dv">1</span>)</span>
+<span id="cb351-3"><a href="machine-learning.html#cb351-3" tabindex="-1"></a>nb    <span class="ot">&lt;-</span> <span class="fu">knn2nb</span>(knn)</span>
+<span id="cb351-4"><a href="machine-learning.html#cb351-4" tabindex="-1"></a>listw <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(nb)</span>
+<span id="cb351-5"><a href="machine-learning.html#cb351-5" tabindex="-1"></a>quantile_residuals <span class="ot">&lt;-</span> <span class="fu">qres.binom</span>(glm1)</span>
+<span id="cb351-6"><a href="machine-learning.html#cb351-6" tabindex="-1"></a><span class="fu">moran.test</span>(<span class="at">x =</span> quantile_residuals, <span class="at">listw =</span> listw)</span></code></pre></div>
+<pre><code>## 
+##  Moran I test under randomisation
+## 
+## data:  quantile_residuals  
+## weights: listw    
+## 
+## Moran I statistic standard deviate = 2.3656, p-value = 0.009002
+## alternative hypothesis: greater
+## sample estimates:
+## Moran I statistic       Expectation          Variance 
+##       0.159486083      -0.002865330       0.004710287</code></pre>
+<p>Indeed, there seems to be a weak but statistically significant autocorrelation in our residuals.
+At this point we will not address possible fixes for this problem as they extend beyond the scope of this lecture.</p>
+<p>With <code>summary()</code> we get a quick overview of the results.</p>
+<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb353-1"><a href="machine-learning.html#cb353-1" tabindex="-1"></a><span class="fu">summary</span>(glm1)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = lslpts ~ slope + cplan + cprof + elev + log10_carea, 
+##     family = binomial(), data = lsl)
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  2.511e+00  2.035e+00   1.234    0.217    
+## slope        7.901e-02  1.506e-02   5.248 1.54e-07 ***
+## cplan       -2.894e+01  4.746e+00  -6.098 1.07e-09 ***
+## cprof       -1.756e+01  1.083e+01  -1.622    0.105    
+## elev         1.789e-04  5.492e-04   0.326    0.745    
+## log10_carea -2.275e+00  4.848e-01  -4.692 2.70e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 485.20  on 349  degrees of freedom
+## Residual deviance: 372.83  on 344  degrees of freedom
+## AIC: 384.83
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>Using the model we can predict the probability of a landslide for each cell of the raster <em>terrain_analysis</em>.</p>
+<div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb355-1"><a href="machine-learning.html#cb355-1" tabindex="-1"></a>pred_glm <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">predict</span>(<span class="at">object =</span> dem,</span>
+<span id="cb355-2"><a href="machine-learning.html#cb355-2" tabindex="-1"></a>                    <span class="at">model =</span> glm1,</span>
+<span id="cb355-3"><a href="machine-learning.html#cb355-3" tabindex="-1"></a>                    <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb356"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb356-1"><a href="machine-learning.html#cb356-1" tabindex="-1"></a>map <span class="ot">=</span> <span class="fu">tm_shape</span>(hs, <span class="at">bbox =</span> bbx) <span class="sc">+</span></span>
+<span id="cb356-2"><a href="machine-learning.html#cb356-2" tabindex="-1"></a>  <span class="fu">tm_grid</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>, <span class="at">n.x =</span> <span class="dv">1</span>, <span class="at">n.y =</span> <span class="dv">1</span>, <span class="at">labels.inside.frame =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb356-3"><a href="machine-learning.html#cb356-3" tabindex="-1"></a>          <span class="at">labels.rot =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">90</span>), <span class="at">lines =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb356-4"><a href="machine-learning.html#cb356-4" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="at">palette =</span> <span class="fu">gray</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">100</span> <span class="sc">/</span> <span class="dv">100</span>), <span class="at">n =</span> <span class="dv">100</span>, <span class="at">legend.show =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb356-5"><a href="machine-learning.html#cb356-5" tabindex="-1"></a>  <span class="fu">tm_shape</span>(<span class="fu">mask</span>(pred_glm, <span class="fu">vect</span>(mask))) <span class="sc">+</span></span>
+<span id="cb356-6"><a href="machine-learning.html#cb356-6" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">palette =</span> <span class="st">&quot;Reds&quot;</span>, <span class="at">n =</span> <span class="dv">6</span>, <span class="at">legend.show =</span> <span class="cn">TRUE</span>, <span class="at">title =</span> <span class="st">&quot;Probability of a Landslide: &quot;</span>) <span class="sc">+</span></span>
+<span id="cb356-7"><a href="machine-learning.html#cb356-7" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">inner.margins =</span> <span class="dv">0</span>, <span class="at">legend.outside =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb356-8"><a href="machine-learning.html#cb356-8" tabindex="-1"></a>  <span class="fu">tm_legend</span>(<span class="at">bg.color =</span> <span class="st">&quot;white&quot;</span>)</span>
+<span id="cb356-9"><a href="machine-learning.html#cb356-9" tabindex="-1"></a>map</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-224-1.png" width="672" />
+<br/></p>
+<p>A common metric to evaluate the predictive capacity of a model is the area under the receiver operating characteristic curve (AUROC or ROC).
+This is a value between 0.5 and 1.0, with 0.5 indicating a model that is no better than random and 1.0 indicating perfect prediction of the two classes.
+Thus, the higher the AUROC, the better the model’s predictive power.
+The following code chunk computes the AUROC value of the model with <code>roc()</code>, which takes the response and the predicted values as inputs.
+<code>auc()</code> returns the area under the curve.</p>
+<div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb357-1"><a href="machine-learning.html#cb357-1" tabindex="-1"></a>pROC<span class="sc">::</span><span class="fu">auc</span>(pROC<span class="sc">::</span><span class="fu">roc</span>(lsl<span class="sc">$</span>lslpts, <span class="fu">fitted</span>(glm1)))</span></code></pre></div>
+<pre><code>## Area under the curve: 0.8216</code></pre>
+<p><br/></p>
+</div>
+<div id="mlr3" class="section level2 hasAnchor" number="5.4">
+<h2><span class="header-section-number">5.4</span> mlr3<a href="machine-learning.html#mlr3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Now we will turn to the machine learning technique random forest.
+There are different frameworks for machine learning in R.
+We will focus on <code>mlr3</code> <span class="citation">(<a href="#ref-mlr3">Lang et al. 2019</a>)</span> which is a versatile and popular framework.
+<code>mlr3</code> follows a logic which is shown in Figure <a href="machine-learning.html#fig:mlr3">5.2</a>.
+If your looking for an in depth introduction to the package, you can find a book length introduction to <code>mlr3</code> <a href="https://mlr3book.mlr-org.com/">here</a>.</p>
+<div class="figure"><span style="display:block;" id="fig:mlr3"></span>
+<img src="images/mlr3.svg" alt="flow diagram of mlr3"  />
+<p class="caption">
+Figure 5.2: flow diagram of mlr3
+</p>
+</div>
+<p><br/></p>
+<div id="creating-a-task" class="section level3 hasAnchor" number="5.4.1">
+<h3><span class="header-section-number">5.4.1</span> Creating a <em>task</em><a href="machine-learning.html#creating-a-task" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>First, we need to create a <em>task</em>.
+A <em>task</em> contains the data as well as some information on how we want to model the data, like the column name of the dependent variable.
+There are different types of tasks which differ in the kinds of dependent variables they support.
+For example, classification tasks are for cases where our dependent variable consists of binary or nominal data.
+A regression task is designed for continuous numeric quantities.
+The <code>mlr3spatiotempcv</code><span class="citation">(<a href="#ref-mlrsp">Schratz and Becker 2022</a>)</span> package introduced a spatial task type, we will look at later.</p>
+<p>Here we will create a classification task for our landslides data.
+This is the optimal task type because the dependent variable is binary (landslide or no landslide).
+First we need to turn the <code>lslpts</code> column into a factor column.</p>
+<p>For this first example, we will drop the geometry column and add the coordinates as individual columns.</p>
+<div class="sourceCode" id="cb359"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb359-1"><a href="machine-learning.html#cb359-1" tabindex="-1"></a>lsl2 <span class="ot">&lt;-</span> <span class="fu">st_drop_geometry</span>(lsl)</span>
+<span id="cb359-2"><a href="machine-learning.html#cb359-2" tabindex="-1"></a>lsl2 <span class="sc">%&lt;&gt;%</span> <span class="fu">mutate</span>(<span class="at">x =</span> <span class="fu">st_coordinates</span>(lsl)[,<span class="dv">1</span>],</span>
+<span id="cb359-3"><a href="machine-learning.html#cb359-3" tabindex="-1"></a>                 <span class="at">y =</span> <span class="fu">st_coordinates</span>(lsl)[,<span class="dv">2</span>],</span>
+<span id="cb359-4"><a href="machine-learning.html#cb359-4" tabindex="-1"></a>                 <span class="at">lslpts =</span> <span class="fu">factor</span>(lslpts))</span></code></pre></div>
+<p>The spatial classification task is defined by <code>TaskClassifST$new()</code>.
+The function takes the argument <code>backend</code>, the data set, <code>target</code>, the name of the dependent variable, and <code>id</code>, the name of a column the can be used to identify each observation. Additionally we provide the names of the coordinate columns (<code>coordinate_names</code>), tell the model not to use the coordinates as features (<code>coords_as_features = FALSE</code>) and provide the coordinate reference system (<code>crs</code>).</p>
+<div class="sourceCode" id="cb360"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb360-1"><a href="machine-learning.html#cb360-1" tabindex="-1"></a>task <span class="ot">=</span> mlr3spatiotempcv<span class="sc">::</span>TaskClassifST<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb360-2"><a href="machine-learning.html#cb360-2" tabindex="-1"></a>        <span class="at">id =</span> <span class="st">&quot;ecuador_lsl&quot;</span>,</span>
+<span id="cb360-3"><a href="machine-learning.html#cb360-3" tabindex="-1"></a>        <span class="at">backend =</span> mlr3<span class="sc">::</span><span class="fu">as_data_backend</span>(lsl2),</span>
+<span id="cb360-4"><a href="machine-learning.html#cb360-4" tabindex="-1"></a>        <span class="at">target =</span> <span class="st">&quot;lslpts&quot;</span>,</span>
+<span id="cb360-5"><a href="machine-learning.html#cb360-5" tabindex="-1"></a>        <span class="at">positive =</span> <span class="st">&quot;TRUE&quot;</span>,</span>
+<span id="cb360-6"><a href="machine-learning.html#cb360-6" tabindex="-1"></a>        <span class="at">coordinate_names =</span> <span class="fu">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>),</span>
+<span id="cb360-7"><a href="machine-learning.html#cb360-7" tabindex="-1"></a>        <span class="at">coords_as_features =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb360-8"><a href="machine-learning.html#cb360-8" tabindex="-1"></a>        <span class="at">crs =</span> <span class="st">&quot;EPSG:32717&quot;</span></span>
+<span id="cb360-9"><a href="machine-learning.html#cb360-9" tabindex="-1"></a>)</span></code></pre></div>
+<p>The new object has the class <code>TaskClassifST</code> and we can get a short summary of the tasks if we print it to the console.</p>
+<div class="sourceCode" id="cb361"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb361-1"><a href="machine-learning.html#cb361-1" tabindex="-1"></a><span class="fu">class</span>(task)</span></code></pre></div>
+<pre><code>## [1] &quot;TaskClassifST&quot;  &quot;TaskClassif&quot;    &quot;TaskSupervised&quot; &quot;Task&quot;           &quot;R6&quot;</code></pre>
+<div class="sourceCode" id="cb363"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb363-1"><a href="machine-learning.html#cb363-1" tabindex="-1"></a><span class="fu">print</span>(task)</span></code></pre></div>
+<pre><code>## &lt;TaskClassifST:ecuador_lsl&gt; (350 x 6)
+## * Target: lslpts
+## * Properties: twoclass
+## * Features (5):
+##   - dbl (5): cplan, cprof, elev, log10_carea, slope
+## * Coordinates:
+##             x       y
+##         &lt;num&gt;   &lt;num&gt;
+##   1: 713887.7 9558537
+##   2: 712787.7 9558917
+##   3: 713407.7 9560307
+##   4: 714887.7 9560237
+##   5: 715247.7 9557117
+##  ---                 
+## 346: 714877.2 9558362
+## 347: 714909.5 9558581
+## 348: 713713.6 9558849
+## 349: 715253.2 9558797
+## 350: 713825.6 9559078</code></pre>
+<p>The task registers all variables that are not the target as predictors or, as they are commonly called in the machine learning literature, features.
+We want to use all six features here but in case we would just want to a subset this would be done with the following code</p>
+<div class="sourceCode" id="cb365"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb365-1"><a href="machine-learning.html#cb365-1" tabindex="-1"></a>task<span class="sc">$</span><span class="fu">select</span>(<span class="fu">c</span>(<span class="st">&quot;slope&quot;</span>, <span class="st">&quot;cplan&quot;</span>))</span></code></pre></div>
+<p>We can use the <code>autoplot()</code> function to get a visual summary of the data.</p>
+<div class="sourceCode" id="cb366"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb366-1"><a href="machine-learning.html#cb366-1" tabindex="-1"></a><span class="fu">autoplot</span>(task, <span class="at">type =</span> <span class="st">&quot;pairs&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-230-1.png" width="672" />
+<br/></p>
+</div>
+<div id="the-learner" class="section level3 hasAnchor" number="5.4.2">
+<h3><span class="header-section-number">5.4.2</span> The <em>learner</em><a href="machine-learning.html#the-learner" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The <em>learner</em> includes the machine learning algorithm we want to use as well as some information on <em>hyperparameters</em>.
+Hyperparameters are parameters that you have to determine before running the model.
+They are not estimated in the fitting procedure.
+Think of them as different settings for the methods.
+We will encounter some hyperparameters and discuss how you should choose them later.</p>
+<p>The learner works in a two-stage procedure: First, a randomly selected subset of the data (the training set, see Fig. <a href="machine-learning.html#fig:mlr3">5.2</a>) is used to train the specified algorithm and the trained model is stored in the learner.
+Second, the trained model is used to predict the target in the test set (i.e., all observations that are not in the training set).
+The predictions can be compared to the actual values to determine how well the model fares on data it has not seen before.
+This is also known as <em>cross-validation</em>.
+If a model performs well in cross-validation, it generalizes better to unobserved data from the same context (e.g. landslide probability in the area).
+However, cross validation can not inform us on transferability, i.e., whether the model is adequate to estimate landslide probabilities in other contexts, e.g., regions of the world.
+Cross validation usually splits the data into more than just two groups.
+The number of groups in a CV is called <em>folds</em>.
+With five folds we have five equally sized groups.
+The model is fit on four of the groups and predicts the fifth group.
+This is repeated for each group.
+Then the distribution of observations into groups is repeated.
+In the example below, we split the data into five groups 30 times.
+Please note that 30 is a rather low number of repetitions, I choose it to keep computational load light for this demonstration.
+In real world applications, you should consider using more repetitions.</p>
+<div class="sourceCode" id="cb367"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb367-1"><a href="machine-learning.html#cb367-1" tabindex="-1"></a><span class="co"># non spatial resampling approach</span></span>
+<span id="cb367-2"><a href="machine-learning.html#cb367-2" tabindex="-1"></a>ns_resampling <span class="ot">&lt;-</span> <span class="fu">rsmp</span>(<span class="st">&quot;repeated_cv&quot;</span>, <span class="at">folds =</span> <span class="dv">5</span>, <span class="at">repeats =</span> <span class="dv">30</span>)</span></code></pre></div>
+<p>CV assumes that the observations are independent which, as we have seen, is not the case for our data.
+A way to met this assumption is to use spatial or blocked CV.
+Instead of randomly selection point for the folds, all the points in a fold will be close to each other (see Figure <a href="machine-learning.html#fig:blockcv">5.3</a> as an example).</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:blockcv"></span>
+<img src="images/blockcv.png" alt="Spatial vs non-spatial cross validation" width="708" />
+<p class="caption">
+Figure 5.3: Spatial vs non-spatial cross validation
+</p>
+</div>
+<p><br/></p>
+<p>Thanks to <code>mlr3spatiotempcv</code> <span class="citation">(<a href="#ref-mlrsp">Schratz and Becker 2022</a>)</span> we can select such blocked cross validation approaches as resampling scheme.</p>
+<div class="sourceCode" id="cb368"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb368-1"><a href="machine-learning.html#cb368-1" tabindex="-1"></a><span class="co"># spatial resampling approach</span></span>
+<span id="cb368-2"><a href="machine-learning.html#cb368-2" tabindex="-1"></a>sp_resampling <span class="ot">=</span> <span class="fu">rsmp</span>(<span class="st">&quot;repeated_spcv_coords&quot;</span>, <span class="at">folds =</span> <span class="dv">5</span>, <span class="at">repeats =</span> <span class="dv">30</span>)</span></code></pre></div>
+<p><code>mlr3</code> contains many algorithms to choose for you learner.
+A complete overview can be found <a href="https://mlr-org.com/learners.html">here</a>.
+We want to choose three different learners here:</p>
+<ol style="list-style-type: decimal">
+<li>A logistic GLM<br />
+</li>
+<li>A Random Forest<br />
+</li>
+<li>A support vector machine</li>
+</ol>
+<p>The random forest algorithm is based on the implementation in the <code>ranger</code> package <span class="citation">(<a href="#ref-wrightranger">Wright and Ziegler 2017</a>)</span> and the support vector machine on the implementation in the <code>e1071</code> package <span class="citation">(<a href="#ref-Meyer2022">Meyer et al. 2022</a>)</span>.</p>
+<div class="sourceCode" id="cb369"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb369-1"><a href="machine-learning.html#cb369-1" tabindex="-1"></a>lrnr_glm <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">&quot;classif.log_reg&quot;</span>, <span class="at">predict_type =</span> <span class="st">&quot;prob&quot;</span>)</span>
+<span id="cb369-2"><a href="machine-learning.html#cb369-2" tabindex="-1"></a>lrnr_rf  <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">&quot;classif.ranger&quot;</span>,  <span class="at">predict_type =</span> <span class="st">&quot;prob&quot;</span>) </span>
+<span id="cb369-3"><a href="machine-learning.html#cb369-3" tabindex="-1"></a>lrnr_svm <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">&quot;classif.svm&quot;</span>,     <span class="at">predict_type =</span> <span class="st">&quot;prob&quot;</span>)</span></code></pre></div>
+<p>Now we can run the resampling.
+We will run spatial and non spatial resampling for all three learners and see how their results differ.</p>
+<div class="sourceCode" id="cb370"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb370-1"><a href="machine-learning.html#cb370-1" tabindex="-1"></a><span class="do">## non spatial CV</span></span>
+<span id="cb370-2"><a href="machine-learning.html#cb370-2" tabindex="-1"></a>rr_nscv_glm <span class="ot">&lt;-</span> mlr3<span class="sc">::</span><span class="fu">resample</span>(<span class="at">task =</span> task, <span class="at">learner =</span> lrnr_glm, <span class="at">resampling =</span> ns_resampling)</span>
+<span id="cb370-3"><a href="machine-learning.html#cb370-3" tabindex="-1"></a>rr_nscv_rf  <span class="ot">&lt;-</span> mlr3<span class="sc">::</span><span class="fu">resample</span>(<span class="at">task =</span> task, <span class="at">learner =</span> lrnr_rf, <span class="at">resampling =</span> ns_resampling)</span>
+<span id="cb370-4"><a href="machine-learning.html#cb370-4" tabindex="-1"></a>rr_nscv_svm <span class="ot">&lt;-</span> mlr3<span class="sc">::</span><span class="fu">resample</span>(<span class="at">task =</span> task, <span class="at">learner =</span> lrnr_svm, <span class="at">resampling =</span> ns_resampling)</span>
+<span id="cb370-5"><a href="machine-learning.html#cb370-5" tabindex="-1"></a><span class="do">## with spatial CV</span></span>
+<span id="cb370-6"><a href="machine-learning.html#cb370-6" tabindex="-1"></a>rr_spcv_glm <span class="ot">&lt;-</span> mlr3<span class="sc">::</span><span class="fu">resample</span>(<span class="at">task =</span> task, <span class="at">learner =</span> lrnr_glm, <span class="at">resampling =</span> sp_resampling)</span>
+<span id="cb370-7"><a href="machine-learning.html#cb370-7" tabindex="-1"></a>rr_spcv_rf  <span class="ot">&lt;-</span> mlr3<span class="sc">::</span><span class="fu">resample</span>(<span class="at">task =</span> task, <span class="at">learner =</span> lrnr_rf, <span class="at">resampling =</span> sp_resampling)</span>
+<span id="cb370-8"><a href="machine-learning.html#cb370-8" tabindex="-1"></a>rr_spcv_svm <span class="ot">&lt;-</span> mlr3<span class="sc">::</span><span class="fu">resample</span>(<span class="at">task =</span> task, <span class="at">learner =</span> lrnr_svm, <span class="at">resampling =</span> sp_resampling)</span></code></pre></div>
+<p>We can extract the AUROC and the Brier score from the <code>score</code> element of the resampling object.
+For a full list of available performance measures see <a href="https://mlr3.mlr-org.com/reference/mlr_measures.html">here</a>.</p>
+<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb371-1"><a href="machine-learning.html#cb371-1" tabindex="-1"></a>auroc_nsp_glm <span class="ot">&lt;-</span> rr_nscv_glm<span class="sc">$</span><span class="fu">score</span>(<span class="at">measure =</span> mlr3<span class="sc">::</span><span class="fu">msr</span>(<span class="st">&quot;classif.auc&quot;</span>))</span>
+<span id="cb371-2"><a href="machine-learning.html#cb371-2" tabindex="-1"></a>auroc_nsp_rf  <span class="ot">&lt;-</span> rr_nscv_rf<span class="sc">$</span><span class="fu">score</span>(<span class="at">measure =</span>  mlr3<span class="sc">::</span><span class="fu">msr</span>(<span class="st">&quot;classif.auc&quot;</span>))</span>
+<span id="cb371-3"><a href="machine-learning.html#cb371-3" tabindex="-1"></a>auroc_nsp_svm <span class="ot">&lt;-</span> rr_nscv_svm<span class="sc">$</span><span class="fu">score</span>(<span class="at">measure =</span> mlr3<span class="sc">::</span><span class="fu">msr</span>(<span class="st">&quot;classif.auc&quot;</span>))</span>
+<span id="cb371-4"><a href="machine-learning.html#cb371-4" tabindex="-1"></a>auroc_sp_glm  <span class="ot">&lt;-</span> rr_spcv_glm<span class="sc">$</span><span class="fu">score</span>(<span class="at">measure =</span> mlr3<span class="sc">::</span><span class="fu">msr</span>(<span class="st">&quot;classif.auc&quot;</span>))</span>
+<span id="cb371-5"><a href="machine-learning.html#cb371-5" tabindex="-1"></a>auroc_sp_rf   <span class="ot">&lt;-</span> rr_spcv_rf<span class="sc">$</span><span class="fu">score</span>(<span class="at">measure =</span>  mlr3<span class="sc">::</span><span class="fu">msr</span>(<span class="st">&quot;classif.auc&quot;</span>))</span>
+<span id="cb371-6"><a href="machine-learning.html#cb371-6" tabindex="-1"></a>auroc_sp_svm  <span class="ot">&lt;-</span> rr_spcv_svm<span class="sc">$</span><span class="fu">score</span>(<span class="at">measure =</span> mlr3<span class="sc">::</span><span class="fu">msr</span>(<span class="st">&quot;classif.auc&quot;</span>))</span>
+<span id="cb371-7"><a href="machine-learning.html#cb371-7" tabindex="-1"></a>brier_nsp_glm <span class="ot">&lt;-</span> rr_nscv_glm<span class="sc">$</span><span class="fu">score</span>(<span class="at">measure =</span> mlr3<span class="sc">::</span><span class="fu">msr</span>(<span class="st">&quot;classif.bbrier&quot;</span>))</span>
+<span id="cb371-8"><a href="machine-learning.html#cb371-8" tabindex="-1"></a>brier_nsp_rf  <span class="ot">&lt;-</span> rr_nscv_rf<span class="sc">$</span><span class="fu">score</span>(<span class="at">measure =</span>  mlr3<span class="sc">::</span><span class="fu">msr</span>(<span class="st">&quot;classif.bbrier&quot;</span>))</span>
+<span id="cb371-9"><a href="machine-learning.html#cb371-9" tabindex="-1"></a>brier_nsp_svm <span class="ot">&lt;-</span> rr_nscv_svm<span class="sc">$</span><span class="fu">score</span>(<span class="at">measure =</span> mlr3<span class="sc">::</span><span class="fu">msr</span>(<span class="st">&quot;classif.bbrier&quot;</span>))</span>
+<span id="cb371-10"><a href="machine-learning.html#cb371-10" tabindex="-1"></a>brier_sp_glm  <span class="ot">&lt;-</span> rr_spcv_glm<span class="sc">$</span><span class="fu">score</span>(<span class="at">measure =</span> mlr3<span class="sc">::</span><span class="fu">msr</span>(<span class="st">&quot;classif.bbrier&quot;</span>))</span>
+<span id="cb371-11"><a href="machine-learning.html#cb371-11" tabindex="-1"></a>brier_sp_rf   <span class="ot">&lt;-</span> rr_spcv_rf<span class="sc">$</span><span class="fu">score</span>(<span class="at">measure =</span>  mlr3<span class="sc">::</span><span class="fu">msr</span>(<span class="st">&quot;classif.bbrier&quot;</span>))</span>
+<span id="cb371-12"><a href="machine-learning.html#cb371-12" tabindex="-1"></a>brier_sp_svm  <span class="ot">&lt;-</span> rr_spcv_svm<span class="sc">$</span><span class="fu">score</span>(<span class="at">measure =</span> mlr3<span class="sc">::</span><span class="fu">msr</span>(<span class="st">&quot;classif.bbrier&quot;</span>))</span></code></pre></div>
+<p>These tables contain more columns than we need.
+We drop the unnecessary columns to get clearer table.
+We also prepare the table for joining them later.</p>
+<div class="sourceCode" id="cb372"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb372-1"><a href="machine-learning.html#cb372-1" tabindex="-1"></a>auroc_nsp_glm <span class="sc">%&lt;&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(resampling_id, <span class="at">value =</span> classif.auc)    <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span> (<span class="at">measure =</span> <span class="st">&quot;auroc&quot;</span>, <span class="at">model =</span> <span class="st">&quot;glm&quot;</span>) </span>
+<span id="cb372-2"><a href="machine-learning.html#cb372-2" tabindex="-1"></a>auroc_nsp_rf  <span class="sc">%&lt;&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(resampling_id, <span class="at">value =</span> classif.auc)    <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span> (<span class="at">measure =</span> <span class="st">&quot;auroc&quot;</span>, <span class="at">model =</span> <span class="st">&quot;rf&quot;</span>) </span>
+<span id="cb372-3"><a href="machine-learning.html#cb372-3" tabindex="-1"></a>auroc_nsp_svm <span class="sc">%&lt;&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(resampling_id, <span class="at">value =</span> classif.auc)    <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span> (<span class="at">measure =</span> <span class="st">&quot;auroc&quot;</span>, <span class="at">model =</span> <span class="st">&quot;svm&quot;</span>)</span>
+<span id="cb372-4"><a href="machine-learning.html#cb372-4" tabindex="-1"></a>auroc_sp_glm  <span class="sc">%&lt;&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(resampling_id, <span class="at">value =</span> classif.auc)    <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span> (<span class="at">measure =</span> <span class="st">&quot;auroc&quot;</span>, <span class="at">model =</span> <span class="st">&quot;glm&quot;</span>) </span>
+<span id="cb372-5"><a href="machine-learning.html#cb372-5" tabindex="-1"></a>auroc_sp_rf   <span class="sc">%&lt;&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(resampling_id, <span class="at">value =</span> classif.auc)    <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span> (<span class="at">measure =</span> <span class="st">&quot;auroc&quot;</span>, <span class="at">model =</span> <span class="st">&quot;rf&quot;</span>) </span>
+<span id="cb372-6"><a href="machine-learning.html#cb372-6" tabindex="-1"></a>auroc_sp_svm  <span class="sc">%&lt;&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(resampling_id, <span class="at">value =</span> classif.auc)    <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span> (<span class="at">measure =</span> <span class="st">&quot;auroc&quot;</span>, <span class="at">model =</span> <span class="st">&quot;svm&quot;</span>)</span>
+<span id="cb372-7"><a href="machine-learning.html#cb372-7" tabindex="-1"></a>brier_nsp_glm <span class="sc">%&lt;&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(resampling_id, <span class="at">value =</span> classif.bbrier) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span> (<span class="at">measure =</span> <span class="st">&quot;brier&quot;</span>, <span class="at">model =</span> <span class="st">&quot;glm&quot;</span>) </span>
+<span id="cb372-8"><a href="machine-learning.html#cb372-8" tabindex="-1"></a>brier_nsp_rf  <span class="sc">%&lt;&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(resampling_id, <span class="at">value =</span> classif.bbrier) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span> (<span class="at">measure =</span> <span class="st">&quot;brier&quot;</span>, <span class="at">model =</span> <span class="st">&quot;rf&quot;</span>) </span>
+<span id="cb372-9"><a href="machine-learning.html#cb372-9" tabindex="-1"></a>brier_nsp_svm <span class="sc">%&lt;&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(resampling_id, <span class="at">value =</span> classif.bbrier) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span> (<span class="at">measure =</span> <span class="st">&quot;brier&quot;</span>, <span class="at">model =</span> <span class="st">&quot;svm&quot;</span>)</span>
+<span id="cb372-10"><a href="machine-learning.html#cb372-10" tabindex="-1"></a>brier_sp_glm  <span class="sc">%&lt;&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(resampling_id, <span class="at">value =</span> classif.bbrier) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span> (<span class="at">measure =</span> <span class="st">&quot;brier&quot;</span>, <span class="at">model =</span> <span class="st">&quot;glm&quot;</span>) </span>
+<span id="cb372-11"><a href="machine-learning.html#cb372-11" tabindex="-1"></a>brier_sp_rf   <span class="sc">%&lt;&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(resampling_id, <span class="at">value =</span> classif.bbrier) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span> (<span class="at">measure =</span> <span class="st">&quot;brier&quot;</span>, <span class="at">model =</span> <span class="st">&quot;rf&quot;</span>) </span>
+<span id="cb372-12"><a href="machine-learning.html#cb372-12" tabindex="-1"></a>brier_sp_svm  <span class="sc">%&lt;&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(resampling_id, <span class="at">value =</span> classif.bbrier) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span> (<span class="at">measure =</span> <span class="st">&quot;brier&quot;</span>, <span class="at">model =</span> <span class="st">&quot;svm&quot;</span>)</span></code></pre></div>
+<p>Now we combine the two auroc data sets and the two brier score data sets.</p>
+<div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb373-1"><a href="machine-learning.html#cb373-1" tabindex="-1"></a>results_cross_validation <span class="ot">&lt;-</span></span>
+<span id="cb373-2"><a href="machine-learning.html#cb373-2" tabindex="-1"></a>        <span class="fu">bind_rows</span>(</span>
+<span id="cb373-3"><a href="machine-learning.html#cb373-3" tabindex="-1"></a>                auroc_nsp_glm,</span>
+<span id="cb373-4"><a href="machine-learning.html#cb373-4" tabindex="-1"></a>                auroc_nsp_rf,</span>
+<span id="cb373-5"><a href="machine-learning.html#cb373-5" tabindex="-1"></a>                auroc_nsp_svm,</span>
+<span id="cb373-6"><a href="machine-learning.html#cb373-6" tabindex="-1"></a>                auroc_sp_glm,</span>
+<span id="cb373-7"><a href="machine-learning.html#cb373-7" tabindex="-1"></a>                auroc_sp_rf,</span>
+<span id="cb373-8"><a href="machine-learning.html#cb373-8" tabindex="-1"></a>                auroc_sp_svm,</span>
+<span id="cb373-9"><a href="machine-learning.html#cb373-9" tabindex="-1"></a>                brier_nsp_glm,</span>
+<span id="cb373-10"><a href="machine-learning.html#cb373-10" tabindex="-1"></a>                brier_nsp_rf,</span>
+<span id="cb373-11"><a href="machine-learning.html#cb373-11" tabindex="-1"></a>                brier_nsp_svm,</span>
+<span id="cb373-12"><a href="machine-learning.html#cb373-12" tabindex="-1"></a>                brier_sp_glm,</span>
+<span id="cb373-13"><a href="machine-learning.html#cb373-13" tabindex="-1"></a>                brier_sp_rf,</span>
+<span id="cb373-14"><a href="machine-learning.html#cb373-14" tabindex="-1"></a>                brier_sp_svm</span>
+<span id="cb373-15"><a href="machine-learning.html#cb373-15" tabindex="-1"></a>        )</span></code></pre></div>
+<p>We display the results using violin plots.
+They are similar to boxplots, the line in the middle indicates the median.
+However instead of an uninformative box we get the distribution of values as a shape.
+Remember the higher the AUC the better and the lower the Brier score to better the model.</p>
+<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb374-1"><a href="machine-learning.html#cb374-1" tabindex="-1"></a><span class="fu">ggplot</span>(results_cross_validation, <span class="fu">aes</span>(<span class="at">y =</span> value, <span class="at">x =</span> resampling_id)) <span class="sc">+</span> </span>
+<span id="cb374-2"><a href="machine-learning.html#cb374-2" tabindex="-1"></a>        <span class="fu">geom_violin</span>(<span class="at">draw_quantiles =</span> .<span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb374-3"><a href="machine-learning.html#cb374-3" tabindex="-1"></a>        <span class="fu">geom_jitter</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">height =</span> <span class="dv">0</span>, <span class="at">width =</span> <span class="fl">0.03</span>) <span class="sc">+</span> </span>
+<span id="cb374-4"><a href="machine-learning.html#cb374-4" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(model<span class="sc">~</span> measure, <span class="at">scales =</span> <span class="st">&quot;free&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-238-1.png" width="672" />
+<br/></p>
+</div>
+<div id="hyperparameter-tuning" class="section level3 hasAnchor" number="5.4.3">
+<h3><span class="header-section-number">5.4.3</span> Hyperparameter Tuning<a href="machine-learning.html#hyperparameter-tuning" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<!-- As mentioned earlier many machine learning methods have hyperparameters. 
+Parameters that are not fit by the model but chosen by the modeler. 
+The optimal values for hyperparameters are commonly chosen by cross validation. 
+Using the same folds as for performance evaluation can bias the results [@cawley2010]. Therefore we need to use multiple layers of cross validation (nested cross validation). 
+Each fold from our original cross validation is again split into five folds. 
+For each of these new fits we fit models with different hyperparameter values. 
+These values are randomly sampled from an interval that the modeler provides. 
+See Figure \@ref(fig:hyperparameter) for an visualization. The figure is taken from @schratzHyperparameterTuningPerformance2019. -->
+<p>We will use a spatial nested cross validation scheme to tune the hyperparameters of the random forest.</p>
+<p><img src="images/hyperparameter_tuning.png" width="500" /></p>
+<p>As in the cross validation example above, we will use a relatively small numbers of folds and repetitions just to keep the computational demand reasonable.
+Please note, that for real analyses you should use more folds and repetitions.
+Try to find norms in your respective field of study from published papers and see if performance estimates stabilize at a certain number of folds and repetition.</p>
+<p>For the hyperparameter tuning, we first establish the <em>search space</em>, that is the space in which we look for possible parameter values.
+This is done with <code>ps()</code> function from the <code>paradox</code> package <span class="citation">(<a href="#ref-Lang2022">Lang et al. 2022</a>)</span>.
+Here, we tune the parameter <code>max.depth</code>, that is the maximal depth, the number of splits, in a single tree.
+Low depth leads to underfitting, large depth to overfitting.
+We tell the <code>ps()</code> function that the value should be an integer (<code>p_int()</code>, enter <code>paradox::p_</code> into the console to see alternatives) between 1 and 10.</p>
+<div class="sourceCode" id="cb375"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb375-1"><a href="machine-learning.html#cb375-1" tabindex="-1"></a>search_space <span class="ot">=</span> <span class="fu">ps</span>(<span class="at">max.depth =</span> <span class="fu">p_int</span>(<span class="at">lower =</span> <span class="dv">1</span>, <span class="at">upper =</span> <span class="dv">10</span>))</span></code></pre></div>
+<p>We also specify the resampling scheme, the performance measure, and when the cross validation should end.</p>
+<div class="sourceCode" id="cb376"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb376-1"><a href="machine-learning.html#cb376-1" tabindex="-1"></a>resampling <span class="ot">=</span> <span class="fu">rsmp</span>(<span class="st">&quot;spcv_coords&quot;</span>)</span>
+<span id="cb376-2"><a href="machine-learning.html#cb376-2" tabindex="-1"></a>measure <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">&quot;classif.auc&quot;</span>)</span>
+<span id="cb376-3"><a href="machine-learning.html#cb376-3" tabindex="-1"></a>terminator <span class="ot">=</span> <span class="fu">trm</span>(<span class="st">&quot;evals&quot;</span>, <span class="at">n_evals =</span> <span class="dv">30</span>)</span></code></pre></div>
+<p>With all of those, we specify a tuning algorithm for one criterion with <code>TuningInstanceSingleCrit$new()</code>.</p>
+<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb377-1"><a href="machine-learning.html#cb377-1" tabindex="-1"></a>instance <span class="ot">=</span> TuningInstanceSingleCrit<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb377-2"><a href="machine-learning.html#cb377-2" tabindex="-1"></a>  <span class="at">task =</span> task,</span>
+<span id="cb377-3"><a href="machine-learning.html#cb377-3" tabindex="-1"></a>  <span class="at">learner =</span> lrnr_rf,</span>
+<span id="cb377-4"><a href="machine-learning.html#cb377-4" tabindex="-1"></a>  <span class="at">resampling =</span> resampling,</span>
+<span id="cb377-5"><a href="machine-learning.html#cb377-5" tabindex="-1"></a>  <span class="at">measure =</span> measure,</span>
+<span id="cb377-6"><a href="machine-learning.html#cb377-6" tabindex="-1"></a>  <span class="at">search_space =</span> search_space,</span>
+<span id="cb377-7"><a href="machine-learning.html#cb377-7" tabindex="-1"></a>  <span class="at">terminator =</span> terminator</span>
+<span id="cb377-8"><a href="machine-learning.html#cb377-8" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>## TuningInstanceSingleCrit is deprecated. Use TuningInstanceBatchSingleCrit instead.</code></pre>
+<p>We specify the number of hyperparemeter vaules to evaluate in the <code>tnr()</code> function with the <code>resolution</code> argument.</p>
+<div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb379-1"><a href="machine-learning.html#cb379-1" tabindex="-1"></a>tuner <span class="ot">=</span> <span class="fu">tnr</span>(<span class="st">&quot;grid_search&quot;</span>, <span class="at">resolution =</span> <span class="dv">10</span>)</span>
+<span id="cb379-2"><a href="machine-learning.html#cb379-2" tabindex="-1"></a>tuner<span class="sc">$</span><span class="fu">optimize</span>(instance)</span>
+<span id="cb379-3"><a href="machine-learning.html#cb379-3" tabindex="-1"></a>parameter_tuning_results <span class="ot">&lt;-</span> <span class="fu">as.data.table</span>(instance<span class="sc">$</span>archive)</span></code></pre></div>
+<p>Lets have a look at the results.</p>
+<div class="sourceCode" id="cb380"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb380-1"><a href="machine-learning.html#cb380-1" tabindex="-1"></a><span class="fu">ggplot</span>(parameter_tuning_results, <span class="fu">aes</span>(<span class="at">y =</span> classif.auc, <span class="at">x =</span> max.depth)) <span class="sc">+</span> </span>
+<span id="cb380-2"><a href="machine-learning.html#cb380-2" tabindex="-1"></a>        <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb380-3"><a href="machine-learning.html#cb380-3" tabindex="-1"></a>        <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb380-4"><a href="machine-learning.html#cb380-4" tabindex="-1"></a>        <span class="fu">geom_point</span>(<span class="at">data =</span><span class="fu">filter</span>(parameter_tuning_results, classif.auc  <span class="sc">==</span> <span class="fu">min</span>(classif.auc)), <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span> </span>
+<span id="cb380-5"><a href="machine-learning.html#cb380-5" tabindex="-1"></a>        <span class="fu">geom_label</span>(<span class="at">data =</span><span class="fu">filter</span>(parameter_tuning_results, classif.auc  <span class="sc">==</span> <span class="fu">min</span>(classif.auc)), <span class="fu">aes</span>(<span class="at">label =</span> max.depth), <span class="at">nudge_x =</span> .<span class="dv">5</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-243-1.png" width="672" />
+<br/></p>
+<p>Our hyperparameter tuning determined that four is the optimal maximal depth for the trees.
+We can also tune multiple parameters at the same time.
+Here we additionally tune the minimum nodes size, i.e., the minimal number of observations that a single node should have.</p>
+<div class="sourceCode" id="cb381"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb381-1"><a href="machine-learning.html#cb381-1" tabindex="-1"></a>search_space <span class="ot">=</span> <span class="fu">ps</span>(<span class="at">max.depth =</span> <span class="fu">p_int</span>(<span class="at">lower =</span> <span class="dv">1</span>, <span class="at">upper =</span> <span class="dv">100</span>), </span>
+<span id="cb381-2"><a href="machine-learning.html#cb381-2" tabindex="-1"></a>                  <span class="at">min.node.size =</span> <span class="fu">p_int</span>(<span class="at">lower =</span> <span class="dv">1</span>, <span class="at">upper =</span> <span class="dv">100</span>))</span>
+<span id="cb381-3"><a href="machine-learning.html#cb381-3" tabindex="-1"></a>instance <span class="ot">=</span> TuningInstanceSingleCrit<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb381-4"><a href="machine-learning.html#cb381-4" tabindex="-1"></a>  <span class="at">task =</span> task,</span>
+<span id="cb381-5"><a href="machine-learning.html#cb381-5" tabindex="-1"></a>  <span class="at">learner =</span> lrnr_rf,</span>
+<span id="cb381-6"><a href="machine-learning.html#cb381-6" tabindex="-1"></a>  <span class="at">resampling =</span> resampling,</span>
+<span id="cb381-7"><a href="machine-learning.html#cb381-7" tabindex="-1"></a>  <span class="at">measure =</span> measure,</span>
+<span id="cb381-8"><a href="machine-learning.html#cb381-8" tabindex="-1"></a>  <span class="at">search_space =</span> search_space,</span>
+<span id="cb381-9"><a href="machine-learning.html#cb381-9" tabindex="-1"></a>  <span class="at">terminator =</span> terminator</span>
+<span id="cb381-10"><a href="machine-learning.html#cb381-10" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>## TuningInstanceSingleCrit is deprecated. Use TuningInstanceBatchSingleCrit instead.</code></pre>
+<div class="sourceCode" id="cb383"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb383-1"><a href="machine-learning.html#cb383-1" tabindex="-1"></a>tuner <span class="ot">=</span> <span class="fu">tnr</span>(<span class="st">&quot;grid_search&quot;</span>, <span class="at">resolution =</span> <span class="dv">30</span>)</span>
+<span id="cb383-2"><a href="machine-learning.html#cb383-2" tabindex="-1"></a>tuner<span class="sc">$</span><span class="fu">optimize</span>(instance)</span>
+<span id="cb383-3"><a href="machine-learning.html#cb383-3" tabindex="-1"></a>parameter_tuning_results <span class="ot">&lt;-</span> <span class="fu">as.data.table</span>(instance<span class="sc">$</span>archive)</span></code></pre></div>
+<p>This is a little bit more difficult to visualize.
+In the following plot, each axis is one hyperparameter.
+Larger circles and brighter color indicate a higher AUC.
+The combination with the highest AUC is marked with a red dot.</p>
+<div class="sourceCode" id="cb384"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb384-1"><a href="machine-learning.html#cb384-1" tabindex="-1"></a><span class="fu">ggplot</span>(parameter_tuning_results, <span class="fu">aes</span>(<span class="at">x =</span> max.depth, <span class="at">y =</span> min.node.size)) <span class="sc">+</span></span>
+<span id="cb384-2"><a href="machine-learning.html#cb384-2" tabindex="-1"></a>        <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">fill =</span> classif.auc, <span class="at">size =</span> classif.auc), <span class="at">shape =</span></span>
+<span id="cb384-3"><a href="machine-learning.html#cb384-3" tabindex="-1"></a>                           <span class="dv">21</span>) <span class="sc">+</span></span>
+<span id="cb384-4"><a href="machine-learning.html#cb384-4" tabindex="-1"></a>        <span class="fu">geom_point</span>(</span>
+<span id="cb384-5"><a href="machine-learning.html#cb384-5" tabindex="-1"></a>                <span class="at">data =</span> <span class="fu">filter</span>(parameter_tuning_results, classif.auc <span class="sc">==</span> <span class="fu">max</span>(classif.auc)),</span>
+<span id="cb384-6"><a href="machine-learning.html#cb384-6" tabindex="-1"></a>                <span class="at">col =</span> <span class="st">&quot;red&quot;</span>,</span>
+<span id="cb384-7"><a href="machine-learning.html#cb384-7" tabindex="-1"></a>                <span class="at">size =</span> <span class="dv">3</span></span>
+<span id="cb384-8"><a href="machine-learning.html#cb384-8" tabindex="-1"></a>        ) <span class="sc">+</span></span>
+<span id="cb384-9"><a href="machine-learning.html#cb384-9" tabindex="-1"></a>        <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-245-1.png" width="672" />
+<br/></p>
+<p>We can extract the optimal solution with</p>
+<div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb385-1"><a href="machine-learning.html#cb385-1" tabindex="-1"></a>instance<span class="sc">$</span>result_learner_param_vals</span></code></pre></div>
+<pre><code>## $num.threads
+## [1] 1
+## 
+## $max.depth
+## [1] 32
+## 
+## $min.node.size
+## [1] 14</code></pre>
+<p>and set the parameters accordingly.</p>
+<div class="sourceCode" id="cb387"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb387-1"><a href="machine-learning.html#cb387-1" tabindex="-1"></a>lrnr_rf<span class="sc">$</span>param_set<span class="sc">$</span>values<span class="sc">$</span>max.depth <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb387-2"><a href="machine-learning.html#cb387-2" tabindex="-1"></a>lrnr_rf<span class="sc">$</span>param_set<span class="sc">$</span>values<span class="sc">$</span>min.node.size <span class="ot">&lt;-</span> <span class="dv">32</span></span></code></pre></div>
+<p>Now we turn to <strong>nested cross validation</strong>.
+We start out by defining the inner resampling.
+Most of the functions here we have seen before.
+The only new one is the <code>AutoTuner$new()</code> function.
+The AutoTuner is a learner which wraps another learner (in our case <code>lrnr_rf</code>).
+Wrapping means that it covers it and calls it when it is called.
+A wrapping function is a function that calls another function.
+So the AutoTuner calls our learner and tunes its hyperparameters with the specified resampling procedure, search space, terminator, tuner, and measure.
+The best hyperparameters are set as parameters for a final model which is fit to the full data.</p>
+<div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb388-1"><a href="machine-learning.html#cb388-1" tabindex="-1"></a>resampling <span class="ot">=</span> <span class="fu">rsmp</span>(<span class="st">&quot;spcv_coords&quot;</span>, <span class="at">folds =</span> <span class="dv">4</span>)</span>
+<span id="cb388-2"><a href="machine-learning.html#cb388-2" tabindex="-1"></a>measure    <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">&quot;classif.auc&quot;</span>)</span>
+<span id="cb388-3"><a href="machine-learning.html#cb388-3" tabindex="-1"></a>terminator <span class="ot">=</span> <span class="fu">trm</span>(<span class="st">&quot;evals&quot;</span>, <span class="at">n_evals =</span> <span class="dv">5</span>)</span>
+<span id="cb388-4"><a href="machine-learning.html#cb388-4" tabindex="-1"></a>tuner      <span class="ot">=</span> <span class="fu">tnr</span>(<span class="st">&quot;grid_search&quot;</span>, <span class="at">resolution =</span> <span class="dv">10</span>)</span>
+<span id="cb388-5"><a href="machine-learning.html#cb388-5" tabindex="-1"></a>at <span class="ot">=</span> AutoTuner<span class="sc">$</span><span class="fu">new</span>(<span class="at">learner =</span> lrnr_rf, <span class="at">resampling =</span> resampling, <span class="at">measure =</span> measure, <span class="at">terminator =</span> terminator, <span class="at">tuner =</span> tuner, <span class="at">search_space =</span> search_space)</span></code></pre></div>
+<p>Now we can pass this inner to a resampling scheme for the outer resampling.</p>
+<div class="sourceCode" id="cb389"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb389-1"><a href="machine-learning.html#cb389-1" tabindex="-1"></a>outer_resampling <span class="ot">=</span> <span class="fu">rsmp</span>(<span class="st">&quot;spcv_coords&quot;</span>, <span class="at">folds =</span> <span class="dv">3</span>)</span>
+<span id="cb389-2"><a href="machine-learning.html#cb389-2" tabindex="-1"></a>rr <span class="ot">=</span> mlr3<span class="sc">::</span><span class="fu">resample</span>(task, at, outer_resampling, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>The aggregated performance over all nested instances can be determined with:</p>
+<div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb390-1"><a href="machine-learning.html#cb390-1" tabindex="-1"></a><span class="fu">mean</span>(rr<span class="sc">$</span><span class="fu">score</span>(<span class="at">measure =</span> <span class="fu">msr</span>(<span class="st">&quot;classif.auc&quot;</span>))<span class="sc">$</span>classif.auc)</span></code></pre></div>
+<pre><code>## [1] 0.7924663</code></pre>
+</div>
+<div id="predictions" class="section level3 hasAnchor" number="5.4.4">
+<h3><span class="header-section-number">5.4.4</span> Predictions<a href="machine-learning.html#predictions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We can also use the AutoTuner to fit the final model we want to use for prediction.</p>
+<div class="sourceCode" id="cb392"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb392-1"><a href="machine-learning.html#cb392-1" tabindex="-1"></a>at<span class="sc">$</span><span class="fu">train</span>(task)</span></code></pre></div>
+<p>If you do not want to use the AutoTuner but instead train the model without tuning the hyperparameters with hyperparamters values you determined before you can use:</p>
+<div class="sourceCode" id="cb393"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb393-1"><a href="machine-learning.html#cb393-1" tabindex="-1"></a>lrnr_rf<span class="sc">$</span><span class="fu">train</span>(task)</span></code></pre></div>
+<div class="sourceCode" id="cb394"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb394-1"><a href="machine-learning.html#cb394-1" tabindex="-1"></a>at<span class="sc">$</span>model</span></code></pre></div>
+<pre><code>## $learner
+## &lt;LearnerClassifRanger:classif.ranger&gt;: Random Forest
+## * Model: ranger
+## * Parameters: max.depth=1, min.node.size=34, num.threads=1
+## * Packages: mlr3, mlr3learners, ranger
+## * Predict Types:  response, [prob]
+## * Feature Types: logical, integer, numeric, character, factor, ordered
+## * Properties: hotstart_backward, importance, multiclass, oob_error, twoclass, weights
+## 
+## $tuning_instance
+## &lt;TuningInstanceBatchSingleCrit&gt;
+## * State:  Optimized
+## * Objective: &lt;ObjectiveTuningBatch:classif.ranger_on_ecuador_lsl&gt;
+## * Search Space:
+##               id    class lower upper nlevels
+##           &lt;char&gt;   &lt;char&gt; &lt;num&gt; &lt;num&gt;   &lt;num&gt;
+## 1:     max.depth ParamInt     1   100     100
+## 2: min.node.size ParamInt     1   100     100
+## * Terminator: &lt;TerminatorEvals&gt;
+## * Result:
+##    max.depth min.node.size classif.auc
+##        &lt;int&gt;         &lt;int&gt;       &lt;num&gt;
+## 1:         1            34   0.7723894
+## * Archive:
+##    max.depth min.node.size classif.auc
+##        &lt;int&gt;         &lt;int&gt;       &lt;num&gt;
+## 1:         1            12   0.7686636
+## 2:        34            78   0.7620713
+## 3:        34            12   0.7495084
+## 4:        78            23   0.7623567
+## 5:         1            34   0.7723894
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;auto_tuner_model&quot; &quot;list&quot;</code></pre>
+<div class="sourceCode" id="cb396"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb396-1"><a href="machine-learning.html#cb396-1" tabindex="-1"></a>lrnr_rf<span class="sc">$</span>model</span></code></pre></div>
+<pre><code>## Ranger result
+## 
+## Call:
+##  ranger::ranger(dependent.variable.name = task$target_names, data = task$data(),      probability = self$predict_type == &quot;prob&quot;, case.weights = task$weights$weight,      max.depth = 1L, min.node.size = 32L, num.threads = 1L) 
+## 
+## Type:                             Probability estimation 
+## Number of trees:                  500 
+## Sample size:                      350 
+## Number of independent variables:  5 
+## Mtry:                             2 
+## Target node size:                 32 
+## Variable importance mode:         none 
+## Splitrule:                        gini 
+## OOB prediction error (Brier s.):  0.2108499</code></pre>
+<p>We can use the predict landslide probability for the whole region.</p>
+<div class="sourceCode" id="cb398"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb398-1"><a href="machine-learning.html#cb398-1" tabindex="-1"></a>ta2 <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">slope =</span> <span class="fu">values</span>(dem<span class="sc">$</span>slope)[,<span class="dv">1</span>], </span>
+<span id="cb398-2"><a href="machine-learning.html#cb398-2" tabindex="-1"></a>                  <span class="at">cplan =</span> <span class="fu">values</span>(dem<span class="sc">$</span>cplan)[,<span class="dv">1</span>], </span>
+<span id="cb398-3"><a href="machine-learning.html#cb398-3" tabindex="-1"></a>                  <span class="at">cprof =</span> <span class="fu">values</span>(dem<span class="sc">$</span>cprof)[,<span class="dv">1</span>],</span>
+<span id="cb398-4"><a href="machine-learning.html#cb398-4" tabindex="-1"></a>                  <span class="at">log10_carea  =</span> <span class="fu">values</span>(dem<span class="sc">$</span>log10_carea)[,<span class="dv">1</span>],</span>
+<span id="cb398-5"><a href="machine-learning.html#cb398-5" tabindex="-1"></a>                  <span class="at">elev  =</span> <span class="fu">values</span>(dem<span class="sc">$</span>elev)[,<span class="dv">1</span>])</span>
+<span id="cb398-6"><a href="machine-learning.html#cb398-6" tabindex="-1"></a>ta2[<span class="fu">is.na</span>(slope), <span class="fu">c</span>(<span class="st">&quot;slope&quot;</span>, <span class="st">&quot;cplan&quot;</span>, <span class="st">&quot;cprof&quot;</span>, <span class="st">&quot;log10_carea&quot;</span>, <span class="st">&quot;elev&quot;</span>) <span class="sc">:=</span> <span class="sc">-</span><span class="dv">10</span>]</span>
+<span id="cb398-7"><a href="machine-learning.html#cb398-7" tabindex="-1"></a><span class="co"># predict new values </span></span>
+<span id="cb398-8"><a href="machine-learning.html#cb398-8" tabindex="-1"></a>y <span class="ot">&lt;-</span> at<span class="sc">$</span><span class="fu">predict_newdata</span>(ta2)</span>
+<span id="cb398-9"><a href="machine-learning.html#cb398-9" tabindex="-1"></a>x <span class="ot">&lt;-</span> lrnr_rf<span class="sc">$</span><span class="fu">predict_newdata</span>(ta2)</span>
+<span id="cb398-10"><a href="machine-learning.html#cb398-10" tabindex="-1"></a></span>
+<span id="cb398-11"><a href="machine-learning.html#cb398-11" tabindex="-1"></a><span class="co"># replace predictions for -10 placeholders </span></span>
+<span id="cb398-12"><a href="machine-learning.html#cb398-12" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(y<span class="sc">$</span>data<span class="sc">$</span>prob)</span>
+<span id="cb398-13"><a href="machine-learning.html#cb398-13" tabindex="-1"></a>y[<span class="fu">which</span>(ta2<span class="sc">$</span>slope <span class="sc">==</span> <span class="sc">-</span><span class="dv">10</span>), <span class="st">&quot;TRUE&quot;</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb398-14"><a href="machine-learning.html#cb398-14" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(x<span class="sc">$</span>data<span class="sc">$</span>prob)</span>
+<span id="cb398-15"><a href="machine-learning.html#cb398-15" tabindex="-1"></a>x[<span class="fu">which</span>(ta2<span class="sc">$</span>slope <span class="sc">==</span> <span class="sc">-</span><span class="dv">10</span>), <span class="st">&quot;TRUE&quot;</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span></code></pre></div>
+<div class="sourceCode" id="cb399"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb399-1"><a href="machine-learning.html#cb399-1" tabindex="-1"></a>dem<span class="sc">$</span>prediction_rf <span class="ot">&lt;-</span> x<span class="sc">$</span><span class="st">&#39;TRUE&#39;</span></span>
+<span id="cb399-2"><a href="machine-learning.html#cb399-2" tabindex="-1"></a>dem3 <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">mask</span>(dem, <span class="fu">vect</span>(mask))</span></code></pre></div>
+<p>Create map with predictions.</p>
+<div class="sourceCode" id="cb400"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb400-1"><a href="machine-learning.html#cb400-1" tabindex="-1"></a>map <span class="ot">=</span> <span class="fu">tm_shape</span>(hs, <span class="at">bbox =</span> bbx) <span class="sc">+</span></span>
+<span id="cb400-2"><a href="machine-learning.html#cb400-2" tabindex="-1"></a>  <span class="fu">tm_grid</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>, <span class="at">n.x =</span> <span class="dv">1</span>, <span class="at">n.y =</span> <span class="dv">1</span>, <span class="at">labels.inside.frame =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb400-3"><a href="machine-learning.html#cb400-3" tabindex="-1"></a>          <span class="at">labels.rot =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">90</span>), <span class="at">lines =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb400-4"><a href="machine-learning.html#cb400-4" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="at">palette =</span> <span class="fu">gray</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">100</span> <span class="sc">/</span> <span class="dv">100</span>), <span class="at">n =</span> <span class="dv">100</span>, <span class="at">legend.show =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb400-5"><a href="machine-learning.html#cb400-5" tabindex="-1"></a>  <span class="fu">tm_shape</span>(dem3<span class="sc">$</span>prediction_rf) <span class="sc">+</span></span>
+<span id="cb400-6"><a href="machine-learning.html#cb400-6" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">palette =</span> <span class="st">&quot;Reds&quot;</span>, <span class="at">n =</span> <span class="dv">6</span>, <span class="at">legend.show =</span> <span class="cn">TRUE</span>, <span class="at">title =</span> <span class="st">&quot;Probability of a Landslide: &quot;</span>) <span class="sc">+</span> </span>
+<span id="cb400-7"><a href="machine-learning.html#cb400-7" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">inner.margins =</span> <span class="dv">0</span>, <span class="at">legend.outside =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb400-8"><a href="machine-learning.html#cb400-8" tabindex="-1"></a>  <span class="fu">tm_legend</span>(<span class="at">bg.color =</span> <span class="st">&quot;white&quot;</span>)</span>
+<span id="cb400-9"><a href="machine-learning.html#cb400-9" tabindex="-1"></a>map</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-256-1.png" width="672" /></p>
+<p><br/></p>
+
+</div>
+</div>
+</div>
+<h3> References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-maindonad2018" class="csl-entry">
+Braun, John Maindonald AND W. John. 2018. <em>Data Analysis and Graphics Using r: An Example-Based Approach</em>. Cambridge University Press.
+</div>
+<div id="ref-dunnRandomizedQuantileResiduals2020" class="csl-entry">
+Dunn, Peter K, and Gordon K Smyth. 1996. <span>“Randomized Quantile Residuals”</span> 5 (3): 236–44.
+</div>
+<div id="ref-Fox2002" class="csl-entry">
+Fox, John. 2002. <em>An r and s-Plus Companion to Applied Regression</em>. Sage Publications.
+</div>
+<div id="ref-mlr3" class="csl-entry">
+Lang, Michel, Martin Binder, Jakob Richter, Patrick Schratz, Florian Pfisterer, Stefan Coors, Quay Au, Giuseppe Casalicchio, Lars Kotthoff, and Bernd Bischl. 2019. <span>“<span class="nocase">mlr3</span>: A Modern Object-Oriented Machine Learning Framework in <span>R</span>.”</span> <em>Journal of Open Source Software</em>, December. <a href="https://doi.org/10.21105/joss.01903">https://doi.org/10.21105/joss.01903</a>.
+</div>
+<div id="ref-Lang2022" class="csl-entry">
+Lang, Michel, Bernd Bischl, Jakob Richter, Xudong Sun, and Martin Binder. 2022. <em>Paradox: Define and Work with Parameter Spaces for Complex Algorithms</em>. <a href="https://CRAN.R-project.org/package=paradox">https://CRAN.R-project.org/package=paradox</a>.
+</div>
+<div id="ref-lloydsda" class="csl-entry">
+Lloyd, Christopher D. 2010. <em>Spatial Data Analysis</em>. Oxford University Press.
+</div>
+<div id="ref-Lovelace2019" class="csl-entry">
+Lovelace, Robin, Jakub Nowosad, and Jannes Muenchow. 2019. <em>Geocomputation with r</em>. CRC Press.
+</div>
+<div id="ref-Meyer2022" class="csl-entry">
+Meyer, David, Evgenia Dimitriadou, Kurt Hornik, Andreas Weingessel, and Friedrich Leisch. 2022. <em>E1071: Misc Functions of the Department of Statistics, Probability Theory Group (Formerly: E1071), TU Wien</em>. <a href="https://CRAN.R-project.org/package=e1071">https://CRAN.R-project.org/package=e1071</a>.
+</div>
+<div id="ref-mlrsp" class="csl-entry">
+Schratz, Patrick, and Marc Becker. 2022. <em>Mlr3spatiotempcv: Spatiotemporal Resampling Methods for ’Mlr3’</em>. <a href="https://CRAN.R-project.org/package=mlr3spatiotempcv">https://CRAN.R-project.org/package=mlr3spatiotempcv</a>.
+</div>
+<div id="ref-wrightranger" class="csl-entry">
+Wright, Marvin N., and Andreas Ziegler. 2017. <span>“<span class="nocase">ranger</span>: A Fast Implementation of Random Forests for High Dimensional Data in <span>C++</span> and <span>R</span>.”</span> <em>Journal of Statistical Software</em> 77 (1): 1–17. <a href="https://doi.org/10.18637/jss.v077.i01">https://doi.org/10.18637/jss.v077.i01</a>.
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="interpolation.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="graph-analysis.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/05-machine_learning.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

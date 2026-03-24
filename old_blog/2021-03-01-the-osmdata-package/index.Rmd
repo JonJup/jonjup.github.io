@@ -1,0 +1,104 @@
+---
+title: 'the osmdata Package '
+author: 'Jonathan Jupke '
+date: '2021-03-01'
+slug: the-osmdata-package
+categories:
+  - GIS
+tags:
+  - GIS
+toc: no
+images: ~
+---
+
+Here I will introduce you to the  **osmdata** package. 
+osm is short for open street map and you can use the package to access the data from osm directly from R. 
+
+```{r eval=F}
+install.packages("osmdata")
+libary(osmdata)
+library(sf)
+library(dplyr)
+library(tmap)
+library(magrittr)
+```
+```{r echo=F, message = F, results = 'hide'}
+library(osmdata)
+library(sf)
+library(dplyr)
+library(tmap)
+library(magrittr)
+```
+
+osm uses the read-only overpass API to download data from Open Street Map and read them in the formats of
+**sp**, **sf** or **silicate**. 
+A complete call with osmdata looks like his: 
+
+```{r eval = F}
+x <-
+  getbb("Landau") %>% 
+        opq() %>%
+        add_osm_feature(key = 'name',
+                        value = "Queich") %>%
+        osmdata_sf()
+```
+
+As you can see, four different functions are part of the call. 
+
+1. `getbb()`
+2. `opq()`   
+3. `add_osm_feature()`
+4. `osmdata_sf()`
+
+Lets go through them one after another to see what they do. 
+`getbb()` returns the bounding box of some place in the world. 
+The only argument you usually have to supply is `place_name`.
+
+```{r}
+ld = getbb("Landau")
+```
+
+This worked, and returned the bounding box of Landau in longitude and latitude. 
+Using our new bounding box we can now call `opq()`. 
+Of course you can also write a custom bbox directly into `opq()`.
+This function builds a query to Overpass (**o**ver**p**ass **q**uery).
+
+```{r}
+ld = opq(bbox = ld)
+ld
+```
+
+This is no spatial object yet but just the request (query) that will be send to the API. 
+This request is further expanded in `add_osm_feature()`. 
+All items in the Open Street Map data have a **key** and a **value**. 
+A few example are key: amenity - value: bar, cafe or fast_food; key: building - value: school, public or church, key: landuse - value: basin, cementery, grass. 
+See [here](https://wiki.openstreetmap.org/wiki/Map_Features) for a complete overview of all keys and features. 
+Let's download one of each. 
+
+```{r}
+ld_amenity = add_osm_feature(ld, key = "amenity", value = "bar") 
+ld_building = add_osm_feature(ld, key = "building", value = "school") 
+ld_landuse = add_osm_feature(ld, key = "landuse", value = "grass") 
+```
+
+Now our queries are complete and we can download the data using `osmdata_sf()`. 
+
+```{r results="hide"}
+ld_amenity  %<>% osmdata_sf() 
+ld_building %<>% osmdata_sf() 
+ld_landuse  %<>% osmdata_sf() 
+```
+
+The suffix of `osmdata_sf()` specifies that we want the downloaded data to be in the `sf` format. 
+Alternatives are: `osmdata_sp`,`osmdata_sc` and `osmdata_xml`.
+
+The resulting objects are lists which have the different geometries as elements.
+Below we plot the three data sets together.
+
+```{r}
+tmap_mode("view")
+tm_shape(ld_amenity$osm_points) + tm_dots(col = "red") + 
+  tm_shape(ld_building$osm_polygons) + tm_polygons(col = "blue") + 
+  tm_shape(ld_landuse$osm_polygons) + tm_polygons(col = "green")
+```
+

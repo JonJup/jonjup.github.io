@@ -1,0 +1,508 @@
+---
+title: Introduction to sf
+author: Jonathan Jupke
+date: '2022-07-07'
+slug: introduction-to-sf
+categories:
+  - GIS
+tags:
+  - sf
+  - R
+  - GIS
+comments: no
+images: ~
+---
+
+When using R as a GIS, there is no way past the `sf` package([Pebesma, 2018](https://journal.r-project.org/archive/2018/RJ-2018-009/index.html)). 
+Theoretically you could use the quasi predecessor `sp`, but beyond some old packages requiring it, there really is no reason to do so. 
+
+With this script, you will learn to use `sf` to load spatial data in R, to perform standard data wrangling procedures on them, to make (interactive) maps, and lastly, to perform basic geospatial operations with them.  
+
+A great (and free) resource for everything GIS in R is the book [Geocomputation in R](https://geocompr.robinlovelace.net/). 
+
+# Loading spatial data with sf
+
+First, we need to load the `sf` package. 
+When we load it, we get the followning message
+        
+```{r}
+library(sf)
+```
+
+`sf` connects the running R instance to three other programs: GEOS, GDAL und PROJ.
+[GEOS](https://libgeos.org/) and [GDAL](https://gdal.org/) are collections of functions to read, write, and alter geodata; [PROJ](https://proj.org/) can tranform geodata from one coordinate reference system to another. 
+
+The first command is `st_read()`. We use it to load the file `gadm36_DEU_3_pk.gpkg` (download [hier](https://cloud.uni-landau.de/index.php/s/99rjM6XDPkLxzxY)) into R. 
+All functions in `sf` start with `st_` which is short for *spatiotemporal*. 
+This is handy for looking through the functions with the autocomplete feature of RStudio. 
+
+```{r}
+germany <- st_read("gadm36_DEU_3_pk.gpkg")
+```
+
+After loading these data we automatically get a number of messages. 
+
+![R Output after loading gadm36_DEU_3_pk.gpkg](images/sf-load_data.png)
+
+These are from top left to bottom right following the yellow boxes: 
+the layername of the loaded file. 
+This is not equal to the object name in R, but the name that was used to safe the layer in the geopackage. the location of the file on the harddrive. 
+The file format (here GPKG). 
+The number of rows (*features*, 4680) and columns (*fields*, 16).
+The feature type (GeometryType).
+The bounding Box,i.e., the minimal and maximal x and y coordinates or longitudes and latitudes.
+Lastly, the coordinate reference system. 
+
+When we now calls this object in R we see the following: 
+```{r}
+germany
+```
+
+The box at the start is very similar to what we saw when we loaded the data. 
+Below, we see the first ten rows of each column. 
+The last column contains the coordinates of each object.
+This row looks funny and also behaves that way.
+We will se more about this later. 
+
+The Objekt has three classes. 
+
+```{r}
+class(germany)
+```
+
+Since one of them is `data.frame` we can use most operations on it we already know for data.frames. 
+```{r}
+germany[1,]
+germany[,1]
+```
+
+When we subset this object using `[`, `$`, or dplyr's `select()`, we will always get the selected column but also the `geometry` or `geom`
+column that holds the coordinates. 
+We say the `geom` column is *sticky*. 
+This is usually a wanted behaviour, as we want to keep these information in most cases. 
+Sometimes though, we need or wish to proceed without it.
+In those cases use the functon `st_drop_geometry()` to remove the `geom` column. 
+As already mentoned, the `geom` column is special. 
+It is sitcky, but also a [list column](https://adv-r.hadley.nz/vectors-chap.html#list-columns). 
+That means the column is list, instead of a vector as columns usually are. 
+It also has a class we have not encountered before, `sfc`.
+
+```{r}
+class(germany$ge)
+```
+
+`sfc` is short for *simple feature column*, so a column of simple features. 
+Simple features are a way to represent spatial data internally, we will not get into this here. 
+Just note that sf uses the simple features norm and, indeed, is even named after it. 
+
+The individual elements of a `sfc` column have the class `sfg`, *simple feature geometry*
+So think of it like this, every single geometry, a point, line, or polygon is a `sfg`. 
+When we collect multiple geometries, e.g. multiple sampling locations, streets in a city, or forest areas in a country they form a `sfc`. 
+When we add this `sfc`  as a column to a `data.frame` and thus add non-spatial information such as sampling date, street name, or average summer temperature, we get a `sf` object. 
+
+Unlike a `data.frame`, we can visualize `sf` objects by passing them on to `plot()`. 
+Here, I only plot the first 10 rows. 
+
+```{r}
+plot(germany[1:10,])
+```
+
+As we can see, `plot()` draws a separate map for every variable. 
+To get a map for a single variable, we need to subset the data set.  
+
+```{r}
+plot(germany[,"GID_3"])
+```
+
+# DIY spatial data 
+![Relationship between sf geometry types (aus Lovelace et al 2021)](images/sf_geometry_type_diagram.png)
+
+In `sf` we can create our own spatial objects. 
+In practice, you probably won't need this, but we will go through the steps here to give you deeper understanding of `sf`'s workings.
+The functions to create spatial objects are named following a simple rule: `st_` + the name of the geometry type. 
+To create a point, we use:
+
+```{r}
+point1 <- st_point(x = c(1,1))
+```
+
+`point1` with the coordinates 1 and 1. 
+
+```{r}
+class(point1)
+```
+
+It has the class `sfg`. 
+
+```{r}
+plot(point1)
+```
+
+Lines are made from multiple coordinates that are connected in a specific order. 
+Just as in `st_point()` the individual coordinates are vectores (`c()`). 
+These vectors are combined in a matrix, where each row gives the coordiantes of one point.
+The point with the coordinates in the second row is connected to the points with the coordinates from the first and third row. 
+We could pass the coordinates to `st_linestring()` as a matrix, but this is hard to read. 
+It is common to see people use the `rbind()` function instead, which takes vectors (our coordinate pairs) and combines them as the rows of a matrix. 
+
+```{r}
+line_coordinates <- 
+        rbind(
+                c(1,1), # first point 
+                c(1,2), # second point 
+                c(2,2), # third point 
+                c(2,3)  # fourth point
+        )
+line1 <- st_linestring(line_coordinates)
+plot(line1)
+```
+
+Mit `line_coordinates` können wir auch ein *multipoint* erstellen. 
+```{r}
+multipoint1 <- st_multipoint(line_coordinates)
+plot(multipoint1)
+```
+
+A multipoint has several points in a single `sfg` and hence a single row of the final `sf` object. 
+
+Polygons are basically nothing more that linestrings which have the same first and last coordinate. 
+They are also created similarly. 
+You just need to wrap the matrix in a list. 
+
+```{r}
+# same as for linestrings
+polygon_coordinates <- 
+        rbind(
+                c(1,1), 
+                c(1,2), 
+                c(2,2),
+                c(2,1),
+                c(1,1)
+        )
+
+# now we add the list and call st_polygon()
+polygon1 <- st_polygon(list(polygon_coordinates))
+
+plot(polygon1)
+```
+
+*MultiLineStrings* and *Multipolygone* are also created with lists.  
+
+```{r}
+multilinestring_coordinates <- 
+        list(rbind(c(1,1), c(1,2), c(1,3), c(1,4)),
+             rbind(c(2,0), c(3,0), c(4,0), c(4,1)))
+
+multilinestring1 <- st_multilinestring(multilinestring_coordinates)
+plot(multilinestring1)        
+```
+
+```{r}
+multipolygon_coordinates <-
+        list(list(rbind(c(0, 0), c(0, 1), c(1, 1), c(1, 0), c(0, 0))),
+             list(rbind(c(2, 1), c(2, 2), c(1, 2), c(1, 1), c(2, 1))))
+multipolygon1 <- st_multipolygon(multipolygon_coordinates)
+plot(multipolygon1)
+```
+
+*Geometry collections* are single `sfg` objects, which can contain different geometry types. 
+The are rare used in practice. 
+
+```{r}
+geometrycollection1 <-
+        st_geometrycollection(x = list(
+                st_multipolygon(multipolygon_coordinates),
+                st_multilinestring(multilinestring_coordinates)
+        ))
+plot(geometrycollection1)
+```
+
+
+# Basic operations 
+
+Up to now, we have geometric forms but to be really usefull they still need a coordinate reference system (crs).
+We can assign a crs to a `sf` object with `st_crs()`. 
+
+
+Alternatively,  we can do it with `st_sfc()` when we combine `sfg` objects to a `sfc`.  
+There are different ways we can use in `sf` to assign a crs, but the EPSG code is the easiest. 
+Lets assign the crs WGS 84 to `geometrycollection1`. 
+
+```{r}
+geometrycollection_sfc <- st_sfc(geometrycollection1, crs = "EPSG:4326")
+geometrycollection_sf  <- st_as_sf(geometrycollection_sfc)
+```
+
+Now to see if this worked we will use other options than the base `plot()`function. 
+These alternative come from other packages than sf, namely, `tmap` and `mapview`. 
+
+Every `tmap` map has at least two elements:  
+        1. `tm_shape()` - the R object you want to plot 
+        2.  the geometric shape you want to use for the map, i.e., ``tm_dots()` for points, `tm_lines()` for lines and `tm_polygons()` for polygons. 
+        
+These elements are combined with a `+`.
+There is no limit to the number of data sests of geometries you can use in a signle tmap. 
+Simply combine all of your elements with a `+`. 
+
+```{r}
+library(tmap)
+tm_shape(geometrycollection_sf) + 
+        tm_dots(size = 1) + 
+        tm_lines() + 
+        tm_polygons()
+```
+
+Besides statics maps like this, we can create interactive maps with `tmap`.
+Interactive maps cannot be used in static documents like pdfs but are a nice addition to html documents and websites. 
+Additionally, they are great to explore your data. 
+To create interactive maps with `tmap`, we have to change the tmap mode from `plot` to `view`. 
+
+```{r}
+tmap_mode("view")
+```
+
+Now, the same call as before creates an interactive map.
+
+```{r}
+tm_shape(geometrycollection_sf) + 
+        tm_dots(size = 1) + 
+        tm_lines() + 
+        tm_polygons()
+```
+
+We will use the other mentioned package, `mapview`, in a following example. 
+
+# Useful functions
+
+## `st_area()`
+
+With `st_area()` you can determine the area of polygons. 
+```{r}
+germany_area <- st_area(germany)
+class(germany_area)
+```
+
+The result is of class `units` which was introduced by the eponymous [Package](https://r-quantities.github.io/units/articles/measurement_units_in_R.html).
+Working with them can be cumbersome at times, but you can always drop the units features with `units::drop_units()`.
+
+```{r}
+germany_area <- units::drop_units(germany_area)
+```
+
+We can add the area as a variable and then color the counties by their area. 
+For this new map we use the `mapview` package. 
+It is great for quick interactive maps, when you just want to make sure your data look alright, or want to see how they are distributed across space. 
+For more elaborate statics maps like you would use them in reports or publications, `tmap` is the better choice. 
+```{r}
+
+# add area as variable to germany using the magrittr assignment pipe 
+library(magrittr)
+germany %<>%  dplyr::mutate(germany, area = germany_area)  
+library(mapview)
+mapview(germany, zcol = "area")
+```
+
+## `st_nearest_feature()`
+
+With `st_nearest_feature(x,y)` we can find the element of y that is closesest to an element of x. 
+The function returns a vector of numbers. 
+If the first number in vector is 3 than the third element of y is closest to the first element in x. 
+
+```{r}
+# - Wähle den größten Bezirk
+big1 <- germany |> 
+        # ordne der Größe nach
+        dplyr::arrange(area) |>
+        # wähle den letzte also größten Bezirk 
+        dplyr::slice_tail(n = 1)
+
+# - Welches Element aus germany ist dem größten Bezirk am nächsten? 
+nnid <- st_nearest_feature(big1, germany)
+# - Das Ergebnis ist die Reihennummer dies nächsten Objektes. 
+nnid
+germany[nnid, ]
+mapview(rbind(big1,germany[nnid, ]), zcol = "GID_3")
+```
+
+## `st_distance()`
+
+With `st_distance()` we can calculate the distance between objects. 
+We might for example ask what the distance between the ten largest counties in Germany is. 
+
+```{r}
+# find the ten biggest counties
+big10 <- 
+        germany |> 
+        # order the data set by the variable area 
+        dplyr::arrange(area) |> 
+        # only keep the last 10 (n) rows.
+        dplyr::slice_tail(n = 10)
+
+# What is the distance between the ten biggest counties
+big10 <- st_distance(big10)
+```
+
+Here, we only provided `st_distance()` only with one argument: `big10`. 
+The result is a matrix with `units` objects.
+In column 3, row 2 you can find the distanc between the second and third polygon
+This distance is the smallest distance between the borders of the two polygons. 
+The diagonal of the matrix contains the distance of objects to themselves, and consequently is all zeros. 
+
+We can also use `st_distance()` with two data sets. 
+As example we use a data set of dragonflies ([here](https://cloud.uni-landau.de/index.php/s/eKbTpdqAqHx9xGs)) and rivers in Rhineland-Palatinate ([here](https://cloud.uni-landau.de/index.php/s/gEP2cHbngRXm7Le)). 
+For each of the dragonfly samples we will try to find the closest river and measure the distance to it. 
+
+```{r}
+# read shape files 
+dragonflies <- st_read("Libellen/artenfinder_libellen_rlp.shp")
+rivers      <- st_read("rivers_rlp/Fließgewaesser.shp")
+
+# The dragonfly data set is big (> 30.000 Reihen). 
+# We will use 100 randomly selected rows to speed up the computation. 
+
+dragonflies <- dragonflies[sample(1:nrow(dragonflies), 100), ]
+
+# Do both data sets use the same CRS? - Yes 
+st_crs(dragonflies) == st_crs(rivers)
+
+# find indext of nearest river for each dragonfly sample.
+near <- st_nearest_feature(dragonflies, rivers)
+
+# Create a new river data set. This one is ordered according to the dragonflies. 
+# In the first row you will find the river that is closest to the first dragonfly observation and so on. 
+
+rivers_reorder <- rivers[near, ]
+
+# Compute distance from dragonfly to sample. 
+# by_element = TRUE means that we only compute the distance between the first element of dragonflies to the 
+# first of rivers_reordered, from the second to the second and so on. Otherwise we would compute the 
+# distances between all possible pairs of dragonflies and rivers. 
+
+distance_to_river <- st_distance(dragonflies, rivers_reorder, by_element = TRUE)
+
+# ADd distances as a variable to the dragonfly data 
+dragonflies %<>% dplyr::mutate(distance = units::drop_units(distance_to_river))
+
+# Remove dragonflies that are more tha 10 km removed from the next river. 
+dragonflies %<>% dplyr::filter(distance < 10000)
+
+# Put it all on a map and color the points according to the distance. 
+# Use 7 different color categories.
+tm_shape(rivers) + 
+        tm_lines(col = "blue") + 
+        tm_shape(dragonflies) + 
+        tm_dots(col = "distance", n = 7)
+
+```
+
+## `spatial subsetting`
+
+In R, we can subset tabels with `[`, `$`,`select()` und `filter()`.
+In these cases we use the Position of the column, its name or the values of different variables to subset the data. 
+For spatial data is also handy to subset data according to their spatial position. 
+This is possible with `sf` and follows the syntax: `X[Y]` only keep elements of `X` that fall within `Y`.  
+This might be: keep all the observations of a species that fall within a focal area.  
+
+As an example we will use a data set of great tit observations in germany. ([here](https://cloud.uni-landau.de/index.php/s/Rbzsf8BR2m2bwDK) Dowload). 
+
+```{r}
+observations <- readRDS("meisen2.rds")
+observations <- observations[which(!is.na(observations$decimalLongitude)), ]
+observations <- st_as_sf(observations, coords = c("decimalLongitude", "decimalLatitude"), crs = "EPSG:4326")
+observations_subset <- observations[1:100, ]
+mapview(observations_subset)
+```
+As you can see from this example, it is easy to transform a non spatial data set (.rds format) to a spatial one with `sf`. 
+You can simply use the `st_as_sf()` function. 
+It takes the names for the X and Y coordinates and the CRS as arguments. 
+
+These great tit observations extend over all of Germany.
+We want to focus on those that fall with the German county of *Goslar*.
+
+```{r}
+goslar <- dplyr::filter(germany, NAME_2 == "Goslar")
+goslar_observations <- observations[goslar, ]
+mapview(goslar_observations)
+```
+
+The subsetting quietly uses a *topological relationship* between the elements of `observations` and `goslar`. If we do not explicitly provide one, the subsetting uses `st_intersect()` to select elements from `observations` that intersect with `goslar`. 
+There are many alternatives to `st_intersects()` (see Figure below).
+Among them are the self-explanatory functions `st_touch()`, `st_cross()`, and `st_covers()`.  
+
+![Topological relationships (from Lovelace et al. 2021)](images/topoloical_relations.png)
+
+We will look at one other topological relationship as an example. 
+Using `germany`, we will find all counties that share a border with the biggest county, i.e., that *touch* it. 
+
+```{r}
+big1_neighbour <- germany[big1, op = st_touches]
+mapview(big1_neighbour, zocl = "GID_3")
+```
+
+## Spatial joins 
+
+With a spatial join we add the variables from one data set to another data set based on the topological relationship of these data sets. 
+As an example we add the name of the county to the bird observations.
+
+```{r}
+# random subset of 500 observations
+observations_subset <- observations[sample(1:nrow(observations), 500), ]
+
+# Create a version of the germany data set that only has one variable: NAME_2
+# We do so because in the join all variables will be added to the bird observations. 
+# We are only interested in the county name (NAME_2) so we need to remove all other variables. 
+germany_name2 <- dplyr::select(germany, NAME_2)
+
+# spatially join the two data sets.  
+observations_name2 <- st_join(observations_subset, germany_name2)
+mapview(observations_name2, zcol = "NAME_2")
+```
+
+## Spatial Aggregation 
+
+Lastly, we want to take a look at spatial aggregation. 
+A question for which you might want to do this would be: whats is the medium abundance of great tits in the different counties. 
+This contains three steps: 
+1. Group observations according to the county that they are in
+2. compute mean value of abundance for each group
+3. assign each mean value to the county polygon
+
+But all are achieved with a single function: `aggregate()`. 
+We have to prepare the data a little, to use the `aggregate()` function on them. 
+The function expects the following arguments: `x` - the data to aggregate. In our case `observations`. `by` - which data provide the grouping? In our case `germany`. `FUN` - what function should `aggregate()` use to summarize the data of one group? In our case `mean()`. 
+Afterwards we can provide arguments to the function specified in `FUN` (i.e. `mean()`). 
+
+```{r}
+# - Subset observations the the abundance variable 
+observations_count <- dplyr::select(observations, individualCount)
+# - Drop all rows without abundace data 
+observations_count <- dplyr::filter(observations_count, !is.na(individualCount))
+# - aggregate observations by counties 
+observations_agg <- aggregate(x = observations_count, by = germany, FUN = mean)
+# - This does the same but can be used without dropping NAs before. The `na.rm` argument is
+# - suplied to mean().  
+observations_agg <- aggregate(x = observations_count, by = germany, FUN = mean, na.rm = TRUE)
+
+mapview(observations_agg, zcol = "individualCount")
+```
+
+# Exercises 
+
+In [this](https://cloud.uni-landau.de/index.php/s/iMHkR9oC2H2QzZ6) folder you can find three files. 
+
+1. bike borrowing stations in London     
+2. The train network of London      
+3. Die districts of London     
+
+All files are projected in WGS84 (EPSG: 4326).
+
+With these three files answer the following questions: 
+
+1. How many bike stations are there?
+2. How many stations have more than 10 bikes?
+3. Whats the area of the different districts? Add the area as a variable to the district data.
+4. Assign the `osm_id` of the closest train track to each bike station.
+5. What is the distance between a bike station to its closest train track?
+6. Create a plot showing the number of bikes per station versus the distance to the next train track.
+7. Create a map in which bike stations are colored according to the distance to the train tracks.
+8. For each district, what is the mean distance between bike stations and train tracks?
