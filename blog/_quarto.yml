@@ -36,4 +36,4 @@ format:
 
 
 resources:
-  - MIDFIRELicensingandAttribution.html
+  - static/**
