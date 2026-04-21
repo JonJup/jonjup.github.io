@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type Coherence Prediction — PULSE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --river-deep: #0a1628;
+            --river-dark: #122240;
+            --water-blue: #2e6b8a;
+            --water-light: #4a9aba;
+            --foam: #b8d8e8;
+            --accent: #1e7a5a;
+            --accent-light: #2a9d6e;
+            --parchment: #f5f1ea;
+            --white: #fefefe;
+            --text-primary: #1a1a1a;
+            --text-secondary: #4a4a4a;
+            --text-light: #7a7a7a;
+            --border: #e0dcd4;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Source Sans 3', Georgia, serif;
+            color: var(--text-primary);
+            background: var(--parchment);
+            line-height: 1.7;
+            font-size: 17px;
+            font-weight: 300;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── NAV ─── */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            background: rgba(245, 241, 234, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0.9rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-name {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-size: 1.35rem;
+            color: var(--river-deep);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--accent); }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--text-primary);
+            margin: 5px 0;
+        }
+
+        /* ─── PAGE ─── */
+        .page {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 7rem 2rem 4rem;
+        }
+
+        .breadcrumb {
+            font-size: 0.82rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .breadcrumb a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .page-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.8rem;
+        }
+
+        h1 {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 400;
+            color: var(--river-deep);
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.2rem;
+        }
+
+        h1 em {
+            color: var(--water-blue);
+        }
+
+        .lead {
+            font-size: 1.12rem;
+            color: var(--text-secondary);
+            max-width: 640px;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+        }
+
+        /* ─── LAUNCH BUTTON ─── */
+        .launch-section {
+            margin-bottom: 3.5rem;
+        }
+
+        .launch-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 1rem 2.2rem;
+            background: linear-gradient(135deg, var(--accent), var(--water-blue));
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(30, 122, 90, 0.2);
+        }
+
+        .launch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(30, 122, 90, 0.3);
+        }
+
+        .launch-btn svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .launch-btn:hover svg {
+            transform: translateX(3px);
+        }
+
+        .launch-note {
+            margin-top: 0.8rem;
+            font-size: 0.82rem;
+            color: var(--text-light);
+        }
+
+        /* ─── CONTENT ─── */
+        h2 {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-size: 1.6rem;
+            font-weight: 400;
+            color: var(--river-deep);
+            margin: 3rem 0 1rem;
+            letter-spacing: -0.01em;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1.2rem;
+        }
+
+        /* ─── FEATURE GRID ─── */
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+            margin: 2rem 0 3rem;
+        }
+
+        .feature {
+            padding: 1.5rem;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            border-color: var(--water-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(46, 107, 138, 0.08);
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .feature h3 {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--river-deep);
+            margin-bottom: 0.3rem;
+        }
+
+        .feature p {
+            font-size: 0.88rem;
+            color: var(--text-light);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* ─── TAXA STRIP ─── */
+        .taxa-strip {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1.5rem 0 2.5rem;
+        }
+
+        .taxon-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(46, 107, 138, 0.06);
+            color: var(--water-blue);
+            border-radius: 20px;
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+
+        /* ─── HOW-TO STEPS ─── */
+        .steps {
+            counter-reset: step;
+            margin: 1.5rem 0 2.5rem;
+        }
+
+        .step {
+            position: relative;
+            padding-left: 3.2rem;
+            margin-bottom: 1.2rem;
+            counter-increment: step;
+        }
+
+        .step::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0.15rem;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--water-blue));
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 2rem;
+        }
+
+        .step strong {
+            color: var(--river-deep);
+            font-weight: 500;
+        }
+
+        /* ─── CODE / TECH ─── */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: var(--water-blue);
+            background: rgba(46, 107, 138, 0.06);
+            padding: 0.15em 0.45em;
+            border-radius: 4px;
+        }
+
+        /* ─── DIVIDER ─── */
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 3rem 0;
+        }
+
+        /* ─── CITATION BOX ─── */
+        .cite-box {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            border-radius: 0 10px 10px 0;
+            padding: 1.5rem 1.8rem;
+            margin: 2rem 0;
+        }
+
+        .cite-box .cite-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.6rem;
+        }
+
+        .cite-box p {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* ─── BACK LINK ─── */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 2rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: gap 0.3s ease;
+        }
+
+        .back-link:hover {
+            gap: 0.7rem;
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            padding: 2.5rem 2rem;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.82rem;
+            border-top: 1px solid var(--border);
+            background: var(--parchment);
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(245, 241, 234, 0.98);
+                padding: 1.5rem 2rem;
+                gap: 1.2rem;
+                border-bottom: 1px solid var(--border);
+            }
+            .nav-toggle { display: block; }
+            .page { padding: 6rem 1.5rem 3rem; }
+            h1 { font-size: 1.8rem; }
+            .features { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+    <div class="nav-inner">
+        <a href="index.html" class="nav-name">Jonathan</a>
+        <button class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links">
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#research">Research</a></li>
+            <li><a href="index.html#publications">Publications</a></li>
+            <li><a href="index.html#tools">Tools</a></li>
+            <li><a href="index.html#blog">Blog</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- ─── CONTENT ─── -->
+<div class="page">
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a> &nbsp;/&nbsp; <a href="index.html#tools">Tools</a> &nbsp;/&nbsp; Type Coherence Prediction
+    </div>
+
+    <div class="page-label">PULSE Interactive Tool</div>
+    <h1>Type Coherence <em>Prediction</em></h1>
+    <p class="lead">
+        An interactive application for predicting how well a proposed river typology will perform — before you invest the effort of building one. Powered by Quantile Random Forest models trained on thousands of simulated typology scenarios across European freshwater systems.
+    </p>
+
+    <!-- ─── LAUNCH ─── -->
+    <div class="launch-section">
+        <a href="https://pulse-shiny-typecoherenceprediction.2.rahtiapp.fi/" target="_blank" rel="noopener" class="launch-btn" id="app-link">
+            Launch the app
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-4.5-6h6m0 0v6m0-6L10.5 13.5" />
+            </svg>
+        </a>
+        <div class="launch-note">Opens in a new tab · Hosted on CSC Rahti</div>
+    </div>
+
+    <hr>
+
+    <!-- ─── WHAT IT DOES ─── -->
+    <h2>What does it do?</h2>
+    <p>
+        The app takes a set of typology characteristics — number of types, spatial extent, environmental distinctiveness, taxonomic resolution, and more — and returns a predicted evaluation score with uncertainty bounds. This lets you explore how design decisions affect typology quality before committing to a full analysis.
+    </p>
+    <p>
+        Under the hood, the predictions come from Quantile Random Forest models fitted as part of the <strong>PULSE</strong> project. These models were trained on a large simulation study that systematically varied typology parameters and evaluated the resulting classifications against multiple coherence metrics.
+    </p>
+
+    <!-- ─── TAXA ─── -->
+    <h2>Supported taxonomic groups</h2>
+    <div class="taxa-strip">
+        <span class="taxon-chip">🌿 Diatoms</span>
+        <span class="taxon-chip">🐟 Fishes</span>
+        <span class="taxon-chip">🦗 Macroinvertebrates</span>
+        <span class="taxon-chip">🌱 Macrophytes</span>
+    </div>
+
+    <!-- ─── FEATURES ─── -->
+    <h2>Features</h2>
+    <div class="features">
+        <div class="feature">
+            <div class="feature-icon">📊</div>
+            <h3>Quantile predictions</h3>
+            <p>Get not just a point estimate but the full range of plausible outcomes — 10th, 50th, 90th percentiles and more.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">🔧</div>
+            <h3>Flexible inputs</h3>
+            <p>Toggle which parameters you want to specify. Unknown values are imputed from training data medians.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">📋</div>
+            <h3>Batch mode</h3>
+            <p>Upload a CSV with multiple scenarios and get predictions for all of them at once. Download results for further analysis.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">🎯</div>
+            <h3>Multiple metrics</h3>
+            <p>Evaluate typologies against different coherence criteria — fuzzy divergence, Mantel correlation, silhouette width, and more.</p>
+        </div>
+    </div>
+
+    <!-- ─── HOW TO USE ─── -->
+    <h2>How to use</h2>
+    <div class="steps">
+        <div class="step">
+            <strong>Select a taxonomic group</strong> — choose which organism group your typology targets.
+        </div>
+        <div class="step">
+            <strong>Choose an evaluation metric</strong> — pick the coherence criterion you want to predict.
+        </div>
+        <div class="step">
+            <strong>Set your parameters</strong> — enter the characteristics of your planned typology: number of types, spatial extent, variable selection, etc.
+        </div>
+        <div class="step">
+            <strong>Generate prediction</strong> — the model returns quantile-based predictions showing the expected metric value and its uncertainty range.
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- ─── CONTEXT ─── -->
+    <h2>Context</h2>
+    <p>
+        This tool is part of the <strong>PULSE</strong> (Pan-European Freshwater Ecotypologies) project, a DFG-funded research initiative at the University of Helsinki. PULSE develops data-driven approaches to freshwater typology construction and evaluation, with direct relevance to the EU Water Framework Directive.
+    </p>
+    <p>
+        The underlying models were fitted on a simulation framework that generated typologies across a wide parameter space — varying the number of types, geographic coverage, environmental variable selection, taxonomic resolution, and community composition. Each simulated typology was evaluated against multiple biological coherence metrics, creating the training data for the QRF models.
+    </p>
+
+    <!-- ─── CITATION ─── -->
+    <div class="cite-box">
+        <div class="cite-label">How to cite</div>
+        <p>
+            If you use this tool in your work, please cite the PULSE project. A manuscript describing the full methodology is currently in preparation.
+            <!-- Update this once the paper is published -->
+        </p>
+    </div>
+
+    <a href="index.html#tools" class="back-link">← Back to Tools</a>
+
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+    <p>&copy; 2025 Jonathan. Built with care. Hosted on GitHub Pages.</p>
+</footer>
+
+</body>
+</html>
