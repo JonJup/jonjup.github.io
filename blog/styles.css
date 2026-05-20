@@ -267,3 +267,14 @@ tr:hover td {
     h1, .title { font-size: 1.8rem !important; }
     h2 { font-size: 1.4rem; }
 }
+.hero-description a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 400;
+    border-bottom: 1px solid rgba(30, 122, 90, 0.3);
+    transition: border-color 0.2s;
+}
+
+.hero-description a:hover {
+    border-color: var(--accent);
+}
