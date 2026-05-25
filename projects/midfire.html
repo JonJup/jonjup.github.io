@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+        <html lang="en">
+                <head>
+                <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                <title>PULSE — Pan-European Freshwater Ecotypologies</title>
+                                <link rel="preconnect" href="https://fonts.googleapis.com">
+                                        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                                                <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+                                                        <style>
+                                                        :root {
+                                                                --river-deep: #0a1628;
+                                                                        --river-dark: #122240;
+                                                                        --water-blue: #2e6b8a;
+                                                                        --water-light: #4a9aba;
+                                                                        --foam: #b8d8e8;
+                                                                        --accent: #1e7a5a;
+                                                                        --accent-light: #2a9d6e;
+                                                                        --parchment: #f5f1ea;
+                                                                        --white: #fefefe;
+                                                                        --text-primary: #1a1a1a;
+                                                                        --text-secondary: #4a4a4a;
+                                                                        --text-light: #7a7a7a;
+                                                                        --border: #e0dcd4;
+                                                        }
+                                                
+                                                * { margin: 0; padding: 0; box-sizing: border-box; }
+                                                html { scroll-behavior: smooth; }
+                                                
+                                                body {
+                                                        font-family: 'Source Sans 3', Georgia, serif;
+                                                        color: var(--text-primary);
+                                                        background: var(--parchment);
+                                                        line-height: 1.7;
+                                                        font-size: 17px;
+                                                        font-weight: 300;
+                                                        -webkit-font-smoothing: antialiased;
+                                                }
+                                                
+                                                /* ─── NAV ─── */
+                                                        nav {
+                                                                position: fixed;
+                                                                top: 0;
+                                                                width: 100%;
+                                                                z-index: 100;
+                                                                background: rgba(245, 241, 234, 0.92);
+                                                                backdrop-filter: blur(12px);
+                                                                -webkit-backdrop-filter: blur(12px);
+                                                                border-bottom: 1px solid var(--border);
+                                                        }
+                                                
+                                                .nav-inner {
+                                                        max-width: 1100px;
+                                                        margin: 0 auto;
+                                                        padding: 0.9rem 2rem;
+                                                        display: flex;
+                                                        justify-content: space-between;
+                                                        align-items: center;
+                                                }
+                                                
+                                                .nav-name {
+                                                        font-family: 'Instrument Serif', Georgia, serif;
+                                                        font-size: 1.35rem;
+                                                        color: var(--river-deep);
+                                                        text-decoration: none;
+                                                        letter-spacing: -0.02em;
+                                                }
+                                                
+                                                .nav-links {
+                                                        display: flex;
+                                                        gap: 2rem;
+                                                        list-style: none;
+                                                }
+                                                
+                                                .nav-links a {
+                                                        color: var(--text-secondary);
+                                                        text-decoration: none;
+                                                        font-size: 0.88rem;
+                                                        font-weight: 400;
+                                                        letter-spacing: 0.04em;
+                                                        text-transform: uppercase;
+                                                        transition: color 0.2s;
+                                                }
+                                                
+                                                .nav-links a:hover { color: var(--accent); }
+                                                
+                                                .nav-toggle {
+                                                        display: none;
+                                                        background: none;
+                                                        border: none;
+                                                        cursor: pointer;
+                                                        padding: 4px;
+                                                }
+                                                
+                                                .nav-toggle span {
+                                                        display: block;
+                                                        width: 22px;
+                                                        height: 2px;
+                                                        background: var(--text-primary);
+                                                        margin: 5px 0;
+                                                }
+                                                
+                                                /* ─── PROJECT HERO ─── */
+                                                        .project-hero {
+                                                                padding: 7rem 2rem 3rem;
+                                                                border-bottom: 1px solid var(--border);
+                                                                background: var(--white);
+                                                        }
+                                                
+                                                .project-hero-inner {
+                                                        max-width: 1100px;
+                                                        margin: 0 auto;
+                                                }
+                                                
+                                                .project-hero-label {
+                                                        font-size: 0.72rem;
+                                                        font-weight: 600;
+                                                        letter-spacing: 0.18em;
+                                                        text-transform: uppercase;
+                                                        color: var(--accent);
+                                                        margin-bottom: 0.8rem;
+                                                }
+                                                
+                                                .project-hero h1 {
+                                                        font-family: 'Instrument Serif', Georgia, serif;
+                                                        font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+                                                        font-weight: 400;
+                                                        color: var(--river-deep);
+                                                        line-height: 1.12;
+                                                        letter-spacing: -0.03em;
+                                                        margin-bottom: 1.2rem;
+                                                }
+                                                
+                                                .project-hero h1 em { color: var(--water-blue); }
+                                                
+                                                .project-hero-description {
+                                                        font-size: 1.1rem;
+                                                        color: var(--text-secondary);
+                                                        max-width: 680px;
+                                                        line-height: 1.8;
+                                                        margin-bottom: 2rem;
+                                                }
+                                                
+                                                .project-meta-strip {
+                                                        display: flex;
+                                                        gap: 2.5rem;
+                                                        flex-wrap: wrap;
+                                                        padding-top: 1.5rem;
+                                                        border-top: 1px solid var(--border);
+                                                }
+                                                
+                                                .project-meta-item {
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        gap: 0.15rem;
+                                                }
+                                                
+                                                .project-meta-label {
+                                                        font-size: 0.7rem;
+                                                        text-transform: uppercase;
+                                                        letter-spacing: 0.12em;
+                                                        color: var(--text-light);
+                                                        font-weight: 500;
+                                                }
+                                                
+                                                .project-meta-value {
+                                                        font-size: 0.92rem;
+                                                        color: var(--text-primary);
+                                                }
+                                                
+                                                .project-meta-value a {
+                                                        color: var(--accent);
+                                                        text-decoration: none;
+                                                        border-bottom: 1px solid rgba(30, 122, 90, 0.3);
+                                                }
+                                                
+                                                .project-meta-value a:hover {
+                                                        border-color: var(--accent);
+                                                }
+                                                
+                                                /* ─── PAGE BODY ─── */
+                                                        .page-body {
+                                                                max-width: 1100px;
+                                                                margin: 0 auto;
+                                                                padding: 3rem 2rem 4rem;
+                                                        }
+                                                
+                                                /* ─── TWO COLUMN LAYOUT ─── */
+                                                        .project-layout {
+                                                                display: grid;
+                                                                grid-template-columns: 1fr 340px;
+                                                                gap: 4rem;
+                                                                align-items: start;
+                                                        }
+                                                
+                                                /* ─── MAIN CONTENT ─── */
+                                                        h2 {
+                                                                font-family: 'Instrument Serif', Georgia, serif;
+                                                                font-size: 1.6rem;
+                                                                font-weight: 400;
+                                                                color: var(--river-deep);
+                                                                letter-spacing: -0.01em;
+                                                                margin: 2.5rem 0 0.8rem;
+                                                        }
+                                                
+                                                h2:first-child { margin-top: 0; }
+                                                
+                                                p { color: var(--text-secondary); margin-bottom: 1rem; }
+                                                
+                                                p a {
+                                                        color: var(--accent);
+                                                        text-decoration: none;
+                                                        border-bottom: 1px solid rgba(30, 122, 90, 0.3);
+                                                }
+                                                
+                                                p a:hover { border-color: var(--accent); }
+                                                
+                                                /* ─── SIDEBAR ─── */
+                                                        .sidebar-section {
+                                                                margin-bottom: 2.5rem;
+                                                        }
+                                                
+                                                .sidebar-title {
+                                                        font-size: 0.72rem;
+                                                        font-weight: 600;
+                                                        letter-spacing: 0.15em;
+                                                        text-transform: uppercase;
+                                                        color: var(--accent);
+                                                        margin-bottom: 1rem;
+                                                        padding-bottom: 0.5rem;
+                                                        border-bottom: 1px solid var(--border);
+                                                }
+                                                
+                                                /* ─── LINK LIST (blog posts, talks, papers) ─── */
+                                                        .link-list {
+                                                                list-style: none;
+                                                        }
+                                                
+                                                .link-item {
+                                                        padding: 0.8rem 0;
+                                                        border-bottom: 1px solid var(--border);
+                                                }
+                                                
+                                                .link-item:last-child { border-bottom: none; }
+                                                
+                                                .link-item a {
+                                                        text-decoration: none;
+                                                        color: inherit;
+                                                        display: block;
+                                                        transition: all 0.2s;
+                                                }
+                                                
+                                                .link-item a:hover .link-title {
+                                                        color: var(--accent);
+                                                }
+                                                
+                                                .link-date {
+                                                        font-family: 'JetBrains Mono', monospace;
+                                                        font-size: 0.72rem;
+                                                        color: var(--text-light);
+                                                        margin-bottom: 0.15rem;
+                                                }
+                                                
+                                                .link-title {
+                                                        font-size: 0.95rem;
+                                                        font-weight: 400;
+                                                        color: var(--river-deep);
+                                                        line-height: 1.35;
+                                                        transition: color 0.2s;
+                                                }
+                                                
+                                                .link-type {
+                                                        font-size: 0.72rem;
+                                                        font-weight: 500;
+                                                        text-transform: uppercase;
+                                                        letter-spacing: 0.08em;
+                                                        color: var(--water-blue);
+                                                        margin-top: 0.15rem;
+                                                }
+                                                
+                                                /* ─── QUICK LINKS BOX ─── */
+                                                        .quick-links {
+                                                                list-style: none;
+                                                        }
+                                                
+                                                .quick-links li {
+                                                        margin-bottom: 0.6rem;
+                                                }
+                                                
+                                                .quick-links a {
+                                                        display: inline-flex;
+                                                        align-items: center;
+                                                        gap: 0.5rem;
+                                                        color: var(--text-secondary);
+                                                        text-decoration: none;
+                                                        font-size: 0.9rem;
+                                                        transition: color 0.2s;
+                                                }
+                                                
+                                                .quick-links a:hover { color: var(--accent); }
+                                                
+                                                .quick-links .link-icon {
+                                                        width: 28px;
+                                                        height: 28px;
+                                                        background: var(--parchment);
+                                                        border: 1px solid var(--border);
+                                                        border-radius: 6px;
+                                                        display: flex;
+                                                        align-items: center;
+                                                        justify-content: center;
+                                                        font-size: 0.75rem;
+                                                        flex-shrink: 0;
+                                                }
+                                                
+                                                /* ─── TAGS ─── */
+                                                        .tag-list {
+                                                                display: flex;
+                                                                flex-wrap: wrap;
+                                                                gap: 0.4rem;
+                                                        }
+                                                
+                                                .tag {
+                                                        padding: 0.25rem: 0.7rem;
+                                                        background: rgba(46, 107, 138, 0.06);
+                                                        color: var(--water-blue);
+                                                        border-radius: 20px;
+                                                        font-size: 0.75rem;
+                                                        font-weight: 500;
+                                                        padding: 0.25rem 0.7rem;
+                                                }
+                                                
+                                                /* ─── DATA BANNER ─── */
+                                                        .data-banner {
+                                                                background: var(--river-deep);
+                                                                padding: 2.5rem 2rem;
+                                                                border-radius: 12px;
+                                                                display: flex;
+                                                                justify-content: center;
+                                                                gap: 3.5rem;
+                                                                flex-wrap: wrap;
+                                                                margin: 2.5rem 0;
+                                                        }
+                                                
+                                                .stat { text-align: center; }
+                                                
+                                                .stat-number {
+                                                        font-family: 'Instrument Serif', Georgia, serif;
+                                                        font-size: 2.4rem;
+                                                        font-weight: 400;
+                                                        color: var(--foam);
+                                                        line-height: 1;
+                                                        margin-bottom: 0.3rem;
+                                                }
+                                                
+                                                .stat-label {
+                                                        font-size: 0.72rem;
+                                                        text-transform: uppercase;
+                                                        letter-spacing: 0.1em;
+                                                        color: rgba(255, 255, 255, 0.5);
+                                                }
+                                                
+                                                /* ─── SEPARATOR ─── */
+                                                        hr {
+                                                                border: none;
+                                                                border-top: 1px solid var(--border);
+                                                                margin: 2.5rem 0;
+                                                        }
+                                                
+                                                /* ─── FOOTER ─── */
+                                                        footer {
+                                                                padding: 2.5rem 2rem;
+                                                                text-align: center;
+                                                                color: var(--text-light);
+                                                                font-size: 0.82rem;
+                                                                border-top: 1px solid var(--border);
+                                                        }
+                                                
+                                                /* ─── RESPONSIVE ─── */
+                                                        @media (max-width: 768px) {
+                                                                .nav-links { display: none; }
+                                                                .nav-links.open {
+                                                                        display: flex;
+                                                                        flex-direction: column;
+                                                                        position: absolute;
+                                                                        top: 100%;
+                                                                        left: 0;
+                                                                        right: 0;
+                                                                        background: rgba(245, 241, 234, 0.98);
+                                                                        padding: 1.5rem 2rem;
+                                                                        gap: 1.2rem;
+                                                                        border-bottom: 1px solid var(--border);
+                                                                }
+                                                                .nav-toggle { display: block; }
+                                                                .project-hero { padding: 6rem 1.5rem 2rem; }
+                                                                .project-hero h1 { font-size: 1.8rem; }
+                                                                .project-meta-strip { gap: 1.5rem; }
+                                                                .page-body { padding: 2rem 1.5rem; }
+                                                                .project-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+                                                                .data-banner { gap: 2rem; }
+                                                                .stat-number { font-size: 1.8rem; }
+                                                        }
+                                                </style>
+                                                        </head>
+                                                        <body>
+                                                        
+                                                        <!-- ─── NAV ─── -->
+                                                        <nav>
+                                                        <div class="nav-inner">
+                                                        <a href="index.html" class="nav-name">Jonathan</a>
+                                                        <button class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+                                                        <span></span><span></span><span></span>
+                                                        </button>
+                                                        <ul class="nav-links">
+                                                        <li><a href="index.html#about">About</a></li>
+                                                        <li><a href="index.html#research">Research</a></li>
+                                                        <li><a href="index.html#publications">Publications</a></li>
+                                                        <li><a href="index.html#tools">Tools</a></li>
+                                                        <li><a href="index.html#blog">Blog</a></li>
+                                                        <li><a href="index.html#contact">Contact</a></li>
+                                                        </ul>
+                                                        </div>
+                                                        </nav>
+                                                        
+                                                        <!-- ═══════════════════════════════════════════════════════
+                                                PROJECT HERO
+                                                ═══════════════════════════════════════════════════════ -->
+                                                        <div class="project-hero">
+                                                        <div class="project-hero-inner">
+                                                        <div class="project-hero-label">Research Project</div>
+                                                        <h1>MIDFIRE — Pan-European<br>Freshwater <em>Organism Occurences</em></h1>
+                                                        <p class="project-hero-description">
+                                                        A data-driven approach to freshwater river classification for Europe. 
+                                                PULSE changes how we <a href="https://jonjup.github.io/blog/static/pulse-app.html"> evaluate typology systems</a> 
+                                                        and develops novel typologies that capture ecologically meaningful variation across the continent, directly informing biomonitoring and Policy implementations.
+                                                </p>
+                                                        <div class="project-meta-strip">
+                                                        <div class="project-meta-item">
+                                                        <span class="project-meta-label">Funding</span>
+                                                        <span class="project-meta-value">DFG Walter Benjamin Fellowship</span>
+                                                        </div>
+                                                        <div class="project-meta-item">
+                                                        <span class="project-meta-label">Duration</span>
+                                                        <span class="project-meta-value">2025 – 2028</span>
+                                                        </div>
+                                                        <div class="project-meta-item">
+                                                        <span class="project-meta-label">Institution</span>
+                                                        <span class="project-meta-value"><a href="https://www.helsinki.fi">University of Helsinki</a></span>
+                                                        </div>
+                                                        <div class="project-meta-item">
+                                                        <span class="project-meta-label">PI</span>
+                                                        <span class="project-meta-value">Jonathan Jupke</span>
+                                                        </div>
+                                                        </div>
+                                                        </div>
+                                                        </div>
+                                                        
+                                                        <!-- ═══════════════════════════════════════════════════════
+                                                PAGE BODY — main content + sidebar
+                                                ═══════════════════════════════════════════════════════ -->
+                                                        <div class="page-body">
+                                                        <div class="project-layout">
+                                                        
+                                                        <!-- ─── MAIN COLUMN ─── -->
+                                                        <div class="main-content">
+                                                        
+                                                        <h2>About the project</h2>
+                                                        <p>
+                                                        PULSE compiles and harmonises pan-European biodiversity databases spanning four major taxonomic groups — diatoms, fishes, macroinvertebrates, and macrophytes — to build ecologically grounded river typologies. By combining joint species distribution models (HMSC), fuzzy clustering, and quantile random forests, the project creates classification systems that reflect real biological patterns rather than administrative boundaries.
+                                                </p>
+                                                        <p>
+                                                        The resulting typologies are evaluated against multiple coherence metrics and made operational through interactive prediction tools. The ultimate goal is to provide a methodological framework that member states can adopt for WFD-compliant bioassessment.
+                                                </p>
+                                                        
+                                                        <div class="data-banner">
+                                                        <div class="stat">
+                                                        <div class="stat-number">400k+</div>
+                                                        <div class="stat-label">Biodiversity Samples</div>
+                                                        </div>
+                                                        <div class="stat">
+                                                        <div class="stat-number">4</div>
+                                                        <div class="stat-label">Taxonomic Groups</div>
+                                                        </div>
+                                                        <div class="stat">
+                                                        <div class="stat-number">30+</div>
+                                                        <div class="stat-label">European Countries</div>
+                                                        </div>
+                                                        </div>
+                                                        
+                                                        <h2>Methods</h2>
+                                                        <p>
+                                                        The project proceeds in three stages. First, community data across Europe are compiled, harmonised, and quality-controlled from national monitoring programmes. Second, HMSC models are fitted to estimate species environmental niches and residual co-occurrence patterns. Third, spatial fuzzy clustering (via the SKATER-CON algorithm) produces ecotypologies that are evaluated and benchmarked against biological coherence metrics.
+                                                </p>
+                                                        <p>
+                                                        Quantile random forest models are trained on simulated typology scenarios to predict how design decisions — number of types, variable selection, spatial extent, taxonomic resolution — affect classification quality. These predictions are served through an <a href="pulse-app.html">interactive Shiny application</a>.
+                                                </p>
+                                                        
+                                                        <h2>Policy relevance</h2>
+                                                        <p>
+                                                        PULSE directly addresses challenges in implementing the EU Water Framework Directive's typological framework. The project demonstrates how data-driven typologies can complement or improve the currently used abiotic classification systems, with concrete applications for intercalibration, reference condition setting, and ecological status assessment.
+    </p>
+
+</div>
+
+<!-- ─── SIDEBAR ─── -->
+<aside>
+
+    <!-- Related blog posts -->
+    <div class="sidebar-section">
+        <div class="sidebar-title">Blog posts</div>
+        <ul class="link-list">
+            <!-- ✏️ Add entries here as you write about PULSE -->
+            <li class="link-item">
+                <a href="blog/posts/exploring-river-biodiversity/index.html">
+                    <div class="link-date">Feb 2025</div>
+                    <div class="link-title">Exploring European River Biodiversity Patterns with R</div>
+                </a>
+            </li>
+            <li class="link-item">
+                <a href="blog/posts/fuzzy-clustering-rivers/index.html">
+                    <div class="link-date">Dec 2024</div>
+                    <div class="link-title">Fuzzy Clustering for River Typology</div>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Talks & events -->
+    <div class="sidebar-section">
+        <div class="sidebar-title">Talks &amp; events</div>
+        <ul class="link-list">
+            <!-- ✏️ Add conference presentations, workshops, etc. -->
+            <li class="link-item">
+                <a href="#">
+                    <div class="link-date">May 2026</div>
+                    <div class="link-title">Kumpula-Viikki Collaboration Day 2026</div>
+                    <div class="link-type">Meeting Poster - PULSE, a probabilistic ecotypology for Europe's rivers.</div>
+                                                        </a>
+                                                        </li>
+                                                        <li class="link-item">
+                                                        <a href="#">
+                                                        <div class="link-date">May 2026</div>
+                                                        <div class="link-title"><a href="https://geoinformaticsdays.geoportti.fi/en/latest/">Geoinformatics Research Days 2026</a></div>
+                                                        <div class="link-type">Conference Presentation - PULSE, a probabilistic ecotypology for Europe's rivers.</div>
+                </a>
+            </li>
+            <li class="link-item">
+                <a href="#">
+                    <div class="link-date">May 2026</div>
+                    <div class="link-title"> <a href="https://www.biodiversa.eu/2026/04/08/biomonweek2026/"> BioMonWeek 2026</a></div>
+                    <div class="link-type">Conference Presentation — Benchmark Generation Models</div>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Quick links / resources -->
+    <div class="sidebar-section">
+        <div class="sidebar-title">Resources</div>
+        <ul class="quick-links">
+            <li>
+                <a href="https://jonjup.github.io/blog/static/pulse-app.html">
+                    <span class="link-icon">⚡</span>
+                    Type Coherence Prediction App
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/jonjup" target="_blank" rel="noopener">
+                    <span class="link-icon">⌘</span>
+                    GitHub Repository
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/jonjup/pulseR">
+                    <span class="link-icon">📦</span>
+                    pulseR Package (under development)
+                </a>
+            </li>
+ <!--           <li>
+                <!--<a href="#">
+                    <span class="link-icon">📄</span>
+                    Manuscript (in prep.)
+                </a>
+            </li> --> 
+        </ul>
+    </div>
+
+    <!-- Taxonomy scope -->
+    <div class="sidebar-section">
+        <div class="sidebar-title">Taxonomic scope</div>
+        <div class="tag-list">
+            <span class="tag">🌿 Diatoms</span>
+            <span class="tag">🐟 Fishes</span>
+            <span class="tag">🦗 Macroinvertebrates</span>
+            <span class="tag">🌱 Macrophytes</span>
+        </div>
+    </div>
+
+    <!-- Collaborators -->
+    <div class="sidebar-section">
+        <div class="sidebar-title">Collaborators</div>
+        <ul class="quick-links">
+            <li>
+                <a href="https://www.helsinki.fi/fi/tutustu-meihin/ihmiset/henkilohaku/janne-soininen-9066213" target="_blank" rel="noopener">
+                    <span class="link-icon">👤</span>
+                    Prof. Janne Soininen
+                </a>
+            </li>
+        
+        </ul>
+    </div>
+
+</aside>
+
+</div>
+</div>
+
+<footer>
+    <p>&copy; 2025 Jonathan. Built with care. Hosted on GitHub Pages.</p>
+</footer>
+
+</body>
+</html>
