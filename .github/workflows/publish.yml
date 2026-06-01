@@ -49,13 +49,12 @@ jobs:
       - name: Prepare deploy directory
         run: |
           mkdir -p _site
-          # Copy the handcrafted main site files
-          cp index.html _site/
-          cp .nojekyll _site/
-          # Copy any top-level assets (images, css, etc.)
-          # cp -r images _site/ 2>/dev/null || true
-          # Copy the rendered blog
-          cp -r blog _site/blog
+          # Copy everything except build/system folders into _site
+          rsync -a ./ _site/ \
+            --exclude '_site' \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude 'blog/.quarto'
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
