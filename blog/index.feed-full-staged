@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Jonathan&#39;s Blog</title>
+<link>https://yourusername.github.io/blog/</link>
+<atom:link href="https://yourusername.github.io/blog/index.xml" rel="self" type="application/rss+xml"/>
+<description></description>
+<generator>quarto-1.8.25</generator>
+<lastBuildDate>Tue, 24 Feb 2026 22:00:00 GMT</lastBuildDate>
+<item>
+  <title>{B4F502887207:/posts/Typoloy Benchmarking Shiny/index.html}</title>
+  <dc:creator>Jonathan </dc:creator>
+  <link>https://yourusername.github.io/blog/posts/Typoloy Benchmarking Shiny/</link>
+  <description>{B4F502887207:/posts/Typoloy Benchmarking Shiny/index.html}</description>
+  <category>R</category>
+  <category>shiny</category>
+  <category>typologies</category>
+  <guid>https://yourusername.github.io/blog/posts/Typoloy Benchmarking Shiny/</guid>
+  <pubDate>Tue, 24 Feb 2026 22:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>{B4F502887207:/posts/exploring-river-biodiversity/index.html}</title>
+  <dc:creator>Jonathan </dc:creator>
+  <link>https://yourusername.github.io/blog/posts/exploring-river-biodiversity/</link>
+  <description>{B4F502887207:/posts/exploring-river-biodiversity/index.html}</description>
+  <category>R</category>
+  <category>spatial analysis</category>
+  <category>biodiversity</category>
+  <guid>https://yourusername.github.io/blog/posts/exploring-river-biodiversity/</guid>
+  <pubDate>Wed, 19 Feb 2025 22:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>{B4F502887207:/posts/SDM with HMSC/index.html}</title>
+  <dc:creator>Jonathan </dc:creator>
+  <link>https://yourusername.github.io/blog/posts/SDM with HMSC/</link>
+  <description>{B4F502887207:/posts/SDM with HMSC/index.html}</description>
+  <category>R</category>
+  <category>HMSC</category>
+  <category>Statistics</category>
+  <guid>https://yourusername.github.io/blog/posts/SDM with HMSC/</guid>
+  <pubDate>Sun, 25 Oct 2020 22:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>{B4F502887207:/posts/Gradient Forests/index.html}</title>
+  <link>https://yourusername.github.io/blog/posts/Gradient Forests/</link>
+  <description>{B4F502887207:/posts/Gradient Forests/index.html}</description>
+  <guid>https://yourusername.github.io/blog/posts/Gradient Forests/</guid>
+  <pubDate>Mon, 25 May 2026 13:41:05 GMT</pubDate>
+</item>
+</channel>
+</rss>

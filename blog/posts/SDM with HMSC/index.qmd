@@ -26,6 +26,7 @@ To run this code you will need to install the *pacman* R package beforehand but 
 
 ```{r setup, echo=TRUE, message=FALSE}
 if(!require(pacman)) install.packages("pacman")
+library(pacman)
 p_load(abind,
        data.table,
        dplyr,
