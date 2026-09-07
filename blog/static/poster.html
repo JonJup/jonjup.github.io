@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PULSE — Poster Companion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --river-deep: #0a1628;
+            --river-dark: #122240;
+            --water-blue: #2e6b8a;
+            --water-light: #4a9aba;
+            --foam: #b8d8e8;
+            --accent: #1e7a5a;
+            --accent-light: #2a9d6e;
+            --parchment: #f5f1ea;
+            --white: #fefefe;
+            --text-primary: #1a1a1a;
+            --text-secondary: #4a4a4a;
+            --text-light: #7a7a7a;
+            --border: #e0dcd4;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Source Sans 3', Georgia, serif;
+            color: var(--text-primary);
+            background: var(--parchment);
+            line-height: 1.7;
+            font-size: 17px;
+            font-weight: 300;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── HEADER ─── */
+        .poster-header {
+            position: relative;
+            overflow: hidden;
+            padding: 3rem 1.5rem 2.5rem;
+            background: var(--river-deep);
+            color: var(--white);
+            text-align: center;
+        }
+
+        /* Flowing water lines */
+        .poster-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background:
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 29px,
+                    rgba(74, 154, 186, 0.06) 29px,
+                    rgba(74, 154, 186, 0.06) 30px
+                );
+            pointer-events: none;
+        }
+
+        .poster-header-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .poster-label {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--foam);
+            margin-bottom: 1rem;
+            padding: 0.3rem 0.9rem;
+            border: 1px solid rgba(184, 216, 232, 0.3);
+            border-radius: 20px;
+        }
+
+        .poster-header h1 {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-size: clamp(1.7rem, 6vw, 2.4rem);
+            font-weight: 400;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .poster-header h1 em { color: var(--foam); }
+
+        .poster-authors {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.75);
+            margin-bottom: 0.4rem;
+        }
+
+        .poster-authors strong {
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        .poster-venue {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.55);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ─── CONTENT ─── */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 4rem;
+        }
+
+        .intro {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            font-size: 1.02rem;
+        }
+
+        /* ─── ACTION BUTTONS ─── */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.3rem 1.5rem;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.25s ease;
+        }
+
+        .action-btn:hover,
+        .action-btn:active {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(10, 22, 40, 0.1);
+            border-color: var(--water-light);
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, var(--accent), var(--water-blue));
+            border: none;
+            color: var(--white);
+        }
+
+        .action-btn.primary .action-icon {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .action-btn.primary .action-sub {
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--parchment);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .action-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .action-title {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-size: 1.2rem;
+            font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: 0.15rem;
+        }
+
+        .action-sub {
+            font-size: 0.82rem;
+            color: var(--text-light);
+        }
+
+        .action-arrow {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            flex-shrink: 0;
+        }
+
+        .action-btn.primary .action-arrow {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* ─── EMAIL CAPTURE ─── */
+        .notify-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem 1.8rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notify-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--water-blue));
+        }
+
+        .notify-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.6rem;
+        }
+
+        .notify-card h2 {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: var(--river-deep);
+            margin-bottom: 0.6rem;
+            line-height: 1.2;
+        }
+
+        .notify-card p {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .notify-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .notify-input {
+            width: 100%;
+            padding: 0.9rem 1.1rem;
+            background: var(--parchment);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 1rem;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            -webkit-appearance: none;
+        }
+
+        .notify-input:focus {
+            outline: none;
+            background: var(--white);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(30, 122, 90, 0.12);
+        }
+
+        .notify-input::placeholder {
+            color: var(--text-light);
+        }
+
+        .notify-submit {
+            padding: 0.95rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent), var(--water-blue));
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .notify-submit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(30, 122, 90, 0.25);
+        }
+
+        .notify-privacy {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            text-align: center;
+            margin-top: 0.4rem;
+            margin-bottom: 0;
+        }
+
+        /* Success message (shown after submit via redirect) */
+        .notify-success {
+            display: none;
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        .notify-success .success-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .notify-success h2 {
+            margin-bottom: 0.4rem;
+        }
+
+        body.submitted .notify-form { display: none; }
+        body.submitted .notify-intro { display: none; }
+        body.submitted .notify-success { display: block; }
+
+        /* ─── FOOTER ─── */
+        footer {
+            text-align: center;
+            padding: 2rem 1.5rem 3rem;
+            color: var(--text-light);
+            font-size: 0.82rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer .footer-name {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-size: 1.1rem;
+            color: var(--river-deep);
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        /* ─── DESKTOP TWEAKS ─── */
+        @media (min-width: 640px) {
+            .poster-header { padding: 4rem 2rem 3rem; }
+            .container { padding: 3rem 2rem 4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     HEADER — poster title & authors
+     ═══════════════════════════════════════════════════════ -->
+<header class="poster-header">
+    <div class="poster-header-inner">
+        <span class="poster-label">NSO GFÖ 2026 Odense</span>
+        <h1>Grading on a Curve: Generating context-specific Benchmarks for the Biological Evaluation of Freshwater Typology Systems</h1>
+        <p class="poster-authors">Jonathan Jupke, Jürg Spaak, Kaisa-Leena Huttunen, Timo Muotka, Riku Paavola, Petr Pařil, Theresa Piana, Marek Polášek, Ralf Schäfer, Michal Straka, Janne Soininen</p>
+        <p class="poster-venue">NSO GFÖ 2026 Odense · Poster #118 S2</p>
+    </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════
+     CONTENT
+     ═══════════════════════════════════════════════════════ -->
+<div class="container">
+
+    <p class="intro">
+        Thanks for scanning! Read the preprint, grab the Poster PDF, or try the interactive app.
+    </p>
+
+    <!-- ─── ACTION BUTTONS ─── -->
+    <div class="actions">
+
+        <!-- Preprint (primary) -->
+        <a href="https://drive.google.com/drive/folders/1K4841VOiGE0k7s2eQbioljBjt1zM5byg?usp=drive_link" target="_blank" rel="noopener" class="action-btn primary">
+            <div class="action-icon">📄</div>
+            <div class="action-text">
+                <div class="action-title">Read the preprint</div>
+                <div class="action-sub">Current version · open access</div>
+            </div>
+            <div class="action-arrow">→</div>
+        </a>
+
+        <!-- Poster PDF -->
+        <a href="poster.pdf" target="_blank" rel="noopener" class="action-btn">
+            <div class="action-icon">🖼️</div>
+            <div class="action-text">
+                <div class="action-title">Download the poster</div>
+                <div class="action-sub">PDF · high resolution</div>
+            </div>
+            <div class="action-arrow">↓</div>
+        </a>
+
+        <!-- Web app -->
+        <a href="https://pulse-shiny-typecoherenceprediction.2.rahtiapp.fi/" target="_blank" rel="noopener" class="action-btn">
+            <div class="action-icon">⚡</div>
+            <div class="action-text">
+                <div class="action-title">Try the web app</div>
+                <div class="action-sub">Interactive typology predictor</div>
+            </div>
+            <div class="action-arrow">→</div>
+        </a>
+
+    </div>
+
+    <!-- ─── EMAIL CAPTURE ─── -->
+    <div class="notify-card">
+        <div class="notify-intro">
+            <div class="notify-label">Stay in the loop</div>
+            <h2>Get notified when the paper is published</h2>
+            <p class="notify-intro">
+                Leave your email and I'll send you a single message when the peer-reviewed version is out. No list, no spam — just this one update.
+            </p>
+        </div>
+
+        <!-- 
+        ═══ EMAIL FORM SETUP ═══
+        This uses Formspree (free tier). To activate:
+          1. Sign up at https://formspree.io (free)
+          2. Create a form, copy your form ID
+          3. Replace YOUR_FORM_ID below with it
+        The _next hidden field redirects back here with #thanks to show the success message.
+        -->
+        <form class="notify-form"
+              action="https://formspree.io/f/mgaenokq"
+              method="POST">
+            <input type="email"
+                   name="email"
+                   class="notify-input"
+                   placeholder="your.email@institution.edu"
+                   required
+                   autocomplete="email">
+            <input type="hidden" name="_subject" value="PULSE poster — notify me about the paper">
+            <input type="hidden" name="topic" value="PULSE ecotypology paper">
+            <input type="text" name="_gotcha" style="display:none">
+            <button type="submit" class="notify-submit">Notify me →</button>
+            <p class="notify-privacy">Your email is only used for this one notification.</p>
+        </form>
+
+        <!-- Success state (shown when URL ends with #thanks) -->
+        <div class="notify-success">
+            <div class="success-icon">✓</div>
+            <h2>You're on the list</h2>
+            <p style="margin-bottom:0;">Thanks — I'll be in touch when the paper is published.</p>
+        </div>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════ -->
+<footer>
+    <a href="index.html" style="text-decoration:none;">
+        <span class="footer-name">Jonathan Jupke</span>
+    </a>
+    Freshwater Ecologist · University of Helsinki<br>
+    <a href="index.html">Visit my website →</a>
+</footer>
+
+<script>
+    // Show success message if redirected back with #thanks
+    if (window.location.hash === '#thanks') {
+        document.body.classList.add('submitted');
+        // Scroll the card into view
+        document.querySelector('.notify-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+</script>
+
+</body>
+</html>
